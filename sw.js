@@ -1,5 +1,5 @@
 ﻿/* Service Worker voor MeetSum PWA */
-const CACHE_VERSION = 'meetsum-v4';
+const CACHE_VERSION = 'meetsum-v5';
 const CACHE_URLS = [
   '/',
   '/index.html',
@@ -37,9 +37,16 @@ self.addEventListener('activate', event => {
 // Fetch event â€“ network first, fall back to cache
 self.addEventListener('fetch', event => {
   const { request } = event;
+  const url = new URL(request.url);
   
-  // Skip non-GET or API calls
-  if (request.method !== 'GET' || request.url.includes('/api/')) {
+  // Skip non-GET, API calls, and all cross-origin requests.
+  // External assets like Google Fonts and cdnjs must be fetched by the browser,
+  // otherwise CSP connect-src rules can block the service worker fetch.
+  if (
+    request.method !== 'GET' ||
+    request.url.includes('/api/') ||
+    url.origin !== self.location.origin
+  ) {
     return;
   }
   
@@ -55,9 +62,11 @@ self.addEventListener('fetch', event => {
         }
         return response;
       })
-      .catch(() => {
-        // Fallback to cache if offline
-        return caches.match(request);
+      .catch(async () => {
+        // Fallback to cache if offline. If nothing is cached, let the request fail
+        // with a real error response instead of returning undefined.
+        const cached = await caches.match(request);
+        return cached || Response.error();
       })
   );
 });
