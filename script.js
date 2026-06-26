@@ -35,7 +35,8 @@
   const THEME_KEY   = "meetsum.theme";
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
-  const APP_VERSION = "1.260626.3";
+  const VERSION_FILE = "/version.json";
+  let currentAppVersion = "1.260626.4";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -90,6 +91,11 @@
 
   function setBodyFrozen(isFrozen) {
     document.body.classList.toggle("modal-open", !!isFrozen);
+  }
+
+  function requestServiceWorkerActivation(registration) {
+    const waiting = registration && registration.waiting;
+    if (waiting) waiting.postMessage({ type: "SKIP_WAITING" });
   }
 
   /* ---------- applyTranslations – sets every visible UI string ---------- */
@@ -241,7 +247,7 @@
 
     // Footer
     const footerVersion = document.getElementById("footerVersion");
-    if (footerVersion) footerVersion.textContent = `${t("footer.version")} ${APP_VERSION}`;
+    if (footerVersion) footerVersion.textContent = `${t("footer.version")} ${currentAppVersion}`;
     set("#footerTagline",         "footer.tagline");
     set("#footerDisclaimer",      "footer.disclaimer");
     set("#footerCookies",         "footer.cookies");
@@ -1030,12 +1036,25 @@
 
   /* ---------- Toast ---------- */
   let toastTimer;
-  function toast(msg) {
+  function toast(msg, options) {
     const el = $("#toast");
+    if (!el) return;
+    el.onclick = null;
+    el.classList.remove("toast-action");
     el.textContent = msg;
+    if (options && typeof options.onClick === "function") {
+      el.classList.add("toast-action");
+      el.onclick = () => {
+        options.onClick();
+        el.classList.remove("show", "toast-action");
+      };
+    }
     el.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+    toastTimer = setTimeout(() => {
+      el.classList.remove("show", "toast-action");
+      el.onclick = null;
+    }, options && options.duration ? options.duration : 4000);
   }
 
   /* ---------- AI loader with progress ---------- */
@@ -1316,12 +1335,68 @@
 
   /* ---------- PWA Support ---------- */
   let deferredPrompt = null;
+  let swRegistration = null;
+
+  async function checkAppVersion() {
+    try {
+      const res = await fetch(`${VERSION_FILE}?t=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (!data || !data.version) return;
+      if (data.version !== currentAppVersion) {
+        toast(`${t("toast.updateAvailable")} ${data.version}`, {
+          onClick: () => window.location.reload(),
+          duration: 9000
+        });
+      }
+    } catch {
+      // Silent: version checks should never break the app.
+    }
+  }
+
+  function bindServiceWorkerUpdater(registration) {
+    swRegistration = registration;
+
+    if (registration.waiting) {
+      toast(t("toast.updateInstall"), {
+        onClick: () => requestServiceWorkerActivation(registration),
+        duration: 9000
+      });
+    }
+
+    registration.addEventListener("updatefound", () => {
+      const newWorker = registration.installing;
+      if (!newWorker) return;
+      newWorker.addEventListener("statechange", () => {
+        if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+          toast(t("toast.updateInstall"), {
+            onClick: () => requestServiceWorkerActivation(registration),
+            duration: 9000
+          });
+        }
+      });
+    });
+
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      window.location.reload();
+    });
+
+    setTimeout(() => registration.update().catch(() => {}), 2500);
+    setInterval(() => {
+      registration.update().catch(() => {});
+      checkAppVersion();
+    }, 5 * 60 * 1000);
+  }
 
   function initPWA() {
     // Register Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js', { scope: '/' })
-        .then(() => console.log('✅ Service Worker registered'))
+        .then((registration) => {
+          bindServiceWorkerUpdater(registration);
+          checkAppVersion();
+          console.log('✅ Service Worker registered');
+        })
         .catch(err => console.log('Service Worker error:', err));
     }
 

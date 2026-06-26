@@ -172,6 +172,8 @@ window.LANG_NL = {
   "toast.appInstalled": "\u2705 MeetSum is ge\u00efnstalleerd!",
   "toast.promptCopied": "Prompt gekopi\u00eberd! \uD83D\uDCCB",
   "toast.resultCopied": "Samenvatting gekopi\u00eberd! \uD83D\uDCCB",
+  "toast.updateAvailable": "Update beschikbaar - klik om te vernieuwen naar versie",
+  "toast.updateInstall": "Nieuwe app-update klaar - klik om te installeren",
   "toast.downloaded": function (ext) { return "Gedownload als ." + ext; },
   "toast.fileLoaded": function (name) { return "Bestand geladen: " + name; },
   "toast.editEnabled": "Bewerken ingeschakeld \u270f\ufe0f",

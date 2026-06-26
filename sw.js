@@ -34,6 +34,12 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 // Fetch event â€“ network first, fall back to cache
 self.addEventListener('fetch', event => {
   const { request } = event;
@@ -45,6 +51,7 @@ self.addEventListener('fetch', event => {
   if (
     request.method !== 'GET' ||
     request.url.includes('/api/') ||
+    url.pathname === '/version.json' ||
     url.origin !== self.location.origin
   ) {
     return;

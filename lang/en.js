@@ -172,6 +172,8 @@ window.LANG_EN = {
   "toast.appInstalled": "\u2705 MeetSum is installed!",
   "toast.promptCopied": "Prompt copied! \uD83D\uDCCB",
   "toast.resultCopied": "Summary copied! \uD83D\uDCCB",
+  "toast.updateAvailable": "Update available - click to refresh to version",
+  "toast.updateInstall": "New app update ready - click to install",
   "toast.downloaded": function (ext) { return "Downloaded as ." + ext; },
   "toast.fileLoaded": function (name) { return "File loaded: " + name; },
   "toast.editEnabled": "Editing enabled \u270f\ufe0f",
