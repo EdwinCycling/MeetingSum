@@ -118,6 +118,7 @@ window.LANG_EN = {
 
   /* ---- Footer ---- */
   "footer.text": "Built from frustration with scattered meeting notes and shaped into <strong>MeetSum</strong> for better standardisation, speed and teamwork.",
+  "footer.version": "Version",
   "footer.tagline": "Entrepreneurial, professional and human by design for sharper summaries.",
   "footer.disclaimer": "Disclaimer",
   "footer.cookies": "Cookies",

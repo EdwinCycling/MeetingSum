@@ -35,6 +35,7 @@
   const THEME_KEY   = "meetsum.theme";
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
+  const APP_VERSION = "1.260626.3";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -239,7 +240,8 @@
     if (emptyState) emptyState.textContent = t("step5.emptyState");
 
     // Footer
-    setHtml("#footerText",        "footer.text");
+    const footerVersion = document.getElementById("footerVersion");
+    if (footerVersion) footerVersion.textContent = `${t("footer.version")} ${APP_VERSION}`;
     set("#footerTagline",         "footer.tagline");
     set("#footerDisclaimer",      "footer.disclaimer");
     set("#footerCookies",         "footer.cookies");
@@ -493,7 +495,7 @@
       `<li class="sidebar-item"><strong>${s.title}</strong><span>${s.desc}</span></li>`
     ).join("") || `<li class="sidebar-empty">${t("toast.noSection")}</li>`;
     outputList.innerHTML = getOutputOptionSummary().map((item) =>
-      `<li class="sidebar-item sidebar-item-option"><strong>${item.label}</strong><span>${item.value}</span></li>`
+      `<li class="sidebar-item"><strong>${item.label}</strong><span>${item.value}</span></li>`
     ).join("");
   }
 

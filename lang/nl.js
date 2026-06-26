@@ -118,6 +118,7 @@ window.LANG_NL = {
 
   /* ---- Footer ---- */
   "footer.text": "Gemaakt vanuit frustratie over losse notulen en gebouwd als <strong>MeetSum</strong> voor standaardisatie, snelheid en beter teamwork.",
+  "footer.version": "Versie",
   "footer.tagline": "Ondernemend, professioneel en menselijk ontworpen voor slimmere samenvattingen.",
   "footer.disclaimer": "Disclaimer",
   "footer.cookies": "Cookies",
