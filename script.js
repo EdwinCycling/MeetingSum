@@ -34,6 +34,7 @@
   const STORAGE_KEY = "meetsum.prefs.v1";
   const THEME_KEY   = "meetsum.theme";
   const UI_LANG_KEY = "meetsum.uilang";
+  const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -69,6 +70,25 @@
 
   function getSectionMap() {
     return Object.fromEntries(getSections().map((s) => [s.id, s]));
+  }
+
+  function getOutputOptionSummary() {
+    const oo = prefs.outputOptions || OUTPUT_DEFAULTS;
+    const boolText = (value) => value ? t("common.enabled") : t("common.disabled");
+    return [
+      { label: t("step3.niveau.label"), value: t("step3.niveau." + oo.niveau) },
+      { label: t("step3.type.label"), value: t("step3.type." + oo.type) },
+      { label: t("step3.lengte.label"), value: t("step3.lengte." + oo.lengte) },
+      { label: t("step3.register.label"), value: t("step3.register." + oo.register) },
+      { label: t("step3.doelgroep.label"), value: t("step3.doelgroep." + oo.doelgroep) },
+      { label: t("step3.opmaak.label"), value: t("step3.opmaak." + oo.opmaak) },
+      { label: t("step3.anoniem.label"), value: boolText(!!oo.anoniem) },
+      { label: t("step3.inclusievBron.label"), value: boolText(!!oo.inclusievBron) }
+    ];
+  }
+
+  function setBodyFrozen(isFrozen) {
+    document.body.classList.toggle("modal-open", !!isFrozen);
   }
 
   /* ---------- applyTranslations – sets every visible UI string ---------- */
@@ -199,6 +219,7 @@
     set("#generateWithAI",    "step4.generateWithAI");
     set("#step4-hint",        "step4.hint");
     set("#sidebarTitle",      "step4.sidebarTitle");
+    set("#sidebarOutputTitle", "step4.sidebarOutputTitle");
 
     // Step 5 – result
     set("#step5-h2",               "step5.title");
@@ -218,7 +239,25 @@
     if (emptyState) emptyState.textContent = t("step5.emptyState");
 
     // Footer
-    setHtml(".site-footer p", "footer.text");
+    setHtml("#footerText",        "footer.text");
+    set("#footerTagline",         "footer.tagline");
+    set("#footerDisclaimer",      "footer.disclaimer");
+    set("#footerCookies",         "footer.cookies");
+    set("#footerTeam",            "footer.team");
+    set("#footerPricing",         "footer.pricing");
+
+    // Cookie + info modal
+    set("#cookieNoticeKicker", "cookie.kicker");
+    set("#cookieNoticeTitle",  "cookie.title");
+    set("#cookieNoticeText",   "cookie.text");
+    set("#cookieNoticeMore",   "cookie.more");
+    set("#cookieNoticeClose",  "cookie.close");
+    setAttr("#infoModalClose", "aria-label", "modal.close");
+
+    if (!document.getElementById("infoModal").hidden) {
+      const modalType = document.getElementById("infoModal").dataset.modalType;
+      if (modalType) openInfoModal(modalType);
+    }
 
     // Loader modal
     set("#loaderTitle", "loader.title");
@@ -445,13 +484,81 @@
   /* ---------- Sidebar: show selected sections in step 4 ---------- */
   function updateSidebar() {
     const list = document.getElementById("sectionsSidebarList");
-    if (!list) return;
+    const outputList = document.getElementById("outputSidebarList");
+    if (!list || !outputList) return;
     const orderedIds = prefs.sectionOrder || SECTION_DEFS.map((s) => s.id);
     const sectionMap = getSectionMap();
     const selected = orderedIds.map((id) => sectionMap[id]).filter((s) => s && prefs.sections[s.id]);
     list.innerHTML = selected.map((s) =>
       `<li class="sidebar-item"><strong>${s.title}</strong><span>${s.desc}</span></li>`
     ).join("") || `<li class="sidebar-empty">${t("toast.noSection")}</li>`;
+    outputList.innerHTML = getOutputOptionSummary().map((item) =>
+      `<li class="sidebar-item sidebar-item-option"><strong>${item.label}</strong><span>${item.value}</span></li>`
+    ).join("");
+  }
+
+  function openInfoModal(type) {
+    const modal = document.getElementById("infoModal");
+    const title = document.getElementById("infoModalTitle");
+    const body = document.getElementById("infoModalBody");
+    if (!modal || !title || !body) return;
+    modal.dataset.modalType = type;
+    title.textContent = t(`legal.${type}.title`);
+    body.innerHTML = t(`legal.${type}.body`);
+    modal.hidden = false;
+    setBodyFrozen(true);
+  }
+
+  function closeInfoModal() {
+    const modal = document.getElementById("infoModal");
+    if (!modal) return;
+    modal.hidden = true;
+    delete modal.dataset.modalType;
+    if (document.getElementById("cookieNotice").hidden) setBodyFrozen(false);
+  }
+
+  function dismissCookieNotice() {
+    const sheet = document.getElementById("cookieNotice");
+    if (!sheet) return;
+    sheet.hidden = true;
+    try { localStorage.setItem(COOKIE_NOTICE_KEY, "dismissed"); } catch { /* noop */ }
+    if (document.getElementById("infoModal").hidden) setBodyFrozen(false);
+  }
+
+  function initFooterAndLegal() {
+    document.querySelectorAll("[data-modal]").forEach((btn) => {
+      btn.addEventListener("click", () => openInfoModal(btn.dataset.modal));
+    });
+
+    const closeBtn = document.getElementById("infoModalClose");
+    if (closeBtn) closeBtn.addEventListener("click", closeInfoModal);
+
+    const infoModal = document.getElementById("infoModal");
+    if (infoModal) {
+      infoModal.addEventListener("click", (e) => {
+        if (e.target === infoModal) closeInfoModal();
+      });
+    }
+
+    const cookieMore = document.getElementById("cookieNoticeMore");
+    const cookieClose = document.getElementById("cookieNoticeClose");
+    const cookieSheet = document.getElementById("cookieNotice");
+
+    if (cookieMore) cookieMore.addEventListener("click", () => openInfoModal("cookies"));
+    if (cookieClose) cookieClose.addEventListener("click", dismissCookieNotice);
+
+    try {
+      const dismissed = localStorage.getItem(COOKIE_NOTICE_KEY) === "dismissed";
+      if (!dismissed && cookieSheet) {
+        cookieSheet.hidden = false;
+        setBodyFrozen(true);
+      }
+    } catch {
+      if (cookieSheet) {
+        cookieSheet.hidden = false;
+        setBodyFrozen(true);
+      }
+    }
   }
 
   function generatePrompt() {
@@ -1071,15 +1178,18 @@
       if (el) el.addEventListener("change", () => {
         prefs.outputOptions[optKeys[i]] = el.value;
         savePrefs(prefs);
+        updateSidebar();
       });
     });
     if (anoniemEl) anoniemEl.addEventListener("change", () => {
       prefs.outputOptions.anoniem = anoniemEl.checked;
       savePrefs(prefs);
+      updateSidebar();
     });
     if (inclusievBronEl) inclusievBronEl.addEventListener("change", () => {
       prefs.outputOptions.inclusievBron = inclusievBronEl.checked;
       savePrefs(prefs);
+      updateSidebar();
     });
 
     // UI language selector
@@ -1199,6 +1309,7 @@
 
     // PWA Installation
     initPWA();
+    initFooterAndLegal();
   }
 
   /* ---------- PWA Support ---------- */

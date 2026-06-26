@@ -3,6 +3,8 @@
    ========================================================= */
 window.LANG_EN = {
   "html.lang": "en",
+  "common.enabled": "Enabled",
+  "common.disabled": "Disabled",
 
   /* ---- Header / nav ---- */
   "nav.start": "Get started",
@@ -99,6 +101,7 @@ window.LANG_EN = {
   "step4.generateWithAI": "\uD83D\uDD12 Generate via Google Gemini",
   "step4.hint": "If you want to create the summary safely through a company AI account, copy the prompt and run it in your Copilot environment, for example. The prompt also contains your source text, so one copy action gets you ready and keeps the workflow safe.",
   "step4.sidebarTitle": "Selected sections",
+  "step4.sidebarOutputTitle": "Output settings",
 
   /* ---- Step 5: result ---- */
   "step5.title": "Result & download",
@@ -114,7 +117,30 @@ window.LANG_EN = {
   "step5.emptyState": "No result yet. First generate a summary with AI in step 4.",
 
   /* ---- Footer ---- */
-  "footer.text": "Made with \uD83D\uDC9C - <strong>MeetSum</strong>. Your data stays entirely in your own browser.",
+  "footer.text": "Built from frustration with scattered meeting notes and shaped into <strong>MeetSum</strong> for better standardisation, speed and teamwork.",
+  "footer.tagline": "Entrepreneurial, professional and human by design for sharper summaries.",
+  "footer.disclaimer": "Disclaimer",
+  "footer.cookies": "Cookies",
+  "footer.team": "Team",
+  "footer.pricing": "Pricing",
+
+  /* ---- Cookie sheet ---- */
+  "cookie.kicker": "Cookie & storage notice",
+  "cookie.title": "This app only uses functional storage",
+  "cookie.text": "MeetSum uses local storage for preferences, language settings and optionally a temporary PIN session. No advertising or tracking cookies are placed.",
+  "cookie.more": "Read details",
+  "cookie.close": "Close",
+
+  /* ---- Info modal ---- */
+  "modal.close": "Close",
+  "legal.disclaimer.title": "Disclaimer",
+  "legal.disclaimer.body": "<p><strong>MeetSum</strong> helps you get to a usable prompt and summary faster, but you remain responsible for checking the output for accuracy, completeness and suitability.</p><p>Do not use the built-in Google Gemini option for confidential, protected or otherwise sensitive data. It is not a shielded corporate environment. For that, use your own secure AI environment with the prompt MeetSum builds for you.</p><p>The makers are not liable for direct or indirect damage, incorrect interpretations, missed decisions or unwanted data sharing resulting from the use of this tool.</p>",
+  "legal.cookies.title": "Cookies & local storage",
+  "legal.cookies.body": "<p>MeetSum does not use advertising or tracking cookies.</p><p>The app does use local browser storage to remember your preferences, such as selected sections, output settings, theme, interface language and, if applicable, a temporary PIN session. This stays inside your browser and is not used to build marketing profiles.</p><p>If you want to remove this data, you can clear the local storage for this site in your browser settings.</p>",
+  "legal.team.title": "The team behind MeetSum",
+  "legal.team.body": "<p>MeetSum was built out of frustration: too many meetings, too many scattered notes and too little standardisation in the final output.</p><p>So we created a tool for everyone who wants to summarise faster, more consistently and with less noise. Practical. Human. Reliable.</p><p>We like to describe ourselves as a team of the best vibe coders in the Netherlands: entrepreneurial, creative, technically sharp and always looking for workflows people will actually use.</p>",
+  "legal.pricing.title": "Pricing",
+  "legal.pricing.body": "<p>MeetSum is free to use for building prompts, structuring output and preparing safe AI workflows.</p><p>The in-app Gemini summary is only available on request. That helps us control misuse, costs and safer deployment.</p><p>If you need larger-scale or shielded usage, run the generated prompt inside your own company AI environment.</p>",
 
   /* ---- Loader ---- */
   "loader.title": "Generating summary\u2026",

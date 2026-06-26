@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="MeetSum – Genereer in enkele stappen een perfecte AI-prompt om je MS Teams transcript samen te vatten." />
-  <meta name="theme-color" content="#6366f1" />
+  <meta name="theme-color" content="#E30613" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -12,7 +12,7 @@
   <title>MeetSum · Teams Transcript Summarizer Helper</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="manifest" href="/manifest.json" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
@@ -30,7 +30,7 @@
   <!-- ===================== HEADER ===================== -->
   <header class="site-header">
     <a class="brand" href="#top">
-      <span class="brand-mark">📝</span>
+      <span class="brand-mark">=</span>
       <span class="brand-text">Meet<span class="accent">Sum</span></span>
     </a>
     <nav class="header-actions">
@@ -285,6 +285,8 @@
         <aside class="sections-sidebar" id="sectionsSidebar" aria-label="Geselecteerde secties">
           <h4 class="sidebar-title" id="sidebarTitle">Geselecteerde secties</h4>
           <ul class="sidebar-list" id="sectionsSidebarList"></ul>
+          <h4 class="sidebar-title sidebar-title-secondary" id="sidebarOutputTitle">Output instellingen</h4>
+          <ul class="sidebar-list sidebar-list-options" id="outputSidebarList"></ul>
         </aside>
       </div>
     </section>
@@ -326,10 +328,50 @@
   </main>
 
   <footer class="site-footer">
-    <p>Gemaakt met 💜 — <strong>MeetSum</strong>. Je gegevens blijven volledig in je eigen browser.</p>
+    <div class="footer-shell">
+      <div class="footer-brand-block">
+        <span class="footer-brand-mark">=</span>
+        <div>
+          <p class="footer-copy" id="footerText">Gemaakt met 💜 — <strong>MeetSum</strong>. Je gegevens blijven volledig in je eigen browser.</p>
+          <p class="footer-tagline" id="footerTagline">Ondernemend, professioneel en menselijk ontworpen voor slimmere samenvattingen.</p>
+        </div>
+      </div>
+      <nav class="footer-links" aria-label="Footer links">
+        <button class="footer-link" type="button" data-modal="disclaimer" id="footerDisclaimer">Disclaimer</button>
+        <button class="footer-link" type="button" data-modal="cookies" id="footerCookies">Cookies</button>
+        <button class="footer-link" type="button" data-modal="team" id="footerTeam">Team</button>
+        <button class="footer-link" type="button" data-modal="pricing" id="footerPricing">Pricing</button>
+      </nav>
+    </div>
+    <div class="footer-bars" aria-hidden="true">
+      <span class="footer-bar footer-bar-purple"></span>
+      <span class="footer-bar footer-bar-gold"></span>
+    </div>
   </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <div id="infoModal" class="modal-overlay" hidden>
+    <div class="modal modal-wide info-modal" role="dialog" aria-modal="true" aria-labelledby="infoModalTitle">
+      <button class="modal-close" id="infoModalClose" type="button" aria-label="Close">✕</button>
+      <h3 id="infoModalTitle">Meer informatie</h3>
+      <div class="modal-desc modal-rich" id="infoModalBody"></div>
+    </div>
+  </div>
+
+  <div id="cookieNotice" class="cookie-sheet" hidden>
+    <div class="cookie-sheet-inner">
+      <div class="cookie-sheet-copy">
+        <span class="cookie-kicker" id="cookieNoticeKicker">Cookie & opslagmelding</span>
+        <h3 id="cookieNoticeTitle">Deze app gebruikt alleen functionele opslag</h3>
+        <p id="cookieNoticeText">MeetSum gebruikt lokale opslag voor voorkeuren, je taalinstellingen en optioneel een tijdelijke PIN-sessie. Er worden geen advertentie- of trackingcookies geplaatst.</p>
+      </div>
+      <div class="cookie-sheet-actions">
+        <button class="btn btn-ghost" type="button" id="cookieNoticeMore">Lees details</button>
+        <button class="btn btn-primary" type="button" id="cookieNoticeClose">Sluiten</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ===================== AI LOADER ===================== -->
   <div id="loaderOverlay" class="modal-overlay" hidden>

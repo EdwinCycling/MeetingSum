@@ -3,6 +3,8 @@
    ========================================================= */
 window.LANG_NL = {
   "html.lang": "nl",
+  "common.enabled": "Ingeschakeld",
+  "common.disabled": "Uitgeschakeld",
 
   /* ---- Header / nav ---- */
   "nav.start": "Aan de slag",
@@ -99,6 +101,7 @@ window.LANG_NL = {
   "step4.generateWithAI": "\uD83D\uDD12 Genereer via Google Gemini",
   "step4.hint": "Wil je veilig via een bedrijfs-AI-account de samenvatting maken, kopieer dan de prompt en activeer die bijvoorbeeld in je Copilot-omgeving. De prompt bevat ook je brontekst, dus met 1 kopieeractie ben je klaar en veilig.",
   "step4.sidebarTitle": "Geselecteerde secties",
+  "step4.sidebarOutputTitle": "Output instellingen",
 
   /* ---- Step 5: resultaat ---- */
   "step5.title": "Resultaat & download",
@@ -114,7 +117,30 @@ window.LANG_NL = {
   "step5.emptyState": "Nog geen resultaat. Genereer eerst een samenvatting met AI in stap 4.",
 
   /* ---- Footer ---- */
-  "footer.text": "Gemaakt met \uD83D\uDC9C - <strong>MeetSum</strong>. Je gegevens blijven volledig in je eigen browser.",
+  "footer.text": "Gemaakt vanuit frustratie over losse notulen en gebouwd als <strong>MeetSum</strong> voor standaardisatie, snelheid en beter teamwork.",
+  "footer.tagline": "Ondernemend, professioneel en menselijk ontworpen voor slimmere samenvattingen.",
+  "footer.disclaimer": "Disclaimer",
+  "footer.cookies": "Cookies",
+  "footer.team": "Team",
+  "footer.pricing": "Pricing",
+
+  /* ---- Cookie sheet ---- */
+  "cookie.kicker": "Cookie & opslagmelding",
+  "cookie.title": "Deze app gebruikt alleen functionele opslag",
+  "cookie.text": "MeetSum gebruikt lokale opslag voor voorkeuren, taalinstellingen en optioneel een tijdelijke PIN-sessie. Er worden geen advertentie- of trackingcookies geplaatst.",
+  "cookie.more": "Lees details",
+  "cookie.close": "Sluiten",
+
+  /* ---- Info modal ---- */
+  "modal.close": "Sluiten",
+  "legal.disclaimer.title": "Disclaimer",
+  "legal.disclaimer.body": "<p><strong>MeetSum</strong> helpt je sneller tot een bruikbare prompt en samenvatting te komen, maar jij blijft zelf verantwoordelijk voor de controle op juistheid, volledigheid en geschiktheid van de output.</p><p>Gebruik de ingebouwde Google Gemini-optie niet voor vertrouwelijke, beschermde of anderszins gevoelige data. Dat is geen afgeschermde bedrijfsomgeving. Gebruik daarvoor je eigen beveiligde AI-omgeving met de prompt die MeetSum voor je opbouwt.</p><p>De makers zijn niet aansprakelijk voor directe of indirecte schade, verkeerde interpretaties, gemiste besluiten of ongewenste datadeling die voortkomt uit het gebruik van deze tool.</p>",
+  "legal.cookies.title": "Cookies & lokale opslag",
+  "legal.cookies.body": "<p>MeetSum gebruikt geen advertentie- of trackingcookies.</p><p>De app gebruikt wel lokale browseropslag om je voorkeuren te onthouden, zoals geselecteerde secties, outputinstellingen, thema, interfacetaal en eventueel een tijdelijke PIN-sessie. Dit blijft lokaal in je browser en wordt niet als marketingprofiel gebruikt.</p><p>Als je deze gegevens wilt wissen, kun je de lokale opslag van deze site verwijderen in je browserinstellingen.</p>",
+  "legal.team.title": "Het team achter MeetSum",
+  "legal.team.body": "<p>MeetSum is gemaakt vanuit frustratie: te veel meetings, te veel losse notities en te weinig standaardisatie in de uitkomst.</p><p>Daarom bouwden we een tool voor iedereen die sneller, consistenter en met meer rust wil samenvatten. Praktisch. Menselijk. En zonder onnodige ruis.</p><p>We noemen onszelf graag een team van de beste vibe coders van Nederland: ondernemend, creatief, technisch scherp en altijd op zoek naar betere workflows die echt gebruikt worden.</p>",
+  "legal.pricing.title": "Pricing",
+  "legal.pricing.body": "<p>MeetSum is gratis te gebruiken voor het bouwen van prompts, het structureren van output en het voorbereiden van veilige AI-workflows.</p><p>De ingebouwde Gemini-samenvatting in de app is alleen beschikbaar op aanvraag. Daarmee houden we grip op misbruik, kosten en veilige inzet.</p><p>Wil je op grotere schaal of in een afgeschermde omgeving werken, gebruik dan de gegenereerde prompt in je eigen bedrijfs-AI-omgeving.</p>",
 
   /* ---- Loader ---- */
   "loader.title": "Samenvatting genereren\u2026",
