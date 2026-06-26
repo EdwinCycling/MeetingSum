@@ -17,7 +17,7 @@ window.LANG_NL = {
   "hero.pill": "✨ AI Prompt Generator voor MS Teams",
   "hero.h1": "Van ruw transcript naar",
   "hero.h1.accent": "een vlijmscherpe samenvatting",
-  "hero.sub": "Plak je Teams-transcript, kies precies welke onderdelen je wilt zien en MeetSum bouwt een professionele AI-prompt voor je. Geen ruis, alleen resultaat.",
+  "hero.sub": "Plak je (Teams)transcript of een ander document, kies precies welke onderdelen je wilt zien en hoe je output eruit moet zien, en MeetSum bouwt een professionele AI-prompt voor je en indien gewenst ook de AI-output via Google Gemini. Geen ruis, alleen resultaat.",
   "hero.cta.start": "Begin nu \u2192",
   "hero.cta.sections": "Bekijk secties",
   "hero.badge.local": "\uD83D\uDD12 100% lokaal in je browser",
@@ -96,8 +96,8 @@ window.LANG_NL = {
   "step4.generateBtn": "\u26a1 Genereer AI-prompt",
   "step4.promptTitle": "Je AI-prompt",
   "step4.copyPrompt": "\uD83D\uDCCB Kopieer prompt",
-  "step4.generateWithAI": "\u26a1 Genereer met AI",
-  "step4.hint": "Plak deze prompt in ChatGPT, Claude, Copilot of een andere AI-assistent.",
+  "step4.generateWithAI": "\uD83D\uDD12 Genereer via Google Gemini",
+  "step4.hint": "Wil je veilig via een bedrijfs-AI-account de samenvatting maken, kopieer dan de prompt en activeer die bijvoorbeeld in je Copilot-omgeving. De prompt bevat ook je brontekst, dus met 1 kopieeractie ben je klaar en veilig.",
   "step4.sidebarTitle": "Geselecteerde secties",
 
   /* ---- Step 5: resultaat ---- */

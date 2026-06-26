@@ -17,7 +17,7 @@ window.LANG_EN = {
   "hero.pill": "\u2728 AI Prompt Generator for MS Teams",
   "hero.h1": "From raw transcript to",
   "hero.h1.accent": "a razor-sharp summary",
-  "hero.sub": "Paste your Teams transcript, choose exactly which sections you want and MeetSum builds a professional AI prompt for you. No noise, just results.",
+  "hero.sub": "Paste your (Teams) transcript or any other document, choose exactly which sections you want to include and how you want the output to look, and MeetSum builds a professional AI prompt for you and, if you want, also generates the AI output via Google Gemini. No noise, just results.",
   "hero.cta.start": "Start now \u2192",
   "hero.cta.sections": "View sections",
   "hero.badge.local": "\uD83D\uDD12 100% local in your browser",
@@ -96,8 +96,8 @@ window.LANG_EN = {
   "step4.generateBtn": "\u26a1 Generate AI prompt",
   "step4.promptTitle": "Your AI prompt",
   "step4.copyPrompt": "\uD83D\uDCCB Copy prompt",
-  "step4.generateWithAI": "\u26a1 Generate with AI",
-  "step4.hint": "Paste this prompt into ChatGPT, Claude, Copilot or another AI assistant.",
+  "step4.generateWithAI": "\uD83D\uDD12 Generate via Google Gemini",
+  "step4.hint": "If you want to create the summary safely through a company AI account, copy the prompt and run it in your Copilot environment, for example. The prompt also contains your source text, so one copy action gets you ready and keeps the workflow safe.",
   "step4.sidebarTitle": "Selected sections",
 
   /* ---- Step 5: result ---- */
