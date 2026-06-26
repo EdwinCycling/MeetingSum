@@ -1,0 +1,42 @@
+# ---- Secrets & environment (NEVER commit these) ----
+.env
+.env.*
+!.env.example
+
+# ---- Local-only server & tooling scripts ----
+server.ps1
+server-with-api.ps1
+server.js
+set-pin.ps1
+create-shortcut.ps1
+test-gemini-api.ps1
+START-MEETSUM.bat
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- IDE ----
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ---- Node ----
+node_modules/
+package-lock.json
+.netlify/
+
+# ---- Python ----
+__pycache__/
+*.pyc
+.Python
+
+# ---- Logs ----
+*.log
+npm-debug.log*
+
+# ---- Build artefacts ----
+dist/
+build/

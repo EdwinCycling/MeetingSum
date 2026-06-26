@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="MeetSum – Genereer in enkele stappen een perfecte AI-prompt om je MS Teams transcript samen te vatten." />
+  <meta name="theme-color" content="#6366f1" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MeetSum" />
+  <title>MeetSum · Teams Transcript Summarizer Helper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%9D%3C/text%3E%3C/svg%3E" />
+  <!-- Bestand-parsers (PDF en Word) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+</head>
+<body>
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
+  </div>
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="site-header">
+    <a class="brand" href="#top">
+      <span class="brand-mark">📝</span>
+      <span class="brand-text">Meet<span class="accent">Sum</span></span>
+    </a>
+    <nav class="header-actions">
+      <a class="nav-link" href="#step-1">Aan de slag</a>
+      <button id="installBtn" class="install-btn" type="button" aria-label="Installeer MeetSum" title="Installeer als app" hidden>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Installeer</span>
+      </button>
+      <select id="uiLangSelect" class="lang-select" aria-label="Interfacetaal">
+        <option value="nl">🇳🇱 NL</option>
+        <option value="en">🇬🇧 EN</option>
+      </select>
+      <button id="themeToggle" class="theme-toggle" type="button" aria-label="Wissel tussen licht en donker thema" title="Wissel thema">
+        <svg class="icon-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </nav>
+  </header>
+
+  <main id="top">
+    <!-- ===================== HERO ===================== -->
+    <section class="hero">
+      <span class="pill">✨ AI Prompt Generator voor MS Teams</span>
+      <h1>Van ruw transcript naar<br /><span class="gradient-text">een vlijmscherpe samenvatting</span></h1>
+      <p class="hero-sub">
+        Plak je Teams-transcript, kies precies welke onderdelen je wilt zien en MeetSum bouwt
+        een professionele AI-prompt voor je. Geen ruis, alleen resultaat.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#step-1">Begin nu →</a>
+        <a class="btn btn-ghost" href="#step-2">Bekijk secties</a>
+      </div>
+      <div class="hero-badges">
+        <span>🔒 100% lokaal in je browser</span>
+        <span>🌍 5 talen</span>
+        <span>💾 Onthoudt je voorkeuren</span>
+      </div>
+    </section>
+
+    <!-- ===================== STEP PROGRESS ===================== -->
+    <nav class="step-progress" aria-label="Stappen">
+      <a class="sp-step sp-active" href="#step-1" data-step="1">
+        <span class="sp-num">1</span><span class="sp-label">Transcript</span>
+      </a>
+      <span class="sp-line"></span>
+      <a class="sp-step sp-locked" href="#step-2" data-step="2">
+        <span class="sp-num">2</span><span class="sp-label">Secties</span>
+      </a>
+      <span class="sp-line"></span>
+      <a class="sp-step sp-locked" href="#step-3" data-step="3">
+        <span class="sp-num">3</span><span class="sp-label">Opties</span>
+      </a>
+      <span class="sp-line"></span>
+      <a class="sp-step sp-locked" href="#step-4" data-step="4">
+        <span class="sp-num">4</span><span class="sp-label">Genereer</span>
+      </a>
+      <span class="sp-line"></span>
+      <a class="sp-step sp-locked" href="#step-5" data-step="5">
+        <span class="sp-num">5</span><span class="sp-label">Resultaat</span>
+      </a>
+    </nav>
+
+    <!-- ===================== STEP 1: TRANSCRIPT & LANGUAGE ===================== -->
+    <section id="step-1" class="step-card">
+      <div class="step-head">
+        <span class="step-num">1</span>
+        <div>
+          <h2>Transcript &amp; Taal</h2>
+          <p class="step-desc">Plak het volledige Teams-transcript en kies de taal van je samenvatting.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="transcript">Teams transcript</label>
+        <div id="dropZone" class="drop-zone">
+          <input type="file" id="fileInput" accept=".txt,.md,.markdown,.pdf,.doc,.docx" hidden />
+          <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <div class="drop-zone-text">
+            <span><strong id="dropStrongText">Sleep een bestand hierheen</strong> <span id="dropOrText">of</span> <button type="button" id="browseBtn" class="link-btn">blader</button></span>
+            <span class="drop-zone-hint" id="dropHintText">.txt · .md · .pdf · .docx</span>
+          </div>
+          <span id="fileStatus" class="file-status" hidden></span>
+        </div>
+        <textarea id="transcript" placeholder="…of plak hier je MS Teams transcript&#10;&#10;Bijv:&#10;[00:00] Jan Jansen: Welkom allemaal bij de wekelijkse sprint review…"></textarea>
+        <div class="field-meta">
+          <span id="charCount">0 tekens</span>
+          <button id="clearTranscript" class="link-btn" type="button">Wissen</button>
+        </div>
+      </div>
+
+      <div class="field field-inline">
+        <div>
+          <label for="language">Taal van de samenvatting</label>
+          <select id="language">
+            <option value="Nederlands">🇳🇱 Nederlands</option>
+            <option value="Engels">🇬🇧 Engels</option>
+            <option value="Duits">🇩🇪 Duits</option>
+            <option value="Frans">🇫🇷 Frans</option>
+            <option value="Spaans">🇪🇸 Spaans</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STEP 2: SECTIONS ===================== -->
+    <section id="step-2" class="step-card step-locked">
+      <div class="step-head">
+        <span class="step-num">2</span>
+        <div>
+          <h2>Selecteer secties</h2>
+          <p class="step-desc">Vink aan welke onderdelen in de samenvatting moeten komen. Je keuze wordt onthouden.</p>
+        </div>
+      </div>
+
+      <div class="sections-toolbar">
+        <button class="link-btn" id="selectAll" type="button">Alles selecteren</button>
+        <span class="dot">·</span>
+        <button class="link-btn" id="selectNone" type="button">Niets selecteren</button>
+        <span class="dot">·</span>
+        <button class="link-btn" id="selectDefault" type="button">Standaard set</button>
+        <span class="dot">·</span>
+        <button class="link-btn" id="resetOrder" type="button">Volgorde herstellen</button>
+        <span class="sections-drag-hint">⠿ Versleep een blok om de volgorde aan te passen</span>
+      </div>
+
+      <div id="sectionsGrid" class="sections-grid"><!-- generated by JS --></div>
+    </section>
+
+    <!-- ===================== STEP 3: OUTPUT OPTIONS ===================== -->
+    <section id="step-3" class="step-card step-locked">
+      <div class="step-head">
+        <span class="step-num">3</span>
+        <div>
+          <h2 id="step3-h2">Uitvoer opties</h2>
+          <p class="step-desc" id="step3-desc">Pas het niveau, de stijl en het format van de samenvatting aan.</p>
+        </div>
+      </div>
+
+      <div class="output-options-grid">
+        <div class="option-group">
+          <label for="optNiveau" id="optNiveauLabel">Niveau</label>
+          <select id="optNiveau">
+            <option value="simpel">Eenvoudig (lagere school)</option>
+            <option value="middelbaar">Middelbare school</option>
+            <option value="professioneel" selected>Professioneel (standaard)</option>
+            <option value="technisch">Technisch / vakjargon</option>
+            <option value="expert">Expert / directieniveau</option>
+          </select>
+        </div>
+
+        <div class="option-group">
+          <label for="optType" id="optTypeLabel">Documenttype</label>
+          <select id="optType">
+            <option value="verslag" selected>Verslag / notulen</option>
+            <option value="blog">Blog</option>
+            <option value="verhaal">Verhaal / narratief</option>
+            <option value="memo">Beknopte memo</option>
+            <option value="email">E-mail update</option>
+            <option value="presentatie">Presentatie bullets</option>
+          </select>
+        </div>
+
+        <div class="option-group">
+          <label for="optLengte" id="optLengteLabel">Lengte</label>
+          <select id="optLengte">
+            <option value="kort">Kort en krachtig</option>
+            <option value="standaard" selected>Standaard</option>
+            <option value="uitgebreid">Uitgebreid (alle details)</option>
+          </select>
+        </div>
+
+        <div class="option-group">
+          <label for="optRegister" id="optRegisterLabel">Schrijfstijl</label>
+          <select id="optRegister">
+            <option value="informeel">Informeel (je / jij)</option>
+            <option value="neutraal" selected>Neutraal / zakelijk</option>
+            <option value="formeel">Formeel (u)</option>
+          </select>
+        </div>
+
+        <div class="option-group">
+          <label for="optDoelgroep" id="optDoelgroepLabel">Doelgroep</label>
+          <select id="optDoelgroep">
+            <option value="team" selected>Intern team</option>
+            <option value="management">Management / directie</option>
+            <option value="extern">Externe stakeholders</option>
+            <option value="klant">Klant</option>
+          </select>
+        </div>
+
+        <div class="option-group">
+          <label for="optOpmaak" id="optOpmaakLabel">Opmaakvoorkeur</label>
+          <select id="optOpmaak">
+            <option value="auto" selected>Automatisch</option>
+            <option value="bullets">Bulletpoints</option>
+            <option value="paragrafen">Paragrafen</option>
+          </select>
+        </div>
+
+        <div class="option-group option-group--full">
+          <div class="toggle-row">
+            <span id="optAnonimiseerLabel">Anonimiseren</span>
+            <label class="toggle-switch" for="optAnoniem">
+              <input type="checkbox" id="optAnoniem" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <p class="option-hint" id="optAnonimiseerHint">Namen vervangen door Medewerker 1, Medewerker 2, ...</p>
+        </div>
+
+        <div class="option-group option-group--full">
+          <div class="toggle-row">
+            <span id="optInclusievBronLabel">Inclusief bronverwijzingen</span>
+            <label class="toggle-switch" for="optInclusievBron">
+              <input type="checkbox" id="optInclusievBron" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <p class="option-hint" id="optInclusievBronHint">Voeg bronnen toe in [*italic format*]</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== STEP 4: GENERATE ===================== -->
+    <section id="step-4" class="step-card step-locked">
+      <div class="step-head">
+        <span class="step-num">4</span>
+        <div>
+          <h2 id="step4-h2">Genereer je AI-prompt</h2>
+          <p class="step-desc" id="step4-desc">MeetSum bouwt een complete, gestructureerde prompt op basis van je keuzes.</p>
+        </div>
+      </div>
+
+      <div class="generate-layout">
+        <div class="generate-main">
+          <button id="generateBtn" class="btn btn-primary btn-lg" type="button">⚡ Genereer AI-prompt</button>
+
+          <div id="promptResult" class="prompt-result" hidden>
+            <div class="prompt-result-head">
+              <h3 id="step4-promptTitle">Je AI-prompt</h3>
+              <div class="prompt-result-actions">
+                <button id="copyPrompt" class="btn btn-soft" type="button">📋 Kopieer prompt</button>
+                <button id="generateWithAI" class="btn btn-primary" type="button" hidden>⚡ Genereer met AI</button>
+              </div>
+            </div>
+            <pre id="promptOutput" class="prompt-box"></pre>
+            <p class="hint" id="step4-hint">Plak deze prompt in ChatGPT, Claude, Copilot of een andere AI-assistent.</p>
+          </div>
+        </div>
+
+        <aside class="sections-sidebar" id="sectionsSidebar" aria-label="Geselecteerde secties">
+          <h4 class="sidebar-title" id="sidebarTitle">Geselecteerde secties</h4>
+          <ul class="sidebar-list" id="sectionsSidebarList"></ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ===================== STEP 5: RESULT ===================== -->
+    <section id="step-5" class="step-card step-locked">
+      <div class="step-head">
+        <span class="step-num">5</span>
+        <div>
+          <h2 id="step5-h2">Resultaat &amp; download</h2>
+          <p class="step-desc" id="step5-desc">De AI-samenvatting verschijnt hier automatisch na de analyse. Je kunt hem daarna nog bewerken, kopiëren en downloaden.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="result-field-head">
+          <label for="aiResult">AI-samenvatting (Markdown ondersteund)</label>
+          <button id="editResult" class="btn btn-ghost btn-sm" type="button" hidden>✏️ Bewerken</button>
+        </div>
+        <textarea id="aiResult" placeholder="Nog geen resultaat — gebruik stap 3 en klik op “Genereer met AI”." disabled></textarea>
+      </div>
+
+      <div class="result-actions">
+        <div class="toggle-group" role="group" aria-label="Weergave">
+          <button class="seg-btn is-active" id="viewPreview" type="button">👁️ Voorbeeld</button>
+          <button class="seg-btn" id="viewRaw" type="button">📄 Markdown</button>
+        </div>
+        <div class="download-group">
+          <button id="copyResult" class="btn btn-soft" type="button" disabled>📋 Kopieer</button>
+          <button id="downloadMd" class="btn btn-soft" type="button" disabled>⬇️ .md</button>
+          <button id="downloadTxt" class="btn btn-soft" type="button" disabled>⬇️ .txt</button>
+        </div>
+      </div>
+
+      <div id="resultPreview" class="result-preview">
+        <p class="empty-state">Nog geen resultaat. Genereer eerst een samenvatting met AI in stap 3.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Gemaakt met 💜 — <strong>MeetSum</strong>. Je gegevens blijven volledig in je eigen browser.</p>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===================== AI LOADER ===================== -->
+  <div id="loaderOverlay" class="modal-overlay" hidden>
+    <div class="modal loader-modal" role="dialog" aria-modal="true" aria-labelledby="loaderTitle" aria-live="polite">
+      <div class="loader-spinner" aria-hidden="true"></div>
+      <h3 id="loaderTitle">Samenvatting genereren…</h3>
+      <p id="loaderStatus" class="modal-desc">Even geduld, de AI analyseert je transcript.</p>
+      <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div id="progressBar" class="progress-bar" style="width:0%"></div>
+      </div>
+      <span id="progressPct" class="progress-pct">0%</span>
+    </div>
+  </div>
+
+  <!-- ===================== PIN MODAL ===================== -->
+  <div id="pinModal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+      <div class="modal-icon">🔒</div>
+      <h3 id="pinTitle">Voer je PIN in</h3>
+      <p class="modal-desc">Deze PIN beschermt het gebruik van je Google API key.</p>
+      <div class="pin-inputs" id="pinInputs">
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Cijfer 1" />
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Cijfer 2" />
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Cijfer 3" />
+        <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="Cijfer 4" />
+      </div>
+      <p id="pinError" class="pin-error" hidden></p>
+      <div class="modal-actions">
+        <button id="pinCancel" class="btn btn-ghost" type="button">Annuleren</button>
+        <button id="pinSubmit" class="btn btn-primary" type="button">Ontgrendelen</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="lang/nl.js"></script>
+  <script src="lang/en.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+

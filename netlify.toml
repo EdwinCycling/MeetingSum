@@ -1,0 +1,48 @@
+# ============================================================
+#  netlify.toml – MeetSum deployment configuration
+# ============================================================
+
+[build]
+  functions = "netlify/functions"
+  publish    = "."         # Serve static files from repo root
+
+[functions]
+  node_bundler = "esbuild"
+
+# ---- Redirect /api/* → Netlify Functions (no script.js changes needed) ----
+[[redirects]]
+  from   = "/api/summarize"
+  to     = "/.netlify/functions/summarize"
+  status = 200
+
+[[redirects]]
+  from   = "/api/pin-status"
+  to     = "/.netlify/functions/pin-status"
+  status = 200
+
+[[redirects]]
+  from   = "/api/verify-pin"
+  to     = "/.netlify/functions/verify-pin"
+  status = 200
+
+# ---- Security headers for all responses ----
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options            = "DENY"
+    X-Content-Type-Options     = "nosniff"
+    X-XSS-Protection           = "1; mode=block"
+    Referrer-Policy            = "strict-origin-when-cross-origin"
+    Permissions-Policy         = "camera=(), microphone=(), geolocation=(), payment=()"
+    Content-Security-Policy    = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src 'self' data:; worker-src 'self'"
+
+# ---- Cache static assets ----
+[[headers]]
+  for = "/styles.css"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/lang/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"

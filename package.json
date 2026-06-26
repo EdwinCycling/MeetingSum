@@ -1,0 +1,12 @@
+{
+  "name": "meetsum",
+  "version": "1.0.0",
+  "description": "MeetSum – Teams Transcript Summarizer Helper",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["teams", "transcript", "summarizer", "ai", "prompt"],
+  "author": "",
+  "license": "MIT"
+}

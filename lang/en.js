@@ -1,0 +1,343 @@
+/* =========================================================
+   MeetSum – English translations
+   ========================================================= */
+window.LANG_EN = {
+  "html.lang": "en",
+
+  /* ---- Header / nav ---- */
+  "nav.start": "Get started",
+  "install.label": "Install",
+  "install.title": "Install as app",
+  "install.ariaLabel": "Install MeetSum",
+  "theme.ariaLabel": "Toggle between light and dark theme",
+  "theme.title": "Toggle theme",
+  "uiLang.ariaLabel": "Interface language",
+
+  /* ---- Hero ---- */
+  "hero.pill": "\u2728 AI Prompt Generator for MS Teams",
+  "hero.h1": "From raw transcript to",
+  "hero.h1.accent": "a razor-sharp summary",
+  "hero.sub": "Paste your Teams transcript, choose exactly which sections you want and MeetSum builds a professional AI prompt for you. No noise, just results.",
+  "hero.cta.start": "Start now \u2192",
+  "hero.cta.sections": "View sections",
+  "hero.badge.local": "\uD83D\uDD12 100% local in your browser",
+  "hero.badge.langs": "\uD83C\uDF0D 5 languages",
+  "hero.badge.prefs": "\uD83D\uDCBE Remembers your preferences",
+
+  /* ---- Step 1 ---- */
+  "step1.title": "Transcript & Language",
+  "step1.desc": "Paste your full Teams transcript and choose the language for your summary.",
+  "step1.label.transcript": "Teams transcript",
+  "step1.drop.strong": "Drop a file here",
+  "step1.drop.or": "or",
+  "step1.drop.browse": "browse",
+  "step1.drop.hint": ".txt \u00b7 .md \u00b7 .pdf \u00b7 .docx",
+  "step1.placeholder.transcript": "\u2026or paste your MS Teams transcript here\n\nE.g.:\n[00:00] John Smith: Welcome everyone to the weekly sprint review\u2026",
+  "step1.charCount": function (n) { return n.toLocaleString("en-US") + " character" + (n === 1 ? "" : "s"); },
+  "step1.clear": "Clear",
+  "step1.label.summaryLang": "Summary language",
+  "lang.option.nl": "\uD83C\uDDF3\uD83C\uDDF1 Dutch",
+  "lang.option.en": "\uD83C\uDDEC\uD83C\uDDE7 English",
+  "lang.option.de": "\uD83C\uDDE9\uD83C\uDDEA German",
+  "lang.option.fr": "\uD83C\uDDEB\uD83C\uDDF7 French",
+  "lang.option.es": "\uD83C\uDDEA\uD83C\uDDF8 Spanish",
+
+  /* ---- Step 2 ---- */
+  "step2.title": "Select sections",
+  "step2.desc": "Check which parts should appear in the summary. Your selection is remembered.",
+  "step2.selectAll": "Select all",
+  "step2.selectNone": "Select none",
+  "step2.selectDefault": "Default set",
+  "step2.resetOrder": "Reset order",
+  "step2.dragHint": "\u283f Drag a block to adjust the order",
+  "step2.dragHandle.title": "Drag to change order",
+
+  /* ---- Step 3: output options ---- */
+  "step3.title": "Output options",
+  "step3.desc": "Adjust the level, style and format of the summary to your needs.",
+  "step3.niveau.label": "Level",
+  "step3.niveau.simpel": "Simple (primary school)",
+  "step3.niveau.middelbaar": "Secondary school",
+  "step3.niveau.professioneel": "Professional (default)",
+  "step3.niveau.technisch": "Technical / jargon",
+  "step3.niveau.expert": "Expert / executive level",
+  "step3.type.label": "Document type",
+  "step3.type.verslag": "Minutes / report",
+  "step3.type.blog": "Blog post",
+  "step3.type.verhaal": "Story / narrative",
+  "step3.type.memo": "Short memo",
+  "step3.type.email": "Email update",
+  "step3.type.presentatie": "Presentation bullets",
+  "step3.lengte.label": "Length",
+  "step3.lengte.kort": "Short and punchy",
+  "step3.lengte.standaard": "Standard",
+  "step3.lengte.uitgebreid": "Detailed (all details)",
+  "step3.register.label": "Writing style",
+  "step3.register.informeel": "Informal (casual)",
+  "step3.register.neutraal": "Neutral / business",
+  "step3.register.formeel": "Formal",
+  "step3.anoniem.label": "Anonymise",
+  "step3.anoniem.hint": "Replace names with Employee 1, Employee 2, ...",
+  "step3.inclusievBron.label": "Include source references",
+  "step3.inclusievBron.hint": "Add sources in [*italic format*]",
+  "step3.doelgroep.label": "Audience",
+  "step3.doelgroep.team": "Internal team",
+  "step3.doelgroep.management": "Management / executive",
+  "step3.doelgroep.extern": "External stakeholders",
+  "step3.doelgroep.klant": "Customer",
+  "step3.opmaak.label": "Layout preference",
+  "step3.opmaak.auto": "Automatic",
+  "step3.opmaak.bullets": "Bullet points",
+  "step3.opmaak.paragrafen": "Paragraphs",
+
+  /* ---- Step 4: generate prompt ---- */
+  "step4.title": "Generate your AI prompt",
+  "step4.desc": "MeetSum builds a complete, structured prompt based on your choices.",
+  "step4.generateBtn": "\u26a1 Generate AI prompt",
+  "step4.promptTitle": "Your AI prompt",
+  "step4.copyPrompt": "\uD83D\uDCCB Copy prompt",
+  "step4.generateWithAI": "\u26a1 Generate with AI",
+  "step4.hint": "Paste this prompt into ChatGPT, Claude, Copilot or another AI assistant.",
+  "step4.sidebarTitle": "Selected sections",
+
+  /* ---- Step 5: result ---- */
+  "step5.title": "Result & download",
+  "step5.desc": "The AI summary appears here automatically after analysis. You can then edit, copy and download it.",
+  "step5.label.result": "AI summary (Markdown supported)",
+  "step5.editBtn": "\u270f\ufe0f Edit",
+  "step5.lockBtn": "\uD83D\uDD12 Lock",
+  "step5.placeholder.result": "No result yet - use step 4 and click 'Generate with AI'.",
+  "step5.viewPreview": "\uD83D\uDC41\ufe0f Preview",
+  "step5.viewRaw": "\uD83D\uDCC4 Markdown",
+  "step5.ariaView": "View",
+  "step5.copyResult": "\uD83D\uDCCB Copy",
+  "step5.emptyState": "No result yet. First generate a summary with AI in step 4.",
+
+  /* ---- Footer ---- */
+  "footer.text": "Made with \uD83D\uDC9C - <strong>MeetSum</strong>. Your data stays entirely in your own browser.",
+
+  /* ---- Loader ---- */
+  "loader.title": "Generating summary\u2026",
+  "loader.initial": "Please wait, the AI is analysing your transcript.",
+  "loader.stage1": "Preparing transcript\u2026",
+  "loader.stage2": "Connecting to AI model\u2026",
+  "loader.stage3": "The AI is analysing your meeting\u2026",
+  "loader.stage4": "Writing summary\u2026",
+  "loader.stage5": "Almost done\u2026",
+  "loader.done": "Done! \uD83C\uDF89",
+
+  /* ---- PIN modal ---- */
+  "pin.title": "Enter your PIN",
+  "pin.desc": "This PIN protects the use of your Google API key.",
+  "pin.cancel": "Cancel",
+  "pin.submit": "Unlock",
+  "pin.checking": "Checking\u2026",
+  "pin.digit": function (n) { return "Digit " + n; },
+  "pin.error.digits": "Please enter 4 digits.",
+  "pin.error.invalid": "Incorrect PIN",
+  "pin.error.server": "Server error. Please try again.",
+
+  /* ---- Toasts ---- */
+  "toast.orderReset": "Order reset to default.",
+  "toast.noSection": "Please select at least one section first.",
+  "toast.noTranscript": "Tip: paste a transcript for the best result.",
+  "toast.resultRefreshed": "\u2705 Result refreshed!",
+  "toast.appInstalled": "\u2705 MeetSum is installed!",
+  "toast.promptCopied": "Prompt copied! \uD83D\uDCCB",
+  "toast.resultCopied": "Summary copied! \uD83D\uDCCB",
+  "toast.downloaded": function (ext) { return "Downloaded as ." + ext; },
+  "toast.fileLoaded": function (name) { return "File loaded: " + name; },
+  "toast.editEnabled": "Editing enabled \u270f\ufe0f",
+
+  /* ---- Buttons ---- */
+  "btn.generating": "\u23f3 Generating...",
+
+  /* ---- File handling ---- */
+  "file.tooBig": "\u274c File too large (max 15 MB)",
+  "file.noText": "No text found in file.",
+  "file.unsupported": "Unsupported file type.",
+  "file.docOld": "Old .doc format is not supported. Save as .docx or .txt.",
+  "file.pdfNotLoaded": "PDF parser not loaded (internet required).",
+  "file.wordNotLoaded": "Word parser not loaded (internet required).",
+
+  /* ---- Download ---- */
+  "download.filename": function (date, ext) { return "meetsum-summary-" + date + "." + ext; },
+
+  /* ---- Summary target language names (value → name in prompt) ---- */
+  "summaryLangNames": {
+    "Nederlands": "Dutch",
+    "Engels": "English",
+    "Duits": "German",
+    "Frans": "French",
+    "Spaans": "Spanish"
+  },
+
+  /* ---- Section definitions ---- */
+  "sections": {
+    "doel": {
+      title: "Meeting Goal",
+      desc: "Short opening sentence and the main reason for this meeting.",
+      prompt: "**Meeting Goal**: Start with a brief opening sentence describing the main goal and most important reason for this meeting (1-2 sentences)."
+    },
+    "hoofdpunten": {
+      title: "Key Points (Discussion)",
+      desc: "Essence of the discussions per topic with bullet points.",
+      prompt: "**Key Points (Discussion)**: Summarise the essence of the discussions grouped by topic. Use a short heading per topic followed by bullet points with the key points."
+    },
+    "beslissingen": {
+      title: "Decisions Made",
+      desc: "Everything that was definitively agreed or approved.",
+      prompt: "**Decisions Made**: List in a clear bullet list everything that was definitively agreed, decided or approved. Be concrete and unambiguous."
+    },
+    "actiepunten": {
+      title: "Action Items",
+      desc: "In a SMART-formatted table (What/Task | Who | When).",
+      prompt: "**Action Items**: Present all action items in a Markdown table with columns | What/Task | Who | When |. Formulate each task SMART (Specific, Measurable, Achievable, Relevant, Time-bound). Use 'Unknown' if an owner or deadline cannot be derived from the transcript."
+    },
+    "parkeerplaats": {
+      title: "Parking Lot & Next Steps",
+      desc: "Off-scope topics + agreements for the next meeting.",
+      prompt: "**Parking Lot & Next Steps**: Mention topics that were out of scope or postponed, and describe the concrete agreements or agenda for the next meeting."
+    },
+    "executive": {
+      title: "Executive Summary",
+      desc: "Short, powerful summary for management (3-5 sentences).",
+      prompt: "**Executive Summary**: Write a short, powerful summary (3-5 sentences) aimed at management. Focus on outcomes, impact and decisions, not details."
+    },
+    "slotzin": {
+      title: "Closing Statement",
+      desc: "A motivating or summarising closing remark.",
+      prompt: "**Closing Statement**: End with one motivating or summarising closing remark that concludes the meeting positively."
+    },
+    "details": {
+      title: "Meeting Details",
+      desc: "Date, time and attendees (if derivable from transcript).",
+      prompt: "**Meeting Details**: State the date, time and attendees as far as these can be derived from the transcript. Omit fields or mark as 'Not mentioned' when information is missing; do not invent anything."
+    },
+    "verbeterpunten": {
+      title: "Areas for Improvement",
+      desc: "What could have been better in the process or the meeting?",
+      prompt: "**Areas for Improvement**: List in bullet points what could have been better in the process or the meeting itself (structure, preparation, decision-making, etc.)."
+    },
+    "goedpunten": {
+      title: "What Went Well",
+      desc: "What went smoothly or positively?",
+      prompt: "**What Went Well**: List in bullet points what went smoothly or positively during the meeting."
+    },
+    "sentiment": {
+      title: "Sentiment & Atmosphere",
+      desc: "The overall tone of the conversation (constructive, tense, enthusiastic, etc.).",
+      prompt: "**Sentiment & Atmosphere**: Describe the overall tone and atmosphere of the conversation (e.g. constructive, tense, enthusiastic) with a brief justification based on the transcript."
+    },
+    "risicos": {
+      title: "Risks & Issues",
+      desc: "Potential dangers or obstacles.",
+      tag: "Extra",
+      prompt: "**Risks & Issues**: Identify in bullet points potential risks, dangers or obstacles that were mentioned or implicitly follow from the discussion."
+    },
+    "tags": {
+      title: "Keywords / Tags",
+      desc: "5-10 relevant tags that cover the meeting's main themes.",
+      tag: "Extra",
+      prompt: "**Keywords / Tags**: Provide 5 to 10 relevant keywords or tags that cover the meeting's main themes, as a comma-separated list."
+    },
+    "quotes": {
+      title: "Important Quotes",
+      desc: "2-3 striking quotes from participants.",
+      tag: "Extra",
+      prompt: "**Important Quotes**: Select 2 to 3 striking, literal quotes from participants and mention where possible who said it. Only quote what is actually in the transcript."
+    }
+  },
+
+  /* ---- AI prompt template ---- */
+  "promptTemplate": function (language, headingList, sectionInstructions, transcript, opts) {
+    opts = opts || {};
+    var niveauMap = {
+      simpel: "Write at a level accessible to people without specialist knowledge. Use short sentences and simple words; avoid jargon.",
+      middelbaar: "Write at a secondary school level. Accessible but not simplistic.",
+      professioneel: "Write professionally and in a business style. Suitable for a broad office audience.",
+      technisch: "Use technical jargon and detailed terminology where appropriate.",
+      expert: "Write at an executive and expert level. High information density and strategic language."
+    };
+    var typeMap = {
+      verslag: "Structure as a formal meeting report with clear headings per section.",
+      blog: "Structure as an informative blog post with an introduction, body and conclusion.",
+      verhaal: "Tell as a cohesive story with smooth transitions between sections.",
+      memo: "Structure as a concise internal memo: short, to the point and bullet-heavy.",
+      email: "Structure as a professional email update for colleagues or management.",
+      presentatie: "Provide only bullet points and key messages, suitable for presentation slides."
+    };
+    var lengteMap = {
+      kort: "Keep the total summary concise: no more than half an A4 page.",
+      standaard: "Use a standard length: complete but without unnecessary repetition.",
+      uitgebreid: "Be detailed and thorough: include all relevant details."
+    };
+    var registerMap = {
+      informeel: "Use an informal writing style. Address the reader in a casual, friendly tone.",
+      neutraal: "Use a neutral, business-like writing style without direct address.",
+      formeel: "Use a formal writing style and formal language throughout."
+    };
+    var doelgroepMap = {
+      team: "The summary is for the immediate team: include operational details.",
+      management: "The summary is for management: focus on strategic outcomes and decisions.",
+      extern: "The summary is for external stakeholders: be cautious with internal information.",
+      klant: "The summary is for a customer: professional, customer-focused and free of internal jargon."
+    };
+    var opmaakMap = {
+      auto: "",
+      bullets: "Prefer bullet points and lists; minimise running text.",
+      paragrafen: "Write in continuous prose and paragraphs; avoid bullet points."
+    };
+    var extraRules = [
+      niveauMap[opts.niveau] || niveauMap.professioneel,
+      typeMap[opts.type] || typeMap.verslag,
+      lengteMap[opts.lengte] || lengteMap.standaard,
+      registerMap[opts.register] || registerMap.neutraal,
+      doelgroepMap[opts.doelgroep] || doelgroepMap.team,
+      opmaakMap[opts.opmaak] || "",
+      opts.anoniem ? "Replace all personal names with anonymous identifiers: Employee 1, Employee 2, etc. Keep the numbering consistent throughout the document." : "",
+      opts.inclusievBron ? "Add source references in the format: [*direct quote or context from the transcript*]. NEVER place these in the main text; integrate them only where relevant with italic brackets." : ""
+    ].filter(Boolean).map(function(r) { return "- " + r; }).join("\n");
+
+    return `# EXPERT MEETING ANALYST ADVISOR
+You are an expert meeting analyst with 10+ years of experience extracting value from complex discussions. You are precise, objective and stick to facts. You never invent information.
+
+# CORE FOCUS AREAS
+Extract ONLY:
+- Concrete action items with clear owners
+- Definitive decisions and approvals
+- Key risks and issues
+- Strategic outcomes and impact
+
+Do NOT include:
+- Background information and context without action
+- General discussion points without a decision
+- Anecdotes and off-topic remarks
+- Passing speculation
+
+# CONSTRAINTS
+1. Always be concrete: no vagueness or theoretical statements
+2. Trace everything back to the transcript: never invent
+3. Missing information: EXPLICITLY mark as 'Not mentioned' or 'TBD'
+4. Assign an owner EVEN IF implied: use roles/departments if names are missing
+5. Deadlines: look for explicit mentions OR infer from context (e.g. "next week", "by end of month")
+
+# WRITING GUIDELINES
+${extraRules}
+
+# SECTIONS TO COVER
+Analyse in this order:
+${headingList || "- (No sections selected)"}
+
+# INSTRUCTIONS PER SECTION
+${sectionInstructions || ""}
+
+# LANGUAGE
+Analyse the transcript in any language, but write the final result EXCLUSIVELY in ${language}.
+
+# INPUT TRANSCRIPT
+\`\`\`
+${transcript || "[Paste your Teams transcript here]"}
+\`\`\``;
+  }
+};
