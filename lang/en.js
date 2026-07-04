@@ -17,7 +17,7 @@ window.LANG_EN = {
   "uiLang.ariaLabel": "Interface language",
 
   /* ---- Hero ---- */
-  "hero.pill": "\u2728 AI Prompt Generator for MS Teams",
+  "hero.pill": "\u2728 The nr.1 AI Prompt Generator",
   "hero.h1": "From raw transcript to",
   "hero.h1.accent": "a razor-sharp summary",
   "hero.sub": "Paste your (Teams) transcript or any other document, choose exactly which sections you want to include and how you want the output to look, and MeetingSum builds a professional AI prompt for you and, if you want, also generates the AI output via Google Gemini. No noise, just results.",

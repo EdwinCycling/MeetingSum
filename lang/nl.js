@@ -17,7 +17,7 @@ window.LANG_NL = {
   "uiLang.ariaLabel": "Interfacetaal",
 
   /* ---- Hero ---- */
-  "hero.pill": "✨ AI Prompt Generator voor MS Teams",
+  "hero.pill": "✨ De nr.1 AI Prompt Generator",
   "hero.h1": "Van ruw transcript naar",
   "hero.h1.accent": "een vlijmscherpe samenvatting",
   "hero.sub": "Plak je (Teams)transcript of een ander document, kies precies welke onderdelen je wilt zien en hoe je output eruit moet zien, en MeetingSum bouwt een professionele AI-prompt voor je en indien gewenst ook de AI-output via Google Gemini. Geen ruis, alleen resultaat.",
