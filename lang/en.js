@@ -1,16 +1,17 @@
 /* =========================================================
-   MeetSum – English translations
+   MeetingSum – English translations
    ========================================================= */
 window.LANG_EN = {
   "html.lang": "en",
   "common.enabled": "Enabled",
   "common.disabled": "Disabled",
+  "common.required": "Required",
 
   /* ---- Header / nav ---- */
   "nav.start": "Get started",
   "install.label": "Install",
   "install.title": "Install as app",
-  "install.ariaLabel": "Install MeetSum",
+  "install.ariaLabel": "Install MeetingSum",
   "theme.ariaLabel": "Toggle between light and dark theme",
   "theme.title": "Toggle theme",
   "uiLang.ariaLabel": "Interface language",
@@ -19,8 +20,9 @@ window.LANG_EN = {
   "hero.pill": "\u2728 AI Prompt Generator for MS Teams",
   "hero.h1": "From raw transcript to",
   "hero.h1.accent": "a razor-sharp summary",
-  "hero.sub": "Paste your (Teams) transcript or any other document, choose exactly which sections you want to include and how you want the output to look, and MeetSum builds a professional AI prompt for you and, if you want, also generates the AI output via Google Gemini. No noise, just results.",
+  "hero.sub": "Paste your (Teams) transcript or any other document, choose exactly which sections you want to include and how you want the output to look, and MeetingSum builds a professional AI prompt for you and, if you want, also generates the AI output via Google Gemini. No noise, just results.",
   "hero.cta.start": "Start now \u2192",
+  "hero.cta.newSession": "New session",
   "hero.cta.sections": "View sections",
   "hero.badge.local": "\uD83D\uDD12 100% local in your browser",
   "hero.badge.langs": "\uD83C\uDF0D 5 languages",
@@ -47,6 +49,17 @@ window.LANG_EN = {
   /* ---- Step 2 ---- */
   "step2.title": "Select sections",
   "step2.desc": "Check which parts should appear in the summary. Your selection is remembered.",
+  "step2.analysis.title": "Choose analysis prompt",
+  "step2.analysis.desc": "Choose exactly 1 analysis option. In this mode, sections are not used.",
+  "step2.mode.sections": "Section mode",
+  "step2.mode.analysis": "Analysis mode",
+  "step2.analysis.intro": "Choose 1 analysis type. MeetingSum builds a focused prompt from your transcript.",
+  "step2.analysis.tab.reports": "Reports",
+  "step2.analysis.tab.other": "Other",
+  "step2.analysis.group.reports.title": "Reports",
+  "step2.analysis.group.reports.desc": "Methodical report formats for strategy and process analysis.",
+  "step2.analysis.group.other.title": "Other",
+  "step2.analysis.group.other.desc": "Additional analyses, checks, and fast deep-dives.",
   "step2.selectAll": "Select all",
   "step2.selectNone": "Select none",
   "step2.selectDefault": "Default set",
@@ -94,7 +107,7 @@ window.LANG_EN = {
 
   /* ---- Step 4: generate prompt ---- */
   "step4.title": "Generate your AI prompt",
-  "step4.desc": "MeetSum builds a complete, structured prompt based on your choices.",
+  "step4.desc": "MeetingSum builds a complete, structured prompt based on your choices.",
   "step4.generateBtn": "\u26a1 Generate AI prompt",
   "step4.promptTitle": "Your AI prompt",
   "step4.copyPrompt": "\uD83D\uDCCB Copy prompt",
@@ -117,7 +130,7 @@ window.LANG_EN = {
   "step5.emptyState": "No result yet. First generate a summary with AI in step 4.",
 
   /* ---- Footer ---- */
-  "footer.text": "Built from frustration with scattered meeting notes and shaped into <strong>MeetSum</strong> for better standardisation, speed and teamwork.",
+  "footer.text": "Built from frustration with scattered meeting notes and shaped into <strong>MeetingSum</strong> for better standardisation, speed and teamwork.",
   "footer.version": "Version",
   "footer.tagline": "Entrepreneurial, professional and human by design for sharper summaries.",
   "footer.disclaimer": "Disclaimer",
@@ -128,20 +141,24 @@ window.LANG_EN = {
   /* ---- Cookie sheet ---- */
   "cookie.kicker": "Cookie & storage notice",
   "cookie.title": "This app only uses functional storage",
-  "cookie.text": "MeetSum uses local storage for preferences, language settings and optionally a temporary PIN session. No advertising or tracking cookies are placed.",
+  "cookie.text": "MeetingSum uses local storage for preferences, language settings and optionally a temporary PIN session. No advertising or tracking cookies are placed.",
   "cookie.more": "Read details",
   "cookie.close": "Close",
 
   /* ---- Info modal ---- */
   "modal.close": "Close",
+  "install.modal.title": "Install MeetingSum as an app",
+  "install.modal.desc": "After installation, MeetingSum opens as a standalone app on your device with faster startup and direct access from your Start menu or desktop.",
+  "install.modal.cancel": "Cancel",
+  "install.modal.confirm": "Continue",
   "legal.disclaimer.title": "Disclaimer",
-  "legal.disclaimer.body": "<p><strong>MeetSum</strong> helps you get to a usable prompt and summary faster, but you remain responsible for checking the output for accuracy, completeness and suitability.</p><p>Do not use the built-in Google Gemini option for confidential, protected or otherwise sensitive data. It is not a shielded corporate environment. For that, use your own secure AI environment with the prompt MeetSum builds for you.</p><p>The makers are not liable for direct or indirect damage, incorrect interpretations, missed decisions or unwanted data sharing resulting from the use of this tool.</p>",
+  "legal.disclaimer.body": "<p><strong>MeetingSum</strong> helps you get to a usable prompt and summary faster, but you remain responsible for checking the output for accuracy, completeness and suitability.</p><p>Do not use the built-in Google Gemini option for confidential, protected or otherwise sensitive data. It is not a shielded corporate environment. For that, use your own secure AI environment with the prompt MeetingSum builds for you.</p><p>The makers are not liable for direct or indirect damage, incorrect interpretations, missed decisions or unwanted data sharing resulting from the use of this tool.</p>",
   "legal.cookies.title": "Cookies & local storage",
-  "legal.cookies.body": "<p>MeetSum does not use advertising or tracking cookies.</p><p>The app does use local browser storage to remember your preferences, such as selected sections, output settings, theme, interface language and, if applicable, a temporary PIN session. This stays inside your browser and is not used to build marketing profiles.</p><p>If you want to remove this data, you can clear the local storage for this site in your browser settings.</p>",
-  "legal.team.title": "The team behind MeetSum",
-  "legal.team.body": "<p>MeetSum was built out of frustration: too many meetings, too many scattered notes and too little standardisation in the final output.</p><p>So we created a tool for everyone who wants to summarise faster, more consistently and with less noise. Practical. Human. Reliable.</p><p>We like to describe ourselves as a team of the best vibe coders in the Netherlands: entrepreneurial, creative, technically sharp and always looking for workflows people will actually use.</p>",
+  "legal.cookies.body": "<p>MeetingSum does not use advertising or tracking cookies.</p><p>The app does use local browser storage to remember your preferences, such as selected sections, output settings, theme, interface language and, if applicable, a temporary PIN session. This stays inside your browser and is not used to build marketing profiles.</p><p>If you want to remove this data, you can clear the local storage for this site in your browser settings.</p>",
+  "legal.team.title": "The team behind MeetingSum",
+  "legal.team.body": "<p>MeetingSum was built out of frustration: too many meetings, too many scattered notes and too little standardisation in the final output.</p><p>So we created a tool for everyone who wants to summarise faster, more consistently and with less noise. Practical. Human. Reliable.</p><p>We like to describe ourselves as a team of the best vibe coders in the Netherlands: entrepreneurial, creative, technically sharp and always looking for workflows people will actually use.</p>",
   "legal.pricing.title": "Pricing",
-  "legal.pricing.body": "<p>MeetSum is free to use for building prompts, structuring output and preparing safe AI workflows.</p><p>The in-app Gemini summary is only available on request. That helps us control misuse, costs and safer deployment.</p><p>If you need larger-scale or shielded usage, run the generated prompt inside your own company AI environment.</p>",
+  "legal.pricing.body": "<p>MeetingSum is free to use for building prompts, structuring output and preparing safe AI workflows.</p><p>The in-app Gemini summary is only available on request. That helps us control misuse, costs and safer deployment.</p><p>If you need larger-scale or shielded usage, run the generated prompt inside your own company AI environment.</p>",
 
   /* ---- Loader ---- */
   "loader.title": "Generating summary\u2026",
@@ -169,7 +186,7 @@ window.LANG_EN = {
   "toast.noSection": "Please select at least one section first.",
   "toast.noTranscript": "Tip: paste a transcript for the best result.",
   "toast.resultRefreshed": "\u2705 Result refreshed!",
-  "toast.appInstalled": "\u2705 MeetSum is installed!",
+  "toast.appInstalled": "\u2705 MeetingSum is installed!",
   "toast.promptCopied": "Prompt copied! \uD83D\uDCCB",
   "toast.resultCopied": "Summary copied! \uD83D\uDCCB",
   "toast.updateAvailable": "Update available - click to refresh to version",
@@ -194,7 +211,7 @@ window.LANG_EN = {
 
   /* ---- Extra context documents ---- */
   "extra.summary": "Add extra documents (optional)",
-  "extra.intro": "Add up to 3 extra documents (e.g. summaries of previous MeetSum sessions) as context for progress. As soon as you add at least one, extra options appear in step 2 to use this context. Preferably use previous MeetSum summaries; a raw transcript is also allowed if you really want.",
+  "extra.intro": "Add up to 3 extra documents (e.g. summaries of previous MeetingSum sessions) as context for progress. As soon as you add at least one, extra options appear in step 2 to use this context. Preferably use previous MeetingSum summaries; a raw transcript is also allowed if you really want.",
   "extra.drop.strong": "Drop extra documents here",
   "extra.drop.hint": "Max 3 \u00b7 .txt \u00b7 .md \u00b7 .pdf \u00b7 .docx",
   "extra.badge": "Extra",
@@ -342,7 +359,7 @@ window.LANG_EN = {
   /* ---- Extra context block template ---- */
   "extraContextTemplate": function (optionInstructions, docsBlock) {
     return `# EXTRA CONTEXT DOCUMENTS (BACKGROUND \u2014 NOT PART OF THE MAIN TRANSCRIPT)
-The documents below are SUPPORTING background material, usually summaries of previous MeetSum sessions or earlier reports. They serve EXCLUSIVELY as context for progress.
+The documents below are SUPPORTING background material, usually summaries of previous MeetingSum sessions or earlier reports. They serve EXCLUSIVELY as context for progress.
 
 IMPORTANT \u2014 avoid confusion in the output:
 - Do NOT summarise these documents as if they were the current meeting.
@@ -449,3 +466,4 @@ ${transcript || "[Paste your Teams transcript here]"}
 \`\`\``;
   }
 };
+

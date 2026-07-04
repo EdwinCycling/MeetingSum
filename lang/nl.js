@@ -1,16 +1,17 @@
 /* =========================================================
-   MeetSum – Nederlandse vertalingen (standaard)
+   MeetingSum – Nederlandse vertalingen (standaard)
    ========================================================= */
 window.LANG_NL = {
   "html.lang": "nl",
   "common.enabled": "Ingeschakeld",
   "common.disabled": "Uitgeschakeld",
+  "common.required": "Verplicht",
 
   /* ---- Header / nav ---- */
   "nav.start": "Aan de slag",
   "install.label": "Installeer",
   "install.title": "Installeer als app",
-  "install.ariaLabel": "Installeer MeetSum",
+  "install.ariaLabel": "Installeer MeetingSum",
   "theme.ariaLabel": "Wissel tussen licht en donker thema",
   "theme.title": "Wissel thema",
   "uiLang.ariaLabel": "Interfacetaal",
@@ -19,8 +20,9 @@ window.LANG_NL = {
   "hero.pill": "✨ AI Prompt Generator voor MS Teams",
   "hero.h1": "Van ruw transcript naar",
   "hero.h1.accent": "een vlijmscherpe samenvatting",
-  "hero.sub": "Plak je (Teams)transcript of een ander document, kies precies welke onderdelen je wilt zien en hoe je output eruit moet zien, en MeetSum bouwt een professionele AI-prompt voor je en indien gewenst ook de AI-output via Google Gemini. Geen ruis, alleen resultaat.",
+  "hero.sub": "Plak je (Teams)transcript of een ander document, kies precies welke onderdelen je wilt zien en hoe je output eruit moet zien, en MeetingSum bouwt een professionele AI-prompt voor je en indien gewenst ook de AI-output via Google Gemini. Geen ruis, alleen resultaat.",
   "hero.cta.start": "Begin nu \u2192",
+  "hero.cta.newSession": "Nieuwe sessie",
   "hero.cta.sections": "Bekijk secties",
   "hero.badge.local": "\uD83D\uDD12 100% lokaal in je browser",
   "hero.badge.langs": "\uD83C\uDF0D 5 talen",
@@ -47,6 +49,17 @@ window.LANG_NL = {
   /* ---- Step 2 ---- */
   "step2.title": "Selecteer secties",
   "step2.desc": "Vink aan welke onderdelen in de samenvatting moeten komen. Je keuze wordt onthouden.",
+  "step2.analysis.title": "Kies analyseprompt",
+  "step2.analysis.desc": "Kies exact 1 analyse-optie. In deze modus worden secties niet gebruikt.",
+  "step2.mode.sections": "Sectie modus",
+  "step2.mode.analysis": "Analyse modus",
+  "step2.analysis.intro": "Kies 1 analysetype. MeetingSum bouwt dan een gerichte prompt op basis van je transcript.",
+  "step2.analysis.tab.reports": "Rapporten",
+  "step2.analysis.tab.other": "Overige",
+  "step2.analysis.group.reports.title": "Rapporten",
+  "step2.analysis.group.reports.desc": "Methodische rapportformats voor strategische of procesmatige analyse.",
+  "step2.analysis.group.other.title": "Overige",
+  "step2.analysis.group.other.desc": "Aanvullende analyses, checks en snelle verdiepingen.",
   "step2.selectAll": "Alles selecteren",
   "step2.selectNone": "Niets selecteren",
   "step2.selectDefault": "Standaard set",
@@ -94,7 +107,7 @@ window.LANG_NL = {
 
   /* ---- Step 4: genereer prompt ---- */
   "step4.title": "Genereer je AI-prompt",
-  "step4.desc": "MeetSum bouwt een complete, gestructureerde prompt op basis van je keuzes.",
+  "step4.desc": "MeetingSum bouwt een complete, gestructureerde prompt op basis van je keuzes.",
   "step4.generateBtn": "\u26a1 Genereer AI-prompt",
   "step4.promptTitle": "Je AI-prompt",
   "step4.copyPrompt": "\uD83D\uDCCB Kopieer prompt",
@@ -117,7 +130,7 @@ window.LANG_NL = {
   "step5.emptyState": "Nog geen resultaat. Genereer eerst een samenvatting met AI in stap 4.",
 
   /* ---- Footer ---- */
-  "footer.text": "Gemaakt vanuit frustratie over losse notulen en gebouwd als <strong>MeetSum</strong> voor standaardisatie, snelheid en beter teamwork.",
+  "footer.text": "Gemaakt vanuit frustratie over losse notulen en gebouwd als <strong>MeetingSum</strong> voor standaardisatie, snelheid en beter teamwork.",
   "footer.version": "Versie",
   "footer.tagline": "Ondernemend, professioneel en menselijk ontworpen voor slimmere samenvattingen.",
   "footer.disclaimer": "Disclaimer",
@@ -128,20 +141,24 @@ window.LANG_NL = {
   /* ---- Cookie sheet ---- */
   "cookie.kicker": "Cookie & opslagmelding",
   "cookie.title": "Deze app gebruikt alleen functionele opslag",
-  "cookie.text": "MeetSum gebruikt lokale opslag voor voorkeuren, taalinstellingen en optioneel een tijdelijke PIN-sessie. Er worden geen advertentie- of trackingcookies geplaatst.",
+  "cookie.text": "MeetingSum gebruikt lokale opslag voor voorkeuren, taalinstellingen en optioneel een tijdelijke PIN-sessie. Er worden geen advertentie- of trackingcookies geplaatst.",
   "cookie.more": "Lees details",
   "cookie.close": "Sluiten",
 
   /* ---- Info modal ---- */
   "modal.close": "Sluiten",
+  "install.modal.title": "Installeer MeetingSum als app",
+  "install.modal.desc": "Na installatie opent MeetingSum als losse app op je apparaat, met sneller starten en direct toegang vanaf je startmenu of bureaublad.",
+  "install.modal.cancel": "Annuleren",
+  "install.modal.confirm": "Doorgaan",
   "legal.disclaimer.title": "Disclaimer",
-  "legal.disclaimer.body": "<p><strong>MeetSum</strong> helpt je sneller tot een bruikbare prompt en samenvatting te komen, maar jij blijft zelf verantwoordelijk voor de controle op juistheid, volledigheid en geschiktheid van de output.</p><p>Gebruik de ingebouwde Google Gemini-optie niet voor vertrouwelijke, beschermde of anderszins gevoelige data. Dat is geen afgeschermde bedrijfsomgeving. Gebruik daarvoor je eigen beveiligde AI-omgeving met de prompt die MeetSum voor je opbouwt.</p><p>De makers zijn niet aansprakelijk voor directe of indirecte schade, verkeerde interpretaties, gemiste besluiten of ongewenste datadeling die voortkomt uit het gebruik van deze tool.</p>",
+  "legal.disclaimer.body": "<p><strong>MeetingSum</strong> helpt je sneller tot een bruikbare prompt en samenvatting te komen, maar jij blijft zelf verantwoordelijk voor de controle op juistheid, volledigheid en geschiktheid van de output.</p><p>Gebruik de ingebouwde Google Gemini-optie niet voor vertrouwelijke, beschermde of anderszins gevoelige data. Dat is geen afgeschermde bedrijfsomgeving. Gebruik daarvoor je eigen beveiligde AI-omgeving met de prompt die MeetingSum voor je opbouwt.</p><p>De makers zijn niet aansprakelijk voor directe of indirecte schade, verkeerde interpretaties, gemiste besluiten of ongewenste datadeling die voortkomt uit het gebruik van deze tool.</p>",
   "legal.cookies.title": "Cookies & lokale opslag",
-  "legal.cookies.body": "<p>MeetSum gebruikt geen advertentie- of trackingcookies.</p><p>De app gebruikt wel lokale browseropslag om je voorkeuren te onthouden, zoals geselecteerde secties, outputinstellingen, thema, interfacetaal en eventueel een tijdelijke PIN-sessie. Dit blijft lokaal in je browser en wordt niet als marketingprofiel gebruikt.</p><p>Als je deze gegevens wilt wissen, kun je de lokale opslag van deze site verwijderen in je browserinstellingen.</p>",
-  "legal.team.title": "Het team achter MeetSum",
-  "legal.team.body": "<p>MeetSum is gemaakt vanuit frustratie: te veel meetings, te veel losse notities en te weinig standaardisatie in de uitkomst.</p><p>Daarom bouwden we een tool voor iedereen die sneller, consistenter en met meer rust wil samenvatten. Praktisch. Menselijk. En zonder onnodige ruis.</p><p>We noemen onszelf graag een team van de beste vibe coders van Nederland: ondernemend, creatief, technisch scherp en altijd op zoek naar betere workflows die echt gebruikt worden.</p>",
+  "legal.cookies.body": "<p>MeetingSum gebruikt geen advertentie- of trackingcookies.</p><p>De app gebruikt wel lokale browseropslag om je voorkeuren te onthouden, zoals geselecteerde secties, outputinstellingen, thema, interfacetaal en eventueel een tijdelijke PIN-sessie. Dit blijft lokaal in je browser en wordt niet als marketingprofiel gebruikt.</p><p>Als je deze gegevens wilt wissen, kun je de lokale opslag van deze site verwijderen in je browserinstellingen.</p>",
+  "legal.team.title": "Het team achter MeetingSum",
+  "legal.team.body": "<p>MeetingSum is gemaakt vanuit frustratie: te veel meetings, te veel losse notities en te weinig standaardisatie in de uitkomst.</p><p>Daarom bouwden we een tool voor iedereen die sneller, consistenter en met meer rust wil samenvatten. Praktisch. Menselijk. En zonder onnodige ruis.</p><p>We noemen onszelf graag een team van de beste vibe coders van Nederland: ondernemend, creatief, technisch scherp en altijd op zoek naar betere workflows die echt gebruikt worden.</p>",
   "legal.pricing.title": "Pricing",
-  "legal.pricing.body": "<p>MeetSum is gratis te gebruiken voor het bouwen van prompts, het structureren van output en het voorbereiden van veilige AI-workflows.</p><p>De ingebouwde Gemini-samenvatting in de app is alleen beschikbaar op aanvraag. Daarmee houden we grip op misbruik, kosten en veilige inzet.</p><p>Wil je op grotere schaal of in een afgeschermde omgeving werken, gebruik dan de gegenereerde prompt in je eigen bedrijfs-AI-omgeving.</p>",
+  "legal.pricing.body": "<p>MeetingSum is gratis te gebruiken voor het bouwen van prompts, het structureren van output en het voorbereiden van veilige AI-workflows.</p><p>De ingebouwde Gemini-samenvatting in de app is alleen beschikbaar op aanvraag. Daarmee houden we grip op misbruik, kosten en veilige inzet.</p><p>Wil je op grotere schaal of in een afgeschermde omgeving werken, gebruik dan de gegenereerde prompt in je eigen bedrijfs-AI-omgeving.</p>",
 
   /* ---- Loader ---- */
   "loader.title": "Samenvatting genereren\u2026",
@@ -169,7 +186,7 @@ window.LANG_NL = {
   "toast.noSection": "Selecteer eerst minimaal \u00e9\u00e9n sectie.",
   "toast.noTranscript": "Tip: plak een transcript voor het beste resultaat.",
   "toast.resultRefreshed": "\u2705 Resultaat ververst!",
-  "toast.appInstalled": "\u2705 MeetSum is ge\u00efnstalleerd!",
+  "toast.appInstalled": "\u2705 MeetingSum is ge\u00efnstalleerd!",
   "toast.promptCopied": "Prompt gekopi\u00eberd! \uD83D\uDCCB",
   "toast.resultCopied": "Samenvatting gekopi\u00eberd! \uD83D\uDCCB",
   "toast.updateAvailable": "Update beschikbaar - klik om te vernieuwen naar versie",
@@ -194,7 +211,7 @@ window.LANG_NL = {
 
   /* ---- Extra context documents ---- */
   "extra.summary": "Extra documenten toevoegen (optioneel)",
-  "extra.intro": "Voeg maximaal 3 extra documenten toe (bijv. samenvattingen van vorige MeetSum-sessies) als context voor de voortgang. Zodra je er minstens \u00e9\u00e9n toevoegt, verschijnen er extra opties in stap 2 om deze context te gebruiken. Gebruik bij voorkeur eerdere MeetSum-samenvattingen; een ruw transcript mag ook als je dat echt wilt.",
+  "extra.intro": "Voeg maximaal 3 extra documenten toe (bijv. samenvattingen van vorige MeetingSum-sessies) als context voor de voortgang. Zodra je er minstens \u00e9\u00e9n toevoegt, verschijnen er extra opties in stap 2 om deze context te gebruiken. Gebruik bij voorkeur eerdere MeetingSum-samenvattingen; een ruw transcript mag ook als je dat echt wilt.",
   "extra.drop.strong": "Sleep extra documenten hierheen",
   "extra.drop.hint": "Max 3 \u00b7 .txt \u00b7 .md \u00b7 .pdf \u00b7 .docx",
   "extra.badge": "Extra",
@@ -342,7 +359,7 @@ window.LANG_NL = {
   /* ---- Extra context block template ---- */
   "extraContextTemplate": function (optionInstructions, docsBlock) {
     return `# EXTRA CONTEXTDOCUMENTEN (ACHTERGROND \u2014 GEEN ONDERDEEL VAN HET HOOFDTRANSCRIPT)
-De onderstaande documenten zijn AANVULLENDE achtergrondstukken, meestal samenvattingen van eerdere MeetSum-sessies of eerdere verslagen. Ze dienen UITSLUITEND als context voor de voortgang.
+De onderstaande documenten zijn AANVULLENDE achtergrondstukken, meestal samenvattingen van eerdere MeetingSum-sessies of eerdere verslagen. Ze dienen UITSLUITEND als context voor de voortgang.
 
 BELANGRIJK \u2014 voorkom verwarring in de output:
 - Vat deze documenten NIET zelf samen alsof het de huidige meeting is.
@@ -450,3 +467,4 @@ ${transcript || "[Plak hier je Teams-transcript]"}
 \`\`\``;
   }
 };
+

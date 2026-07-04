@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="MeetSum – Genereer in enkele stappen een perfecte AI-prompt om je MS Teams transcript samen te vatten." />
+  <meta name="description" content="MeetingSum – Genereer in enkele stappen een perfecte AI-prompt om je MS Teams transcript samen te vatten." />
   <meta name="theme-color" content="#E30613" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="MeetSum" />
-  <title>MeetSum · Teams Transcript Summarizer Helper</title>
+  <meta name="apple-mobile-web-app-title" content="MeetingSum" />
+  <title>MeetingSum · Teams Transcript Summarizer Helper</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -31,11 +31,10 @@
   <header class="site-header">
     <a class="brand" href="#top">
       <span class="brand-mark">=</span>
-      <span class="brand-text">Meet<span class="accent">Sum</span></span>
+      <span class="brand-text">Meeting<span class="accent">Sum</span></span>
     </a>
     <nav class="header-actions">
-      <a class="nav-link" href="#step-1">Aan de slag</a>
-      <button id="installBtn" class="install-btn" type="button" aria-label="Installeer MeetSum" title="Installeer als app" hidden>
+      <button id="installBtn" class="install-btn" type="button" aria-label="Installeer MeetingSum" title="Installeer als app" hidden>
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <span>Installeer</span>
       </button>
@@ -57,11 +56,11 @@
       <h1>Van ruw transcript naar<br /><span class="gradient-text">een vlijmscherpe samenvatting</span></h1>
       <p class="hero-sub">
           Plak je (Teams)transcript of een ander document, kies precies welke onderdelen je wilt zien
-          en hoe je output eruit moet zien, en MeetSum bouwt een professionele AI-prompt voor je en
+          en hoe je output eruit moet zien, en MeetingSum bouwt een professionele AI-prompt voor je en
           indien gewenst ook de AI-output via Google Gemini. Geen ruis, alleen resultaat.
       </p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="#step-1">Begin nu →</a>
+        <a id="heroStartBtn" class="btn btn-primary" href="#step-1">Begin nu →</a>
         <a class="btn btn-ghost" href="#step-2">Bekijk secties</a>
       </div>
       <div class="hero-badges">
@@ -69,6 +68,7 @@
         <span>🌍 5 talen</span>
         <span>💾 Onthoudt je voorkeuren</span>
       </div>
+      <button id="introVideoTag" class="hero-video-tag" type="button">▶ Bekijk introvideo</button>
     </section>
 
     <!-- ===================== STEP PROGRESS ===================== -->
@@ -147,7 +147,7 @@
         </summary>
         <div class="extra-docs-body">
           <p class="extra-docs-intro" id="extraDocsIntro">
-            Voeg maximaal 3 extra documenten toe (bijv. samenvattingen van vorige MeetSum-sessies) als context voor de voortgang. Er verschijnen dan extra opties in stap 2 om deze context te gebruiken. Gebruik bij voorkeur eerdere MeetSum-samenvattingen; een ruw transcript mag ook als je dat echt wilt.
+            Voeg maximaal 3 extra documenten toe (bijv. samenvattingen van vorige MeetingSum-sessies) als context voor de voortgang. Er verschijnen dan extra opties in stap 2 om deze context te gebruiken. Gebruik bij voorkeur eerdere MeetingSum-samenvattingen; een ruw transcript mag ook als je dat echt wilt.
           </p>
           <div id="extraDropZone" class="drop-zone drop-zone-sm">
             <input type="file" id="extraFileInput" accept=".txt,.md,.markdown,.pdf,.doc,.docx" multiple hidden />
@@ -158,6 +158,39 @@
             </div>
           </div>
           <ul id="extraDocsList" class="extra-docs-list"></ul>
+
+          <!-- ===================== LOCAL FOLDER SCANNER ===================== -->
+          <section id="local-scanner" class="scanner-card-inline">
+            <div class="step-head scanner-head-inline">
+              <span class="step-num">+</span>
+              <div>
+                <h3 id="scannerTitle">Lokale Map Scanner</h3>
+                <p class="step-desc" id="scannerDesc">Scan lokaal opgeslagen samenvattingen met metadata en koppel geselecteerde bestanden als context aan Transcript.</p>
+              </div>
+            </div>
+
+            <div class="scanner-toolbar">
+              <button id="selectLocalFolderBtn" class="btn btn-ghost" type="button">📁 Selecteer Lokale Map</button>
+              <button id="scanLocalFolderBtn" class="btn btn-primary" type="button" disabled>🔎 Scan Map</button>
+              <button id="linkSelectedToCreatorBtn" class="btn btn-soft" type="button" disabled>🔗 Koppel selectie aan Transcript</button>
+            </div>
+            <p id="scannerFolderStatus" class="scanner-status">Nog geen lokale map geselecteerd.</p>
+
+            <div class="scanner-table-wrap" id="scannerTableWrap" hidden>
+              <table class="scanner-table" aria-label="Gescande metadata bestanden">
+                <thead>
+                  <tr>
+                    <th>Koppel</th>
+                    <th>Bestandsnaam</th>
+                    <th>Datum & deelnemers</th>
+                    <th>Tags</th>
+                    <th>Executive Summary</th>
+                  </tr>
+                </thead>
+                <tbody id="scannerTableBody"></tbody>
+              </table>
+            </div>
+          </section>
         </div>
       </details>
     </section>
@@ -167,12 +200,42 @@
       <div class="step-head">
         <span class="step-num">2</span>
         <div>
-          <h2>Selecteer secties</h2>
-          <p class="step-desc">Vink aan welke onderdelen in de samenvatting moeten komen. Je keuze wordt onthouden.</p>
+          <h2 id="step2Title">Selecteer secties</h2>
+          <p class="step-desc" id="step2Desc">Vink aan welke onderdelen in de samenvatting moeten komen. Je keuze wordt onthouden.</p>
         </div>
       </div>
 
-      <div class="sections-toolbar">
+      <div class="mode-switch" role="tablist" aria-label="Promptmodus">
+        <button id="modeSectionsBtn" class="mode-switch-btn is-active" type="button" role="tab" aria-selected="true">Sectie modus</button>
+        <button id="modeAnalysisBtn" class="mode-switch-btn" type="button" role="tab" aria-selected="false">Analyse modus</button>
+      </div>
+
+      <div id="analysisBlock" class="analysis-block" hidden>
+        <p id="analysisIntro" class="analysis-intro">Kies 1 analysetype. MeetingSum bouwt dan een specifieke analyseprompt op basis van je transcript.</p>
+        <div class="analysis-category-tabs" role="tablist" aria-label="Analyse categorieen">
+          <button id="analysisTabReports" class="analysis-category-tab is-active" type="button" role="tab" aria-selected="true">Rapporten</button>
+          <button id="analysisTabOther" class="analysis-category-tab" type="button" role="tab" aria-selected="false">Overige</button>
+        </div>
+        <div class="analysis-groups">
+          <section id="analysisPanelReports" class="analysis-group">
+            <div class="analysis-group-head">
+              <h3 id="analysisReportsTitle">Rapporten</h3>
+              <p id="analysisReportsDesc">Strategische en methodische rapportformats voor diepgaande analyse.</p>
+            </div>
+            <div id="analysisReportsGrid" class="analysis-options-grid"></div>
+          </section>
+
+          <section id="analysisPanelOther" class="analysis-group" hidden>
+            <div class="analysis-group-head">
+              <h3 id="analysisOtherTitle">Overige</h3>
+              <p id="analysisOtherDesc">Snelle aanvullende analyses, checks en verdiepende invalshoeken.</p>
+            </div>
+            <div id="analysisOtherGrid" class="analysis-options-grid"></div>
+          </section>
+        </div>
+      </div>
+
+      <div id="sectionsToolbar" class="sections-toolbar">
         <button class="link-btn" id="selectAll" type="button">Alles selecteren</button>
         <span class="dot">·</span>
         <button class="link-btn" id="selectNone" type="button">Niets selecteren</button>
@@ -289,6 +352,23 @@
           <p class="option-hint" id="optInclusievBronHint">Voeg bronnen toe in [*italic format*]</p>
         </div>
       </div>
+
+      <div id="tagManager" class="tag-manager">
+        <div class="tag-manager-head">
+          <h3 id="tagManagerTitle">Tag Manager</h3>
+          <p id="tagManagerDesc">Beheer je eigen lijst met tags, selecteer tags voor deze meeting en hergebruik recent gebruikte tags.</p>
+        </div>
+        <div class="tag-manager-input-row">
+          <input id="newTagInput" name="new-tag" type="search" maxlength="40" autocomplete="new-password" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="Voeg een tag toe, bijvoorbeeld: Project Alpha" />
+          <button id="addTagBtn" class="btn btn-ghost" type="button">Tag toevoegen</button>
+        </div>
+        <p class="tag-hint">Klik op een tag om die te selecteren voor deze meeting. Geselecteerde tags worden gebruikt in het metadata-blok.</p>
+        <div id="activeTagsList" class="tag-list" aria-label="Beschikbare tags"></div>
+        <div class="tag-used-wrap">
+          <h4 id="recentTagsTitle">Recent gebruikte tags</h4>
+          <div id="recentTagsList" class="tag-list tag-list-used"></div>
+        </div>
+      </div>
     </section>
 
     <!-- ===================== STEP 4: GENERATE ===================== -->
@@ -297,7 +377,7 @@
         <span class="step-num">4</span>
         <div>
           <h2 id="step4-h2">Genereer je AI-prompt</h2>
-          <p class="step-desc" id="step4-desc">MeetSum bouwt een complete, gestructureerde prompt op basis van je keuzes.</p>
+          <p class="step-desc" id="step4-desc">MeetingSum bouwt een complete, gestructureerde prompt op basis van je keuzes.</p>
         </div>
       </div>
 
@@ -368,7 +448,7 @@
       <div class="footer-brand-block">
         <span class="footer-brand-mark">=</span>
         <div>
-          <p class="footer-copy" id="footerVersion">Versie 1.260704.1</p>
+          <p class="footer-copy" id="footerVersion">Versie 1.260704.2</p>
           <p class="footer-tagline" id="footerTagline">Ondernemend, professioneel en menselijk ontworpen voor slimmere samenvattingen.</p>
         </div>
       </div>
@@ -399,7 +479,7 @@
       <div class="cookie-sheet-copy">
         <span class="cookie-kicker" id="cookieNoticeKicker">Cookie & opslagmelding</span>
         <h3 id="cookieNoticeTitle">Deze app gebruikt alleen functionele opslag</h3>
-        <p id="cookieNoticeText">MeetSum gebruikt lokale opslag voor voorkeuren, je taalinstellingen en optioneel een tijdelijke PIN-sessie. Er worden geen advertentie- of trackingcookies geplaatst.</p>
+        <p id="cookieNoticeText">MeetingSum gebruikt lokale opslag voor voorkeuren, je taalinstellingen en optioneel een tijdelijke PIN-sessie. Er worden geen advertentie- of trackingcookies geplaatst.</p>
       </div>
       <div class="cookie-sheet-actions">
         <button class="btn btn-ghost" type="button" id="cookieNoticeMore">Lees details</button>
@@ -454,9 +534,70 @@
     </div>
   </div>
 
+  <!-- ===================== INSTALL EXPLAIN MODAL ===================== -->
+  <div id="installExplainModal" class="modal-overlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="installExplainTitle">
+      <div class="modal-icon">📲</div>
+      <h3 id="installExplainTitle">Installeer MeetingSum als app</h3>
+      <p id="installExplainDesc" class="modal-desc">Na installatie opent MeetingSum als losse app op je apparaat, met sneller starten en direct toegang vanaf je startmenu of bureaublad.</p>
+      <div class="modal-actions">
+        <button id="installExplainCancel" class="btn btn-ghost" type="button">Annuleren</button>
+        <button id="installExplainConfirm" class="btn btn-primary" type="button">Doorgaan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SCANNER LINK MODAL ===================== -->
+  <div id="scannerLinkModal" class="modal-overlay" hidden>
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="scannerLinkTitle">
+      <h3 id="scannerLinkTitle">Koppel geselecteerde documenten</h3>
+      <p id="scannerLinkDesc" class="modal-desc">De geselecteerde scanner-bestanden worden toegevoegd aan Transcriptcontext via Extra documenten in stap 1.</p>
+      <ul id="scannerLinkList" class="scanner-link-list"></ul>
+      <div class="modal-actions">
+        <button id="scannerLinkCancel" class="btn btn-ghost" type="button">Annuleren</button>
+        <button id="scannerLinkConfirm" class="btn btn-primary" type="button">Koppel aan Transcript</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== SCANNER DETAILS MODAL ===================== -->
+  <div id="scannerDetailsModal" class="modal-overlay" hidden>
+    <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="scannerDetailsTitle">
+      <button class="modal-close" id="scannerDetailsClose" type="button" aria-label="Sluiten">✕</button>
+      <h3 id="scannerDetailsTitle">Scanner bestand details</h3>
+      <div id="scannerDetailsBody" class="modal-desc modal-rich"></div>
+      <div class="modal-actions">
+        <button id="scannerDetailsOk" class="btn btn-primary" type="button">Sluiten</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== INTRO VIDEO MODAL ===================== -->
+  <div id="introVideoModal" class="modal-overlay" hidden>
+    <div class="modal modal-wide intro-video-modal" role="dialog" aria-modal="true" aria-labelledby="introVideoTitle">
+      <button class="modal-close" id="introVideoClose" type="button" aria-label="Sluiten">✕</button>
+      <h3 id="introVideoTitle">MeetingSum Intro</h3>
+      <p class="modal-desc">Korte introductie van MeetingSum op YouTube.</p>
+      <div class="video-frame-wrap">
+        <iframe
+          id="introVideoFrame"
+          src=""
+          title="MeetingSum Intro Video"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="modal-actions intro-video-actions">
+        <button id="introVideoCloseBottom" class="btn btn-ghost" type="button">Sluiten</button>
+      </div>
+    </div>
+  </div>
+
   <script src="lang/nl.js"></script>
   <script src="lang/en.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
+
 
