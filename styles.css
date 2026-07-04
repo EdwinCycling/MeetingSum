@@ -395,6 +395,12 @@ html[data-theme="dark"] .analysis-group {
   color: var(--text-mute);
 }
 
+.step-card.analysis-active #sectionsToolbar,
+.step-card.analysis-active #sectionsGrid,
+.step-card.analysis-active #contextOptionsBlock {
+  display: none !important;
+}
+
 .sections-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; font-size: .9rem; flex-wrap: wrap; }
 .sections-toolbar .dot { color: var(--text-mute); }
 .sections-drag-hint { margin-left: auto; font-size: .8rem; color: var(--text-mute); font-style: italic; }

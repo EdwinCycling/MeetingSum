@@ -64,7 +64,7 @@
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
   const VERSION_FILE = "/version.json";
-  let currentAppVersion = "1.260704.2";
+  let currentAppVersion = "1.260704.3";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -1068,10 +1068,11 @@
 
       const input = card.querySelector("input[name='analysisOption']");
       input.addEventListener("change", () => {
+        prefs.analysis.mode = "analysis";
         prefs.analysis.option = opt.id;
         prefs.analysis.tab = opt.group === "other" ? "other" : "reports";
         savePrefs(prefs);
-        renderAnalysisOptions();
+        renderStep2Mode();
         updateStepStates();
         updateSidebar();
       });
@@ -1088,6 +1089,7 @@
 
   function renderStep2Mode() {
     const analysisMode = isAnalysisMode();
+    const step2 = document.getElementById("step-2");
     const modeSectionsBtn = document.getElementById("modeSectionsBtn");
     const modeAnalysisBtn = document.getElementById("modeAnalysisBtn");
     const sectionsToolbar = document.getElementById("sectionsToolbar");
@@ -1103,6 +1105,7 @@
       modeAnalysisBtn.classList.toggle("is-active", analysisMode);
       modeAnalysisBtn.setAttribute("aria-selected", analysisMode ? "true" : "false");
     }
+    if (step2) step2.classList.toggle("analysis-active", analysisMode);
     if (analysisBlock) analysisBlock.hidden = !analysisMode;
     if (sectionsToolbar) sectionsToolbar.hidden = analysisMode;
     if (sectionsGrid) sectionsGrid.hidden = analysisMode;
