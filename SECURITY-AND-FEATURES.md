@@ -8,6 +8,7 @@
 - ✅ Key zit **veilig in de server** (PowerShell backend)
 - ✅ Path traversal beschermd: `.env` kan NIET via HTTP opgehaald worden
 - ✅ Gevoelige bestanden (`.ps1`, `.bat`, `.log`) zijn VERBORGEN (HTTP 403)
+- ✅ Gemini-model is instelbaar via `GEMINI_MODEL` in `.env` of Netlify env vars
 
 ### 2. **PIN-Beveiliging (optioneel)**
 De API-aanroepen kunnen beschermd worden met een 4-cijferige PIN:
@@ -49,6 +50,17 @@ PIN_HASH=...
 PIN_SALT=...
 PIN_ITER=200000
 ```
+
+## 🤖 GEMINI MODEL SELECTIE
+
+Standaard gebruikt MeetSum `gemini-3.5-flash`.
+
+Wil je een ander model gebruiken, zet dan in `.env` of Netlify environment variables:
+```
+GEMINI_MODEL=gemini-3.5-flash
+```
+
+De app probeert eerst het ingestelde model en valt daarna terug op andere ondersteunde Gemini-modellen.
 
 ---
 

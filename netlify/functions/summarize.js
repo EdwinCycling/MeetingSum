@@ -16,12 +16,19 @@ const DUPLICATE_WINDOW_MS = 3 * 60 * 1000;
 const BLOCKED_COUNTRIES = new Set(["IR", "IN", "RU", "CN", "PK"]);
 const ipRequestLog = new Map();
 const promptReplayLog = new Map();
-const GEMINI_MODELS = [
-  "gemini-2.5-flash",
-  "gemini-2.0-flash",
-  "gemini-1.5-flash",
-  "gemini-flash-latest",
-];
+const DEFAULT_GEMINI_MODEL = "gemini-3.5-flash";
+
+function buildGeminiModelChain() {
+  const selectedModel = (process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL).trim();
+  const fallbackModels = [
+    "gemini-2.5-flash",
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-flash-latest",
+  ];
+
+  return [selectedModel, ...fallbackModels.filter((model) => model !== selectedModel)];
+}
 
 function getHeader(headers, name) {
   return headers[name] || headers[name.toLowerCase()] || headers[name.toUpperCase()] || "";
@@ -201,10 +208,12 @@ exports.handler = async (event) => {
     }
   }
 
+  const geminiModels = buildGeminiModelChain();
+
   // Call Gemini with model fallback chain
   let lastError = "Unknown error";
 
-  for (const model of GEMINI_MODELS) {
+  for (const model of geminiModels) {
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
         const { status, body } = await callGemini(apiKey, model, prompt);
