@@ -1,10 +1,12 @@
 ﻿/* Service Worker voor MeetSum PWA */
-const CACHE_VERSION = 'meetsum-v5';
+const CACHE_VERSION = 'meetsum-v6';
 const CACHE_URLS = [
   '/',
   '/index.html',
   '/styles.css',
   '/script.js',
+  '/lang/nl.js',
+  '/lang/en.js',
   '/manifest.json'
 ];
 

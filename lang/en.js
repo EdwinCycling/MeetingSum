@@ -192,6 +192,33 @@ window.LANG_EN = {
   /* ---- Download ---- */
   "download.filename": function (date, ext) { return "meetsum-summary-" + date + "." + ext; },
 
+  /* ---- Extra context documents ---- */
+  "extra.summary": "Add extra documents (optional)",
+  "extra.intro": "Add up to 3 extra documents (e.g. summaries of previous MeetSum sessions) as context for progress. As soon as you add at least one, extra options appear in step 2 to use this context. Preferably use previous MeetSum summaries; a raw transcript is also allowed if you really want.",
+  "extra.drop.strong": "Drop extra documents here",
+  "extra.drop.hint": "Max 3 \u00b7 .txt \u00b7 .md \u00b7 .pdf \u00b7 .docx",
+  "extra.badge": "Extra",
+  "extra.remove": "Remove",
+  "extra.removed": "Extra document removed.",
+  "extra.added": function (name) { return "Extra document added: " + name; },
+  "extra.maxReached": function (n) { return "Maximum of " + n + " extra documents."; },
+  "extra.chars": function (n) { return n.toLocaleString("en-US") + " characters"; },
+  "extra.sidebarDocs": function (n) { return n + " extra document" + (n === 1 ? "" : "s"); },
+  "extra.docWrap": function (n, name, text) {
+    return "--- EXTRA DOCUMENT " + n + ": " + name + " ---\n" + text + "\n--- END EXTRA DOCUMENT " + n + " ---";
+  },
+  "ctx.title": "Options using your extra documents",
+  "ctx.desc": "These options use the documents you added in step 1. Check what you want to do with the previous sessions.",
+
+  /* ---- Confirm dialog ---- */
+  "confirm.defaultTitle": "Are you sure?",
+  "confirm.yes": "Yes",
+  "confirm.no": "No",
+  "confirm.extraTitle": "Not using the extra documents?",
+  "confirm.extraDesc": function (n) { return "You added " + n + " extra document" + (n === 1 ? "" : "s") + ", but did not check any option to use them. The extra documents will then NOT be included in the prompt. Continue anyway?"; },
+  "confirm.extraYes": "Yes, continue without",
+  "confirm.extraNo": "No, go back",
+
   /* ---- Summary target language names (value → name in prompt) ---- */
   "summaryLangNames": {
     "Nederlands": "Dutch",
@@ -276,6 +303,58 @@ window.LANG_EN = {
       tag: "Extra",
       prompt: "**Important Quotes**: Select 2 to 3 striking, literal quotes from participants and mention where possible who said it. Only quote what is actually in the transcript."
     }
+  },
+
+  /* ---- Context option definitions (only used with extra documents) ---- */
+  "contextOptions": {
+    "recap": {
+      title: "Recap of previous sessions",
+      desc: "Very short summary of the previous meetings.",
+      prompt: "Add a section **Recap of previous sessions**: a very short summary (max 3-5 bullets) of the previous meetings, based solely on the extra documents."
+    },
+    "progress": {
+      title: "Progress vs. previous sessions",
+      desc: "What is done, what is still open, what is new.",
+      prompt: "Add a section **Progress vs. previous sessions**: compare the current meeting with the extra documents and describe what has been completed, what is still in progress and what is new."
+    },
+    "openActions": {
+      title: "Status of earlier action items",
+      desc: "Follow up on open actions from previous sessions.",
+      prompt: "Add a section **Status of earlier action items**: take the action items from the extra documents and indicate for each whether it was completed in this meeting, is still open or has changed. Use a Markdown table with columns | Action item | Previous status | Current status |."
+    },
+    "decisions": {
+      title: "Evolution of decisions",
+      desc: "How earlier decisions were changed or confirmed.",
+      prompt: "Add a section **Evolution of decisions**: describe which earlier decisions from the extra documents were confirmed, revised or reversed in this meeting."
+    },
+    "recurring": {
+      title: "Recurring themes",
+      desc: "The common thread across multiple sessions.",
+      prompt: "Add a section **Recurring themes**: name topics or issues that recur both in the extra documents and in this meeting (the common thread)."
+    },
+    "deviations": {
+      title: "Deviations and new insights",
+      desc: "What deviates from or is new vs. earlier documents.",
+      prompt: "Add a section **Deviations and new insights**: point out where this meeting deviates from, or adds new insights to, the extra documents."
+    }
+  },
+
+  /* ---- Extra context block template ---- */
+  "extraContextTemplate": function (optionInstructions, docsBlock) {
+    return `# EXTRA CONTEXT DOCUMENTS (BACKGROUND \u2014 NOT PART OF THE MAIN TRANSCRIPT)
+The documents below are SUPPORTING background material, usually summaries of previous MeetSum sessions or earlier reports. They serve EXCLUSIVELY as context for progress.
+
+IMPORTANT \u2014 avoid confusion in the output:
+- Do NOT summarise these documents as if they were the current meeting.
+- The content of the CURRENT meeting comes EXCLUSIVELY from the INPUT TRANSCRIPT above.
+- Use the documents below only for the context tasks requested below.
+- If something appears only in these extra documents (and not in the transcript), present it explicitly as background/history, not as something that happened in this meeting.
+
+## USE THE EXTRA DOCUMENTS FOR THE FOLLOWING TASKS
+${optionInstructions}
+
+## CONTENT OF THE EXTRA DOCUMENTS
+${docsBlock}`;
   },
 
   /* ---- AI prompt template ---- */

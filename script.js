@@ -31,12 +31,27 @@
     { id: "quotes",        def: false }
   ];
 
+  /* ---------- Context option IDs (only relevant when extra docs are uploaded) ----------
+     These options tell the AI how to use the extra background documents
+     (typically previous MeetSum summaries) relative to the current transcript.
+     Content (title/desc/prompt) comes from the lang files. */
+  const CONTEXT_OPTION_DEFS = [
+    { id: "recap" },
+    { id: "progress" },
+    { id: "openActions" },
+    { id: "decisions" },
+    { id: "recurring" },
+    { id: "deviations" }
+  ];
+
+  const MAX_EXTRA_DOCS = 3;
+
   const STORAGE_KEY = "meetsum.prefs.v1";
   const THEME_KEY   = "meetsum.theme";
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
   const VERSION_FILE = "/version.json";
-  let currentAppVersion = "1.260626.4";
+  let currentAppVersion = "1.260704.1";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -72,6 +87,21 @@
 
   function getSectionMap() {
     return Object.fromEntries(getSections().map((s) => [s.id, s]));
+  }
+
+  /* ---------- Context options (extra documents) ---------- */
+  function getContextOptions() {
+    const ctxLang = getLang().contextOptions || {};
+    return CONTEXT_OPTION_DEFS.map((def) => ({ ...def, ...(ctxLang[def.id] || {}) }));
+  }
+
+  function getContextOptionMap() {
+    return Object.fromEntries(getContextOptions().map((o) => [o.id, o]));
+  }
+
+  function anyContextSelected() {
+    const co = prefs.contextOptions || {};
+    return CONTEXT_OPTION_DEFS.some((o) => co[o.id]);
   }
 
   function getOutputOptionSummary() {
@@ -154,6 +184,14 @@
     set("#clearTranscript",            "step1.clear");
     set("label[for='language']",       "step1.label.summaryLang");
 
+    // Step 1 – extra context documents
+    set("#extraDocsSummaryText", "extra.summary");
+    set("#extraDocsIntro",       "extra.intro");
+    set("#extraDropStrong",      "extra.drop.strong");
+    set("#extraDropOr",          "step1.drop.or");
+    set("#extraBrowseBtn",       "step1.drop.browse");
+    set("#extraDropHint",        "extra.drop.hint");
+
     // Summary language select options
     const langOptKeys = ["lang.option.nl","lang.option.en","lang.option.de","lang.option.fr","lang.option.es"];
     const summarySelect = document.getElementById("language");
@@ -171,6 +209,11 @@
     set("#selectDefault",      "step2.selectDefault");
     set("#resetOrder",         "step2.resetOrder");
     set(".sections-drag-hint", "step2.dragHint");
+
+    // Step 2 – context options block
+    set("#contextOptionsBadge", "extra.badge");
+    set("#contextOptionsTitle", "ctx.title");
+    set("#contextOptionsDesc",  "ctx.desc");
 
     // Step 3 – output options
     set("#step3-h2",              "step3.title");
@@ -281,6 +324,8 @@
 
     // Re-render section list with new language + re-run counters
     renderSections();
+    renderContextOptions();
+    renderExtraDocsList();
     updateCharCount();
     updatePreview();
     updateSidebar();
@@ -329,6 +374,13 @@
     // fill any missing keys from defaults
     prefs.outputOptions = { ...OUTPUT_DEFAULTS, ...prefs.outputOptions };
   }
+  if (!prefs.contextOptions) {
+    prefs.contextOptions = {};
+    CONTEXT_OPTION_DEFS.forEach((o) => (prefs.contextOptions[o.id] = false));
+  }
+
+  /* ---------- Extra context documents (in-memory only, like the transcript) ---------- */
+  let extraDocs = []; // [{ name, size, text }]
 
   /* ---------- Render section checkboxes (with drag-to-reorder) ---------- */
   let dragSrcEl = null;
@@ -432,6 +484,119 @@
     toast(t("toast.orderReset"));
   }
 
+  /* ---------- Render context options (extra documents) ---------- */
+  function renderContextOptions() {
+    const ctxGrid = document.getElementById("contextOptionsGrid");
+    if (!ctxGrid) return;
+    ctxGrid.innerHTML = "";
+    const options = getContextOptions();
+    options.forEach((o) => {
+      const checked = !!(prefs.contextOptions && prefs.contextOptions[o.id]);
+      const label = document.createElement("label");
+      label.className = "section-item" + (checked ? " checked" : "");
+      label.dataset.id = o.id;
+      label.innerHTML = `
+        <input type="checkbox" data-id="${o.id}" ${checked ? "checked" : ""} hidden />
+        <span class="check" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </span>
+        <span class="meta">
+          <span class="title">${o.title || o.id}</span>
+          <span class="sub">${o.desc || ""}</span>
+        </span>`;
+      const input = label.querySelector("input");
+      input.addEventListener("change", () => {
+        prefs.contextOptions[o.id] = input.checked;
+        label.classList.toggle("checked", input.checked);
+        savePrefs(prefs);
+        updateSidebar();
+      });
+      ctxGrid.appendChild(label);
+    });
+  }
+
+  /* ---------- Show/hide the context options block based on uploaded docs ---------- */
+  function updateContextOptionsVisibility() {
+    const block = document.getElementById("contextOptionsBlock");
+    if (!block) return;
+    block.hidden = extraDocs.length === 0;
+  }
+
+  /* ---------- Render the list of uploaded extra documents ---------- */
+  function updateExtraDocsCount() {
+    const badge = document.getElementById("extraDocsCount");
+    if (!badge) return;
+    if (extraDocs.length > 0) {
+      badge.hidden = false;
+      badge.textContent = `${extraDocs.length}/${MAX_EXTRA_DOCS}`;
+    } else {
+      badge.hidden = true;
+    }
+  }
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  function renderExtraDocsList() {
+    const list = document.getElementById("extraDocsList");
+    if (!list) return;
+    list.innerHTML = "";
+    extraDocs.forEach((doc, idx) => {
+      const li = document.createElement("li");
+      li.className = "extra-doc-item";
+      li.innerHTML = `
+        <span class="extra-doc-icon" aria-hidden="true">📄</span>
+        <span class="extra-doc-info">
+          <span class="extra-doc-name"></span>
+          <span class="extra-doc-meta"></span>
+        </span>
+        <button type="button" class="extra-doc-remove" aria-label="${t("extra.remove")}" title="${t("extra.remove")}">✕</button>`;
+      li.querySelector(".extra-doc-name").textContent = doc.name;
+      li.querySelector(".extra-doc-meta").textContent =
+        `${formatBytes(doc.size)} · ${t("extra.chars", doc.text.length)}`;
+      li.querySelector(".extra-doc-remove").addEventListener("click", () => removeExtraDoc(idx));
+      list.appendChild(li);
+    });
+    updateExtraDocsCount();
+    updateContextOptionsVisibility();
+    updateSidebar();
+  }
+
+  function removeExtraDoc(idx) {
+    extraDocs.splice(idx, 1);
+    renderExtraDocsList();
+    toast(t("extra.removed"));
+  }
+
+  async function handleExtraFiles(fileList) {
+    const files = Array.from(fileList || []);
+    if (files.length === 0) return;
+
+    for (const file of files) {
+      if (extraDocs.length >= MAX_EXTRA_DOCS) {
+        toast(t("extra.maxReached", MAX_EXTRA_DOCS));
+        break;
+      }
+      const maxBytes = 15 * 1024 * 1024; // 15 MB
+      if (file.size > maxBytes) {
+        toast("❌ " + file.name + " — " + t("file.tooBig"));
+        continue;
+      }
+      try {
+        const text = await extractTextFromFile(file);
+        if (!text) throw new Error(t("file.noText"));
+        extraDocs.push({ name: file.name, size: file.size, text });
+        renderExtraDocsList();
+        toast(t("extra.added", file.name));
+      } catch (err) {
+        toast("❌ " + file.name + " — " + err.message);
+      }
+    }
+  }
+
   /* ---------- Prompt generation ---------- */
   function buildPrompt() {
     const transcript = transcriptEl.value.trim();
@@ -450,9 +615,37 @@
     const headingList = selected.map((s) => `- ${s.title}`).join("\n");
 
     const tpl = getLang()["promptTemplate"];
-    return tpl
+    const basePrompt = tpl
       ? tpl(language, headingList, sectionInstructions, transcript, prefs.outputOptions || OUTPUT_DEFAULTS)
       : `${headingList}\n\n${sectionInstructions}\n\n${transcript}`;
+
+    const extraBlock = buildExtraContextBlock();
+    return extraBlock ? `${basePrompt}\n\n${extraBlock}` : basePrompt;
+  }
+
+  /* ---------- Build the optional extra-context block ----------
+     Returns "" when there is nothing to add (no docs, or no context option selected). */
+  function buildExtraContextBlock() {
+    if (extraDocs.length === 0) return "";
+    const ctxMap = getContextOptionMap();
+    const selected = CONTEXT_OPTION_DEFS
+      .map((o) => ctxMap[o.id])
+      .filter((o) => o && prefs.contextOptions[o.id]);
+    if (selected.length === 0) return "";
+
+    const optionInstructions = selected
+      .map((o, i) => `${i + 1}. ${o.prompt}`)
+      .join("\n");
+
+    const docsBlock = extraDocs
+      .map((doc, i) => {
+        const n = i + 1;
+        return t("extra.docWrap", n, doc.name, doc.text);
+      })
+      .join("\n\n");
+
+    const tpl = getLang()["extraContextTemplate"];
+    return tpl ? tpl(optionInstructions, docsBlock) : "";
   }
 
   /* ---------- Step state management ---------- */
@@ -500,6 +693,16 @@
     list.innerHTML = selected.map((s) =>
       `<li class="sidebar-item"><strong>${s.title}</strong><span>${s.desc}</span></li>`
     ).join("") || `<li class="sidebar-empty">${t("toast.noSection")}</li>`;
+
+    // Append selected context options (extra documents) when applicable.
+    if (extraDocs.length > 0 && anyContextSelected()) {
+      const ctxMap = getContextOptionMap();
+      const ctxSelected = CONTEXT_OPTION_DEFS
+        .map((o) => ctxMap[o.id])
+        .filter((o) => o && prefs.contextOptions[o.id]);
+      list.innerHTML += `<li class="sidebar-item"><strong>${t("extra.sidebarDocs", extraDocs.length)}</strong><span>${ctxSelected.map((o) => o.title).join(", ")}</span></li>`;
+    }
+
     outputList.innerHTML = getOutputOptionSummary().map((item) =>
       `<li class="sidebar-item"><strong>${item.label}</strong><span>${item.value}</span></li>`
     ).join("");
@@ -578,18 +781,79 @@
     if (!transcriptEl.value.trim()) {
       toast(t("toast.noTranscript"));
     }
+
+    // Extra docs uploaded but no context option selected → confirm they will be ignored.
+    if (extraDocs.length > 0 && !anyContextSelected()) {
+      confirmDialog({
+        title: t("confirm.extraTitle"),
+        desc: t("confirm.extraDesc", extraDocs.length),
+        yes: t("confirm.extraYes"),
+        no: t("confirm.extraNo")
+      }).then((proceed) => {
+        if (proceed) emitPrompt();
+      });
+      return;
+    }
+
+    emitPrompt();
+  }
+
+  function emitPrompt() {
     const prompt = buildPrompt();
     promptOutput.textContent = prompt;
     promptResult.hidden = false;
-    
+
     // Show AI button if we have a transcript
     if (transcriptEl.value.trim()) {
       $("#generateWithAI").hidden = false;
     } else {
       $("#generateWithAI").hidden = true;
     }
-    
+
     promptResult.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  /* ---------- Generic confirm dialog (Promise<boolean>) ---------- */
+  function confirmDialog({ title, desc, yes, no }) {
+    return new Promise((resolve) => {
+      const modal = $("#confirmModal");
+      const titleEl = $("#confirmTitle");
+      const descEl = $("#confirmDesc");
+      const yesBtn = $("#confirmYes");
+      const noBtn = $("#confirmNo");
+      if (!modal || !yesBtn || !noBtn) { resolve(true); return; }
+
+      if (titleEl) titleEl.textContent = title || t("confirm.defaultTitle");
+      if (descEl) descEl.textContent = desc || "";
+      yesBtn.textContent = yes || t("confirm.yes");
+      noBtn.textContent = no || t("confirm.no");
+
+      const close = (result) => {
+        modal.hidden = true;
+        yesBtn.removeEventListener("click", onYes);
+        noBtn.removeEventListener("click", onNo);
+        modal.removeEventListener("click", onBackdrop);
+        document.removeEventListener("keydown", onKey);
+        if (document.getElementById("infoModal").hidden &&
+            document.getElementById("cookieNotice").hidden) {
+          setBodyFrozen(false);
+        }
+        resolve(result);
+      };
+      const onYes = () => close(true);
+      const onNo = () => close(false);
+      const onBackdrop = (e) => { if (e.target === modal) close(false); };
+      const onKey = (e) => { if (e.key === "Escape") close(false); };
+
+      yesBtn.addEventListener("click", onYes);
+      noBtn.addEventListener("click", onNo);
+      modal.addEventListener("click", onBackdrop);
+      document.addEventListener("keydown", onKey);
+
+      modal.hidden = false;
+      setBodyFrozen(true);
+      yesBtn.focus();
+    });
   }
 
   async function callGeminiAPI(prompt) {
@@ -1273,6 +1537,40 @@
     dropZone.addEventListener("drop", (e) => {
       if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
     });
+
+    // Extra context documents (optional)
+    const extraFileInput = $("#extraFileInput");
+    const extraDropZone = $("#extraDropZone");
+    const extraBrowseBtn = $("#extraBrowseBtn");
+    if (extraBrowseBtn && extraFileInput) {
+      extraBrowseBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        extraFileInput.click();
+      });
+    }
+    if (extraFileInput) {
+      extraFileInput.addEventListener("change", (e) => {
+        if (e.target.files && e.target.files.length) handleExtraFiles(e.target.files);
+        extraFileInput.value = "";
+      });
+    }
+    if (extraDropZone) {
+      ["dragenter", "dragover"].forEach((ev) =>
+        extraDropZone.addEventListener(ev, (e) => {
+          e.preventDefault();
+          extraDropZone.classList.add("dragover");
+        })
+      );
+      ["dragleave", "drop"].forEach((ev) =>
+        extraDropZone.addEventListener(ev, (e) => {
+          e.preventDefault();
+          extraDropZone.classList.remove("dragover");
+        })
+      );
+      extraDropZone.addEventListener("drop", (e) => {
+        if (e.dataTransfer.files && e.dataTransfer.files.length) handleExtraFiles(e.dataTransfer.files);
+      });
+    }
 
     // section toolbar
     $("#selectAll").addEventListener("click", () => setAll(true));

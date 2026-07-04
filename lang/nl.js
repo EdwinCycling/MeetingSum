@@ -192,6 +192,33 @@ window.LANG_NL = {
   /* ---- Download ---- */
   "download.filename": function (date, ext) { return "meetsum-samenvatting-" + date + "." + ext; },
 
+  /* ---- Extra context documents ---- */
+  "extra.summary": "Extra documenten toevoegen (optioneel)",
+  "extra.intro": "Voeg maximaal 3 extra documenten toe (bijv. samenvattingen van vorige MeetSum-sessies) als context voor de voortgang. Zodra je er minstens \u00e9\u00e9n toevoegt, verschijnen er extra opties in stap 2 om deze context te gebruiken. Gebruik bij voorkeur eerdere MeetSum-samenvattingen; een ruw transcript mag ook als je dat echt wilt.",
+  "extra.drop.strong": "Sleep extra documenten hierheen",
+  "extra.drop.hint": "Max 3 \u00b7 .txt \u00b7 .md \u00b7 .pdf \u00b7 .docx",
+  "extra.badge": "Extra",
+  "extra.remove": "Verwijderen",
+  "extra.removed": "Extra document verwijderd.",
+  "extra.added": function (name) { return "Extra document toegevoegd: " + name; },
+  "extra.maxReached": function (n) { return "Maximaal " + n + " extra documenten."; },
+  "extra.chars": function (n) { return n.toLocaleString("nl-NL") + " tekens"; },
+  "extra.sidebarDocs": function (n) { return n + " extra document" + (n === 1 ? "" : "en"); },
+  "extra.docWrap": function (n, name, text) {
+    return "--- EXTRA DOCUMENT " + n + ": " + name + " ---\n" + text + "\n--- EINDE EXTRA DOCUMENT " + n + " ---";
+  },
+  "ctx.title": "Opties met je extra documenten",
+  "ctx.desc": "Deze opties gebruiken de documenten die je in stap 1 hebt toegevoegd. Vink aan wat je met de eerdere sessies wilt doen.",
+
+  /* ---- Confirm dialog ---- */
+  "confirm.defaultTitle": "Weet je het zeker?",
+  "confirm.yes": "Ja",
+  "confirm.no": "Nee",
+  "confirm.extraTitle": "Extra documenten niet gebruiken?",
+  "confirm.extraDesc": function (n) { return "Je hebt " + n + " extra document" + (n === 1 ? "" : "en") + " toegevoegd, maar geen enkele optie aangevinkt om ze te gebruiken. De extra documenten worden dan NIET meegenomen in de prompt. Toch doorgaan?"; },
+  "confirm.extraYes": "Ja, doorgaan zonder",
+  "confirm.extraNo": "Nee, terug",
+
   /* ---- Summary target language names (value → name in prompt) ---- */
   "summaryLangNames": {
     "Nederlands": "Nederlands",
@@ -276,6 +303,58 @@ window.LANG_NL = {
       tag: "Extra",
       prompt: "**Belangrijke citaten**: Selecteer 2 tot 3 treffende, letterlijke citaten van deelnemers en vermeld waar mogelijk wie het zei. Citeer alleen wat daadwerkelijk in het transcript staat."
     }
+  },
+
+  /* ---- Context option definitions (only used with extra documents) ---- */
+  "contextOptions": {
+    "recap": {
+      title: "Recap voorgaande sessies",
+      desc: "Zeer korte samenvatting van de vorige meetings.",
+      prompt: "Voeg een sectie **Recap voorgaande sessies** toe: een zeer korte samenvatting (maximaal 3-5 bullets) van de voorgaande meetings, uitsluitend op basis van de extra documenten."
+    },
+    "progress": {
+      title: "Voortgang t.o.v. vorige sessies",
+      desc: "Wat is af, wat loopt nog, wat is nieuw.",
+      prompt: "Voeg een sectie **Voortgang t.o.v. vorige sessies** toe: vergelijk de huidige meeting met de extra documenten en beschrijf wat is afgerond, wat nog loopt en wat nieuw is."
+    },
+    "openActions": {
+      title: "Status eerdere actiepunten",
+      desc: "Volg openstaande acties uit vorige sessies op.",
+      prompt: "Voeg een sectie **Status eerdere actiepunten** toe: haal de actiepunten uit de extra documenten en geef per punt aan of het in deze meeting is afgerond, nog openstaat of is gewijzigd. Gebruik een Markdown-tabel met kolommen | Actiepunt | Eerdere status | Huidige status |."
+    },
+    "decisions": {
+      title: "Ontwikkeling van beslissingen",
+      desc: "Hoe eerdere besluiten zijn gewijzigd of bevestigd.",
+      prompt: "Voeg een sectie **Ontwikkeling van beslissingen** toe: beschrijf welke eerdere beslissingen uit de extra documenten in deze meeting zijn bevestigd, herzien of teruggedraaid."
+    },
+    "recurring": {
+      title: "Terugkerende thema's",
+      desc: "De rode draad over meerdere sessies heen.",
+      prompt: "Voeg een sectie **Terugkerende thema's** toe: benoem onderwerpen of knelpunten die zowel in de extra documenten als in deze meeting terugkomen (de rode draad)."
+    },
+    "deviations": {
+      title: "Afwijkingen en nieuwe inzichten",
+      desc: "Wat wijkt af van of is nieuw t.o.v. eerdere documenten.",
+      prompt: "Voeg een sectie **Afwijkingen en nieuwe inzichten** toe: benoem waar deze meeting afwijkt van, of nieuwe inzichten toevoegt aan, de extra documenten."
+    }
+  },
+
+  /* ---- Extra context block template ---- */
+  "extraContextTemplate": function (optionInstructions, docsBlock) {
+    return `# EXTRA CONTEXTDOCUMENTEN (ACHTERGROND \u2014 GEEN ONDERDEEL VAN HET HOOFDTRANSCRIPT)
+De onderstaande documenten zijn AANVULLENDE achtergrondstukken, meestal samenvattingen van eerdere MeetSum-sessies of eerdere verslagen. Ze dienen UITSLUITEND als context voor de voortgang.
+
+BELANGRIJK \u2014 voorkom verwarring in de output:
+- Vat deze documenten NIET zelf samen alsof het de huidige meeting is.
+- De inhoud van de HUIDIGE meeting komt UITSLUITEND uit het INPUT TRANSCRIPT hierboven.
+- Gebruik de onderstaande documenten alleen voor de hieronder gevraagde context-taken.
+- Als iets uitsluitend in deze extra documenten staat (en niet in het transcript), presenteer het dan expliciet als achtergrond/voorgeschiedenis, niet als iets dat in deze meeting is gebeurd.
+
+## GEBRUIK DE EXTRA DOCUMENTEN VOOR DE VOLGENDE TAKEN
+${optionInstructions}
+
+## INHOUD VAN DE EXTRA DOCUMENTEN
+${docsBlock}`;
   },
 
   /* ---- AI prompt template ---- */
