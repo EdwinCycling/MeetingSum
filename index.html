@@ -34,7 +34,7 @@
       <span class="brand-text">Meeting<span class="accent">Sum</span></span>
     </a>
     <nav class="header-actions">
-      <button id="installBtn" class="install-btn" type="button" aria-label="Installeer MeetingSum" title="Installeer als app" hidden>
+      <button id="installBtn" class="install-btn" type="button" aria-label="Installeer MeetingSum" title="Installeer als app">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <span>Installeer</span>
       </button>
@@ -448,7 +448,7 @@
       <div class="footer-brand-block">
         <span class="footer-brand-mark">=</span>
         <div>
-          <p class="footer-copy" id="footerVersion">Versie 1.260704.3</p>
+          <p class="footer-copy" id="footerVersion">Versie 1.260704.4</p>
           <p class="footer-tagline" id="footerTagline">Ondernemend, professioneel en menselijk ontworpen voor slimmere samenvattingen.</p>
         </div>
       </div>
@@ -539,10 +539,10 @@
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="installExplainTitle">
       <div class="modal-icon">📲</div>
       <h3 id="installExplainTitle">Installeer MeetingSum als app</h3>
-      <p id="installExplainDesc" class="modal-desc">Na installatie opent MeetingSum als losse app op je apparaat, met sneller starten en direct toegang vanaf je startmenu of bureaublad.</p>
+      <div id="installExplainBody" class="modal-desc modal-rich"></div>
       <div class="modal-actions">
         <button id="installExplainCancel" class="btn btn-ghost" type="button">Annuleren</button>
-        <button id="installExplainConfirm" class="btn btn-primary" type="button">Doorgaan</button>
+        <button id="installExplainConfirm" class="btn btn-primary" type="button">Installeer nu</button>
       </div>
     </div>
   </div>
@@ -583,12 +583,13 @@
           id="introVideoFrame"
           src=""
           title="MeetingSum Intro Video"
-          loading="lazy"
+          loading="eager"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowfullscreen>
         </iframe>
       </div>
       <div class="modal-actions intro-video-actions">
+        <a id="introVideoYoutubeLink" class="btn btn-soft" href="https://youtu.be/4FZTvlB0qx0?si=u4wZUqd89F7bVb_U" target="_blank" rel="noopener noreferrer">Open op YouTube</a>
         <button id="introVideoCloseBottom" class="btn btn-ghost" type="button">Sluiten</button>
       </div>
     </div>

@@ -64,7 +64,7 @@
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
   const VERSION_FILE = "/version.json";
-  let currentAppVersion = "1.260704.3";
+  let currentAppVersion = "1.260704.4";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -1732,7 +1732,7 @@ Belangrijke regels:
     const modal = document.getElementById("introVideoModal");
     const frame = document.getElementById("introVideoFrame");
     if (!modal || !frame) return;
-    frame.src = "https://www.youtube-nocookie.com/embed/4FZTvlB0qx0?rel=0";
+    frame.src = "https://www.youtube.com/embed/4FZTvlB0qx0?rel=0&modestbranding=1&playsinline=1&autoplay=1";
     modal.hidden = false;
     setBodyFrozen(true);
   }
@@ -1740,9 +1740,11 @@ Belangrijke regels:
   function closeIntroVideoModal() {
     const modal = document.getElementById("introVideoModal");
     const frame = document.getElementById("introVideoFrame");
+    const link = document.getElementById("introVideoYoutubeLink");
     if (!modal) return;
     modal.hidden = true;
     if (frame) frame.src = "";
+    if (link) link.blur();
     if (canUnfreezeBody()) setBodyFrozen(false);
   }
 
@@ -2215,12 +2217,62 @@ Belangrijke regels:
   function requestInstallConfirmation() {
     return new Promise((resolve) => {
       const modal = document.getElementById("installExplainModal");
+      const body = document.getElementById("installExplainBody");
       const confirmBtn = document.getElementById("installExplainConfirm");
       const cancelBtn = document.getElementById("installExplainCancel");
       if (!modal || !confirmBtn || !cancelBtn) {
         resolve(true);
         return;
       }
+
+      const isMobile = window.matchMedia("(max-width: 768px)").matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      const hasPrompt = !!deferredPrompt;
+      const isIos = /iPhone|iPad|iPod/i.test(navigator.userAgent) && !window.MSStream;
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isEn = currentLangCode === "en";
+
+      if (body) {
+        if (isMobile) {
+          const mobileSteps = isIos
+            ? (isEn
+              ? ["Open MeetingSum in Safari.", "Tap the Share icon in Safari.", "Choose 'Add to Home Screen' to install the app."]
+              : ["Open MeetingSum in Safari.", "Tik op het deel-icoon in Safari.", "Kies 'Zet op beginscherm' om de app te installeren."])
+            : isAndroid
+              ? (isEn
+                ? ["Open MeetingSum in Chrome.", "Tap the menu (three dots).", "Choose 'Install app' or 'Add to Home screen'."]
+                : ["Open MeetingSum in Chrome.", "Tik op het menu (drie puntjes).", "Kies 'App installeren' of 'Toevoegen aan beginscherm'."])
+              : (isEn
+                ? ["Open MeetingSum in your mobile browser.", "Use the browser menu to add it to the home screen.", "If no install option appears, keep using it as a web app shortcut."]
+                : ["Open MeetingSum in je mobiele browser.", "Gebruik het browsermenu om de app toe te voegen aan het beginscherm.", "Zie je geen install-optie, gebruik het dan als snelkoppeling."]);
+          body.innerHTML = `
+            <p>${isEn ? "You are probably on a mobile device. Installing works a bit differently than on desktop." : "Je gebruikt waarschijnlijk een mobiel apparaat. Installeren werkt dan anders dan op pc."}</p>
+            <ul>
+              ${mobileSteps.map((step) => `<li>${step}</li>`).join("")}
+            </ul>
+          `;
+        } else {
+          body.innerHTML = hasPrompt
+            ? `
+              <p>${isEn ? "After installation, MeetingSum opens as a standalone app on your PC, with quick access from Start or the desktop." : "Na installatie opent MeetingSum als losse app op je pc, met snelle toegang via startmenu of bureaublad."}</p>
+              <ul>
+                <li>${isEn ? "Click <strong>Install now</strong> to open the browser install prompt." : "Klik op <strong>Installeer nu</strong> om de browser-installprompt te openen."}</li>
+                <li>${isEn ? "Confirm the installation when your browser asks." : "Bevestig de installatie wanneer je browser daarom vraagt."}</li>
+                <li>${isEn ? "MeetingSum will then be available as an app on your computer." : "Daarna staat MeetingSum als app beschikbaar op je computer."}</li>
+              </ul>
+            `
+            : `
+              <p>${isEn ? "MeetingSum can be used as an app on PC, but this browser is not currently providing a direct install prompt." : "MeetingSum kan als app gebruikt worden op pc, maar deze browser geeft op dit moment nog geen directe installprompt door."}</p>
+              <ul>
+                <li>${isEn ? "Try Chrome, Edge, or another Chromium-based browser." : "Probeer Chrome, Edge of een andere Chromium-browser."}</li>
+                <li>${isEn ? "Make sure the site is opened over HTTPS or localhost." : "Zorg dat de site via HTTPS of localhost geopend is."}</li>
+                <li>${isEn ? "Once the browser supports the install prompt, you can install it here directly." : "Zodra de browser de installprompt ondersteunt, kun je hier direct installeren."}</li>
+              </ul>
+            `;
+        }
+      }
+
+      confirmBtn.hidden = !hasPrompt || isMobile;
+      confirmBtn.textContent = hasPrompt ? t("install.modal.confirm") : t("confirm.no");
 
       const close = (result) => {
         modal.hidden = true;
@@ -3229,13 +3281,14 @@ Belangrijke regels:
     const installBtn = $("#installBtn");
     if (installBtn) {
       installBtn.addEventListener("click", async () => {
-        if (!deferredPrompt) return;
         const confirmed = await requestInstallConfirmation();
         if (!confirmed) return;
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-          deferredPrompt = null;
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          if (outcome === 'accepted') {
+            deferredPrompt = null;
+          }
         }
       });
     }
