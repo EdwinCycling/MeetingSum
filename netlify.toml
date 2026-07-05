@@ -6,6 +6,9 @@
   functions = "netlify/functions"
   publish    = "."         # Serve static files from repo root
 
+[build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "PIN_ITER,GEMINI_MODEL"
+
 [functions]
   node_bundler = "esbuild"
 
