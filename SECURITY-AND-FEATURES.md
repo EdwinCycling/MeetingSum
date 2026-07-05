@@ -8,7 +8,7 @@
 - ✅ Key zit **veilig in de server** (PowerShell backend)
 - ✅ Path traversal beschermd: `.env` kan NIET via HTTP opgehaald worden
 - ✅ Gevoelige bestanden (`.ps1`, `.bat`, `.log`) zijn VERBORGEN (HTTP 403)
-- ✅ AI-model is instelbaar via `GEMINI_MODEL` in `.env` of Netlify env vars
+- ✅ AI-model is instelbaar via `AI_MODEL` in `.env` of Netlify env vars
 
 ### 2. **PIN-Beveiliging (optioneel)**
 De API-aanroepen kunnen beschermd worden met een 4-cijferige PIN:
@@ -57,7 +57,7 @@ Standaard gebruikt MeetSum het ingestelde model uit je env-variabele.
 
 Wil je een ander model gebruiken, zet dan in `.env` of Netlify environment variables:
 ```
-GEMINI_MODEL=...
+AI_MODEL=...
 ```
 
 De app probeert eerst het ingestelde model en valt daarna terug op andere ondersteunde modellen.

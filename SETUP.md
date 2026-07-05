@@ -26,12 +26,12 @@ Maak in de map `c:\Users\ding375970\Documents\Apps\Summarizer` een nieuw bestand
 **Inhoud:**
 ```
 GOOGLE_API_KEY=jouw_ai_api_key_hier
-GEMINI_MODEL=jouw_ai_model_hier
+AI_MODEL=jouw_ai_model_hier
 ```
 
 Vervang `jouw_ai_api_key_hier` met je echte sleutel.
 
-Wil je een ander model gebruiken, pas dan alleen `GEMINI_MODEL` aan.
+Wil je een ander model gebruiken, pas dan alleen `AI_MODEL` aan.
 
 ⚠️ **LET OP**: 
 - Dit bestand is in `.gitignore` (niet committen naar Git!)

@@ -7,7 +7,7 @@
   publish    = "."         # Serve static files from repo root
 
 [build.environment]
-  SECRETS_SCAN_OMIT_KEYS = "PIN_ITER,GEMINI_MODEL"
+  SECRETS_SCAN_OMIT_KEYS = "PIN_ITER"
 
 [functions]
   node_bundler = "esbuild"

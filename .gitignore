@@ -9,7 +9,6 @@ server-with-api.ps1
 server.js
 set-pin.ps1
 create-shortcut.ps1
-test-gemini-api.ps1
 START-MEETSUM.bat
 
 # ---- OS files ----
