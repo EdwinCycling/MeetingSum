@@ -48,16 +48,16 @@ Edit je `.env` bestand en verwijder deze regels:
 ```
 PIN_HASH=...
 PIN_SALT=...
-PIN_ITER=200000
+PIN_ITER=...
 ```
 
 ## 🤖 GEMINI MODEL SELECTIE
 
-Standaard gebruikt MeetSum `gemini-3.5-flash`.
+Standaard gebruikt MeetSum het ingestelde Gemini-model uit je env-variabele.
 
 Wil je een ander model gebruiken, zet dan in `.env` of Netlify environment variables:
 ```
-GEMINI_MODEL=gemini-3.5-flash
+GEMINI_MODEL=...
 ```
 
 De app probeert eerst het ingestelde model en valt daarna terug op andere ondersteunde Gemini-modellen.
@@ -142,7 +142,7 @@ De app probeert eerst het ingestelde model en valt daarna terug op andere onders
 | Component | Status |
 |-----------|--------|
 | Server | ✅ Draaiend op localhost:3000 |
-| Google Gemini API | ✅ Verbonden (gemini-3.5-flash) |
+| Google Gemini API | ✅ Verbonden (ingesteld Gemini-model) |
 | Path Traversal Bescherming | ✅ Aktief |
 | Sensitive File Blocking | ✅ Aktief |
 | PIN-beveiliging | ⚪ Beschikbaar (niet ingesteld) |

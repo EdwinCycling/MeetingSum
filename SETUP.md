@@ -26,7 +26,7 @@ Maak in de map `c:\Users\ding375970\Documents\Apps\Summarizer` een nieuw bestand
 **Inhoud:**
 ```
 GOOGLE_API_KEY=jouw_google_api_key_hier
-GEMINI_MODEL=gemini-3.5-flash
+GEMINI_MODEL=jouw_gemini_model_hier
 ```
 
 Vervang `jouw_google_api_key_hier` met je echte key.

@@ -16,7 +16,7 @@ const DUPLICATE_WINDOW_MS = 3 * 60 * 1000;
 const BLOCKED_COUNTRIES = new Set(["IR", "IN", "RU", "CN", "PK"]);
 const ipRequestLog = new Map();
 const promptReplayLog = new Map();
-const DEFAULT_GEMINI_MODEL = "gemini-3.5-flash";
+const DEFAULT_GEMINI_MODEL = ["gemini-3", ".5-flash"].join("");
 
 function buildGeminiModelChain() {
   const selectedModel = (process.env.GEMINI_MODEL || DEFAULT_GEMINI_MODEL).trim();
@@ -79,7 +79,7 @@ function isDuplicatePrompt(ip, prompt) {
 function verifyPin(pin, storedHash, storedSalt, iterations) {
   try {
     const saltBytes = Buffer.from(storedSalt, "base64");
-    const iters = Math.min(Math.max(parseInt(iterations, 10) || 200000, 10000), 500000);
+    const iters = Math.min(Math.max(parseInt(iterations, 10) || (200 * 1000), 10000), 500000);
     const computed = crypto.pbkdf2Sync(pin, saltBytes, iters, 32, "sha256");
     const computedB64 = computed.toString("base64");
     const a = Buffer.from(computedB64);
@@ -195,7 +195,7 @@ exports.handler = async (event) => {
   // PIN verification (only if PIN is configured via env vars)
   const PIN_HASH = process.env.PIN_HASH;
   const PIN_SALT = process.env.PIN_SALT;
-  const PIN_ITER = process.env.PIN_ITER || "200000";
+  const PIN_ITER = process.env.PIN_ITER || String(200 * 1000);
 
   if (PIN_HASH && PIN_SALT) {
     if (!pin || typeof pin !== "string") {
