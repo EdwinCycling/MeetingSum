@@ -5,7 +5,7 @@ Copy these values into Netlify > Site settings > Build & deploy > Environment va
 | Variable | Value | Hidden |
 |---|---|---|
 | GOOGLE_API_KEY | your_google_api_key_here | Yes |
-| GEMINI_MODEL | your_gemini_model_here | No |
+| GEMINI_MODEL | your_ai_model_here | No |
 | PIN_HASH | your_pbkdf2_hash_here | Yes |
 | PIN_SALT | your_base64_salt_here | Yes |
 | PIN_ITER | your_pin_iterations_here | No |
@@ -16,7 +16,7 @@ Use this block as a checklist while entering the values in Netlify:
 
 ```text
 GOOGLE_API_KEY=your_google_api_key_here
-GEMINI_MODEL=your_gemini_model_here
+GEMINI_MODEL=your_ai_model_here
 PIN_HASH=your_pbkdf2_hash_here
 PIN_SALT=your_base64_salt_here
 PIN_ITER=your_pin_iterations_here

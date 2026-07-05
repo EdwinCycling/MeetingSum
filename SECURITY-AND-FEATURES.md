@@ -8,7 +8,7 @@
 - ✅ Key zit **veilig in de server** (PowerShell backend)
 - ✅ Path traversal beschermd: `.env` kan NIET via HTTP opgehaald worden
 - ✅ Gevoelige bestanden (`.ps1`, `.bat`, `.log`) zijn VERBORGEN (HTTP 403)
-- ✅ Gemini-model is instelbaar via `GEMINI_MODEL` in `.env` of Netlify env vars
+- ✅ AI-model is instelbaar via `GEMINI_MODEL` in `.env` of Netlify env vars
 
 ### 2. **PIN-Beveiliging (optioneel)**
 De API-aanroepen kunnen beschermd worden met een 4-cijferige PIN:
@@ -19,7 +19,7 @@ De API-aanroepen kunnen beschermd worden met een 4-cijferige PIN:
 
 ### 3. **Bestand Uploads**
 - ✅ Bestanden blijven **100% lokaal** in je browser
-- ✅ **Nooit** naar internet gestuurd (behalve de final prompt naar Gemini)
+- ✅ **Nooit** naar internet gestuurd (behalve de final prompt naar je AI-omgeving)
 - ✅ Ondersteunde formaten: `.txt` · `.md` · `.pdf` · `.docx`
 - ✅ Max 15 MB per bestand
 
@@ -51,16 +51,16 @@ PIN_SALT=...
 PIN_ITER=...
 ```
 
-## 🤖 GEMINI MODEL SELECTIE
+## 🤖 MODEL SELECTIE
 
-Standaard gebruikt MeetSum het ingestelde Gemini-model uit je env-variabele.
+Standaard gebruikt MeetSum het ingestelde model uit je env-variabele.
 
 Wil je een ander model gebruiken, zet dan in `.env` of Netlify environment variables:
 ```
 GEMINI_MODEL=...
 ```
 
-De app probeert eerst het ingestelde model en valt daarna terug op andere ondersteunde Gemini-modellen.
+De app probeert eerst het ingestelde model en valt daarna terug op andere ondersteunde modellen.
 
 ---
 
@@ -91,7 +91,7 @@ De app probeert eerst het ingestelde model en valt daarna terug op andere onders
 - Bestand wordt **in de browser geparst**
 - Tekst geëxtraheerd en in het transcript veld gezet
 - Jij kunt het nog **handmatig bewerken**
-- Geen data naar internet (behalve naar Gemini voor AI)
+- Geen data naar internet (behalve naar je AI-omgeving voor analyse)
 
 ---
 
@@ -130,7 +130,7 @@ De app probeert eerst het ingestelde model en valt daarna terug op andere onders
    - Klik "Genereer AI-Prompt"
    - Klik "Genereer met AI"
    - (PIN wordt gevraagd als je die hebt ingesteld)
-   - Wacht op Gemini response
+   - Wacht op AI response
 
 6. **Download**
    - Klik "📥 Download .md" of ".txt"
@@ -142,7 +142,7 @@ De app probeert eerst het ingestelde model en valt daarna terug op andere onders
 | Component | Status |
 |-----------|--------|
 | Server | ✅ Draaiend op localhost:3000 |
-| Google Gemini API | ✅ Verbonden (ingesteld Gemini-model) |
+| AI API | ✅ Verbonden (ingesteld model) |
 | Path Traversal Bescherming | ✅ Aktief |
 | Sensitive File Blocking | ✅ Aktief |
 | PIN-beveiliging | ⚪ Beschikbaar (niet ingesteld) |

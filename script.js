@@ -64,7 +64,7 @@
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
   const VERSION_FILE = "/version.json";
-  let currentAppVersion = "1.260704.6";
+  let currentAppVersion = "1.260705.2";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -81,8 +81,90 @@
   const ANALYSIS_DEFAULTS = {
     mode: "sections",
     option: "open-questions",
-    tab: "reports"
+    tab: "insights"
   };
+
+  const ANALYSIS_TAB_DEFS = [
+    { id: "strategy" },
+    { id: "organization" },
+    { id: "process" },
+    { id: "risk" },
+    { id: "insights" },
+    { id: "content" },
+    { id: "education" },
+    { id: "tools" }
+  ];
+
+  const ANALYSIS_TAB_BY_OPTION_ID = {
+    "bcg-matrix": "strategy",
+    "swot": "strategy",
+    "porter-five-forces": "strategy",
+    "pestel": "strategy",
+    "blue-ocean": "strategy",
+    "mckinsey-horizons": "strategy",
+    "ansoff": "strategy",
+    "ge-mckinsey": "strategy",
+
+    "mckinsey-7s": "organization",
+    "mckinsey-influence": "organization",
+    "adkar": "organization",
+    "kotter-8": "organization",
+    "stakeholder-power-interest": "organization",
+    "cultural-web": "organization",
+    "strategic-alignment": "organization",
+
+    "value-chain": "process",
+    "mece-issue-tree": "process",
+    "sipoc": "process",
+    "ishikawa-5whys": "process",
+    "kepner-tregoe": "process",
+    "moscow": "process",
+    "raci": "process",
+    "timeline": "process",
+    "customer-journey": "process",
+
+    "fmea": "risk",
+    "risk-mitigation": "risk",
+    "cost-benefit-roi": "risk",
+    "trl": "risk",
+    "previous-agreements": "risk",
+
+    "open-questions": "insights",
+    "consensus-friction": "insights",
+    "hidden-ideas": "insights",
+    "voice-of-customer": "insights",
+    "communication-dynamics": "insights",
+    "followup": "insights",
+    "keyword-analysis": "insights",
+    "sentiment-analysis": "insights",
+
+    "faq": "content",
+    "business-case": "content",
+    "mckinsey-executive-summary": "content",
+    "blog-post": "content",
+    "email": "content",
+    "storytelling": "content",
+    "social-media-post": "content",
+    "presentation-json": "content",
+
+    "learning-document": "education",
+    "explain": "education",
+    "teach-topics": "education",
+    "teach-content": "education",
+    "show-content": "education",
+
+    "quiz": "tools",
+    "dashboard": "tools"
+  };
+
+  function getAnalysisTabForOption(optionId) {
+    return ANALYSIS_TAB_BY_OPTION_ID[optionId] || ANALYSIS_DEFAULTS.tab;
+  }
+
+  function getAnalysisTabsForOptions(options) {
+    const tabSet = new Set(options.map((opt) => opt.tab));
+    return ANALYSIS_TAB_DEFS.filter((tab) => tabSet.has(tab.id));
+  }
 
   const ANALYSIS_OPTION_DEFS = [
     {
@@ -446,6 +528,156 @@
       promptEn: "FOLLOW-UP QUESTIONS: Formulate exactly 5 strong follow-up questions based on the transcript. For each: relevance, expected decision/insight, and trigger from the discussion."
     },
     {
+      id: "faq",
+      group: "other",
+      titleNl: "FAQ (Top 10)",
+      titleEn: "FAQ (Top 10)",
+      descNl: "Maak 10 veelgestelde vragen met korte antwoorden en prioriteit.",
+      descEn: "Create 10 frequently asked questions with concise answers and priority.",
+      promptNl: "FAQ: Maak 10 FAQ-items (vraag + antwoord) uit het transcript. Gebruik prioriteit met 1-5 sterren, inclusief halve ster (★½). Zet de sterren voor elke vraag. Houd vragen kort, antwoorden feitelijk en bondig, en sorteer van meest naar minst belangrijk.",
+      promptEn: "FAQ: Create 10 FAQ items (question + answer) from the transcript. Use a 1-5 star importance ranking with half stars allowed (★½). Place stars before each question. Keep questions short, answers concise and factual, and order from most to least important."
+    },
+    {
+      id: "learning-document",
+      group: "other",
+      titleNl: "Leerdocument",
+      titleEn: "Learning Document",
+      descNl: "Vat de inhoud samen als leerbaar document met gerankte inzichten.",
+      descEn: "Turn the transcript into a structured learning document with ranked insights.",
+      promptNl: "LEERDOCUMENT: Maak een gestructureerd leerdocument met duidelijke koppen en bullets. Neem belangrijkste takeaways op met ranking 1-5 sterren (halve ster toegestaan, ★½), korte toelichting per punt, en sorteer van meest naar minst belangrijk.",
+      promptEn: "LEARNING DOCUMENT: Create a structured learning document with clear headings and bullet points. Include key takeaways ranked 1-5 stars (half stars allowed, ★½), a short explanation per point, and order from most to least important."
+    },
+    {
+      id: "keyword-analysis",
+      group: "other",
+      titleNl: "Keyword Analyse",
+      titleEn: "Keyword Analysis",
+      descNl: "Groepeer belangrijkste keywords in 5-7 thema's (JSON).",
+      descEn: "Group key keywords into 5-7 topics (JSON output).",
+      promptNl: "KEYWORD ANALYSE: Identificeer de meest frequente en belangrijkste keywords. Groepeer ze in 5-7 relevante onderwerpen. Geef per onderwerp een korte naam en de bijbehorende keywords. Retourneer alleen geldige JSON.",
+      promptEn: "KEYWORD ANALYSIS: Identify the most frequent and important keywords. Group them into 5-7 relevant topics. For each topic provide a short descriptive name and associated keywords. Return valid JSON only."
+    },
+    {
+      id: "sentiment-analysis",
+      group: "other",
+      titleNl: "Sentiment Analyse",
+      titleEn: "Sentiment Analysis",
+      descNl: "Geef sentiment-samenvatting en conclusie als JSON.",
+      descEn: "Return sentiment summary and conclusion as JSON.",
+      promptNl: "SENTIMENT ANALYSE: Analyseer het sentiment in het transcript en retourneer een JSON-object met velden 'summary' (korte feitelijke samenvatting van sentimenten) en 'conclusion' (algemene toon en sfeer). Voeg geen transcript of metadata toe.",
+      promptEn: "SENTIMENT ANALYSIS: Analyze transcript sentiment and return a JSON object with fields 'summary' (short factual summary of sentiments) and 'conclusion' (overall tone and atmosphere). Do not include transcript text or metadata."
+    },
+    {
+      id: "social-media-post",
+      group: "other",
+      titleNl: "Social Media Post",
+      titleEn: "Social Media Post",
+      descNl: "Schrijf een platformgerichte post met duidelijke CTA.",
+      descEn: "Create a platform-specific post with a clear call to action.",
+      promptNl: "SOCIAL MEDIA POST: Maak een sterke social-post op basis van het transcript. Begin met een pakkende openingszin, gebruik concrete details, vermijd metadata en technische ruis, en sluit af met een duidelijke call-to-action of vraag. Houd de toon professioneel en actiegericht.",
+      promptEn: "SOCIAL MEDIA POST: Create a strong social post based on the transcript. Start with a compelling opening line, use concrete details, avoid metadata and technical noise, and end with a clear call to action or question. Keep the tone professional and action-oriented."
+    },
+    {
+      id: "business-case",
+      group: "reports",
+      titleNl: "Business Case",
+      titleEn: "Business Case",
+      descNl: "Schrijf een overtuigende business case met vaste structuur.",
+      descEn: "Write a persuasive business case using a fixed structure.",
+      promptNl: "BUSINESS CASE: Schrijf een overtuigende business case met de structuur: Titel, Probleem, Oplossing, Verwachte Impact (kwantitatief en kwalitatief), Kosten/Baten analyse, Conclusie. Schrijf helder, zakelijk en besluitgericht.",
+      promptEn: "BUSINESS CASE: Write a persuasive business case with this structure: Title, Problem, Solution, Expected Impact (quantitative and qualitative), Cost-Benefit Analysis, Conclusion. Write clearly, business-like, and decision-oriented."
+    },
+    {
+      id: "presentation-json",
+      group: "other",
+      titleNl: "Presentatie JSON",
+      titleEn: "Presentation JSON",
+      descNl: "Genereer gestructureerde presentatiecontent als JSON.",
+      descEn: "Generate structured presentation content as JSON.",
+      promptNl: "PRESENTATIE JSON: Genereer een professioneel en logisch presentatievoorstel op basis van het transcript en retourneer alleen geldige JSON met slidestructuur, kernboodschap, action points en visuele aanwijzingen. Houd het compact en zakelijk.",
+      promptEn: "PRESENTATION JSON: Generate a professional and coherent presentation proposal from the transcript and return valid JSON only, including slide structure, core message, action points, and visual guidance. Keep it concise and business-oriented."
+    },
+    {
+      id: "mckinsey-executive-summary",
+      group: "reports",
+      titleNl: "McKinsey Executive Summary",
+      titleEn: "McKinsey Executive Summary",
+      descNl: "Ultra-korte OSC-R-B-C executive summary in JSON.",
+      descEn: "Ultra-concise OSC-R-B-C executive summary in JSON.",
+      promptNl: "MCKINSEY EXECUTIVE SUMMARY: Maak een extreem beknopte one-slide samenvatting in OSC-R-B-C formaat (Objective, Situation, Complication, Resolution, Benefits, Call to Action). Gebruik per sectie maximaal 1-3 korte zinnen. Indien niet expliciet besproken: 'Niet besproken'. Retourneer alleen geldige JSON met keys: objective, situation, complication, resolution, benefits, call_to_action.",
+      promptEn: "MCKINSEY EXECUTIVE SUMMARY: Create an extremely concise one-slide summary in OSC-R-B-C format (Objective, Situation, Complication, Resolution, Benefits, Call to Action). Use at most 1-3 short sentences per section. If not explicitly discussed, output 'Not discussed'. Return valid JSON only with keys: objective, situation, complication, resolution, benefits, call_to_action."
+    },
+    {
+      id: "blog-post",
+      group: "other",
+      titleNl: "Blog",
+      titleEn: "Blog",
+      descNl: "Schrijf een SEO-vriendelijke blogpost vanuit transcriptinzichten.",
+      descEn: "Write an SEO-friendly blog post from transcript insights.",
+      promptNl: "BLOG: Schrijf direct een volledige blogpost die start met een pakkende H1-titel. Gebruik 2-4 logische H2-secties, heldere paragrafen, eventueel bullets, een korte conclusie en optionele call-to-action. Toon: informatief, objectief en betrokken.",
+      promptEn: "BLOG: Write a complete blog post starting directly with a compelling H1 title. Use 2-4 logical H2 sections, clear paragraphs, optional bullet lists, a short conclusion, and an optional call to action. Tone: informative, objective, and engaging."
+    },
+    {
+      id: "email",
+      group: "other",
+      titleNl: "E-mail",
+      titleEn: "Email",
+      descNl: "Zet de kernpunten om naar een professionele e-mail.",
+      descEn: "Turn key points into a professional email.",
+      promptNl: "E-MAIL: Schrijf direct een professionele e-mail op basis van het transcript met: duidelijke onderwerpregel, passende aanhef, kernboodschap met belangrijkste punten en een heldere afsluiting.",
+      promptEn: "EMAIL: Write a professional email directly from the transcript with: a clear subject line, suitable greeting, core message with key points, and a clear closing."
+    },
+    {
+      id: "storytelling",
+      group: "other",
+      titleNl: "Storytelling",
+      titleEn: "Storytelling",
+      descNl: "Transformeer meetinginhoud naar een verhalende vorm.",
+      descEn: "Transform meeting content into a narrative format.",
+      promptNl: "STORYTELLING: Vorm het transcript om tot een verhalende tekst met setting, spanning, dilemma's en duidelijke uitkomst of cliffhanger. Gebruik een levendige, toegankelijke stijl en verwerk relevante quote-fragmenten.",
+      promptEn: "STORYTELLING: Transform the transcript into a narrative text with setting, tension, dilemmas, and a clear outcome or cliffhanger. Use an accessible vivid style and include relevant quote fragments."
+    },
+    {
+      id: "explain",
+      group: "other",
+      titleNl: "Uitleggen",
+      titleEn: "Explain",
+      descNl: "Leg een kernonderwerp helder uit vanuit het transcript.",
+      descEn: "Explain a core topic clearly using transcript context.",
+      promptNl: "UITLEGGEN: Analyseer het transcript en geef een duidelijke uitleg van het belangrijkste concept of focusgebied. Schrijf direct inhoudelijk, gestructureerd en praktisch toepasbaar.",
+      promptEn: "EXPLAIN: Analyze the transcript and provide a clear explanation of the most relevant concept or focus area. Write directly, structured, and practically useful."
+    },
+    {
+      id: "teach-topics",
+      group: "other",
+      titleNl: "Teach Me Onderwerpen",
+      titleEn: "Teach Me Topics",
+      descNl: "Extraheer 0-10 educatieve onderwerpen (JSON-array).",
+      descEn: "Extract 0-10 teachable educational topics (JSON array).",
+      promptNl: "TEACH ME TOPICS: Extraheer 0-10 educatieve onderwerpen uit het transcript die geschikt zijn om te leren. Geef per onderwerp id, title en description. Retourneer alleen een geldige JSON-array.",
+      promptEn: "TEACH ME TOPICS: Extract 0-10 educational topics from the transcript that are suitable for learning. Provide id, title, and description per topic. Return a valid JSON array only."
+    },
+    {
+      id: "teach-content",
+      group: "other",
+      titleNl: "Teach Me Inhoud",
+      titleEn: "Teach Me Content",
+      descNl: "Schrijf educatieve inhoud voor het belangrijkste onderwerp.",
+      descEn: "Create educational content for the most relevant topic.",
+      promptNl: "TEACH ME CONTENT: Kies het meest relevante leeronderwerp uit het transcript en schrijf volledige educatieve content. Gebruik ook algemene kennis, structureer helder met koppen en maak de uitleg boeiend en didactisch.",
+      promptEn: "TEACH ME CONTENT: Select the most relevant learning topic from the transcript and write complete educational content. Use general knowledge as needed, structure clearly with headings, and keep it engaging and didactic."
+    },
+    {
+      id: "show-content",
+      group: "other",
+      titleNl: "Show Me (TED & Nieuws)",
+      titleEn: "Show Me (TED & News)",
+      descNl: "Zoek relevante TED-talks en nieuwsartikelen (JSON).",
+      descEn: "Find relevant TED Talks and news articles (JSON).",
+      promptNl: "SHOW ME CONTENT: Geef 3-5 relevante TED Talks en 3-5 relevante nieuwsartikelen bij het kernonderwerp uit het transcript. Rangschik op relevantie (1-5 sterren), voeg korte beschrijving toe en retourneer alleen JSON met keys: tedTalks en newsArticles.",
+      promptEn: "SHOW ME CONTENT: Provide 3-5 relevant TED Talks and 3-5 relevant news articles for the main topic from the transcript. Sort by relevance (1-5 stars), add short descriptions, and return JSON only with keys: tedTalks and newsArticles."
+    },
+    {
       id: "quiz",
       group: "other",
       titleNl: "Quiz",
@@ -496,6 +728,7 @@
     return ANALYSIS_OPTION_DEFS.map((opt) => ({
       id: opt.id,
       group: opt.group,
+      tab: getAnalysisTabForOption(opt.id),
       title: isEn ? opt.titleEn : opt.titleNl,
       desc: isEn ? opt.descEn : opt.descNl,
       prompt: isEn ? opt.promptEn : opt.promptNl
@@ -684,12 +917,7 @@
     set("#modeSectionsBtn",       "step2.mode.sections");
     set("#modeAnalysisBtn",       "step2.mode.analysis");
     set("#analysisIntro",         "step2.analysis.intro");
-    set("#analysisTabReports",    "step2.analysis.tab.reports");
-    set("#analysisTabOther",      "step2.analysis.tab.other");
-    set("#analysisReportsTitle",  "step2.analysis.group.reports.title");
-    set("#analysisReportsDesc",   "step2.analysis.group.reports.desc");
-    set("#analysisOtherTitle",    "step2.analysis.group.other.title");
-    set("#analysisOtherDesc",     "step2.analysis.group.other.desc");
+    setAttr("#analysisCategoryTabs", "aria-label", "step2.analysis.tabs.aria");
     set("#selectAll",             "step2.selectAll");
     set("#selectNone",            "step2.selectNone");
     set("#selectDefault",         "step2.selectDefault");
@@ -751,7 +979,6 @@
     set("#generateBtn",        "step4.generateBtn");
     set("#step4-promptTitle",  "step4.promptTitle");
     set("#copyPrompt",         "step4.copyPrompt");
-    set("#generateWithAI",     "step4.generateWithAI");
     set("#step4-hint",         "step4.hint");
     set("#sidebarTitle",       "step4.sidebarTitle");
     set("#sidebarOutputTitle", "step4.sidebarOutputTitle");
@@ -776,7 +1003,6 @@
     // Footer
     const footerVersion = document.getElementById("footerVersion");
     if (footerVersion) footerVersion.textContent = `${t("footer.version")} ${currentAppVersion}`;
-    set("#footerTagline", "footer.tagline");
     set("#footerDisclaimer", "footer.disclaimer");
     set("#footerCookies", "footer.cookies");
     set("#footerTeam", "footer.team");
@@ -855,60 +1081,6 @@
     startBtn.textContent = sessionWasStarted ? t("hero.cta.newSession") : t("hero.cta.start");
   }
 
-  async function resetSessionWorkflow() {
-    transcriptEl.value = "";
-    const status = $("#fileStatus");
-    if (status) {
-      status.hidden = true;
-      status.textContent = "";
-      status.classList.remove("error");
-    }
-    extraDocs = [];
-    scannerItems = [];
-    prefs.analysis = { ...ANALYSIS_DEFAULTS };
-    prefs.selectedTags = [];
-    CONTEXT_OPTION_DEFS.forEach((o) => {
-      prefs.contextOptions[o.id] = false;
-    });
-    savePrefs(prefs);
-
-    if (promptOutput) promptOutput.textContent = "";
-    if (promptResult) promptResult.hidden = true;
-
-    rawView = false;
-    aiResultEl.value = "";
-    aiResultEl.disabled = true;
-    const editBtn = $("#editResult");
-    if (editBtn) {
-      editBtn.hidden = true;
-      editBtn.textContent = t("step5.editBtn");
-    }
-
-    renderSections();
-    renderContextOptions();
-    renderExtraDocsList();
-    renderScannerTable();
-    renderTagManager();
-    updateCharCount();
-    updatePreview();
-    updateStepStates();
-    updateSidebar();
-    updateHeroStartButtonLabel();
-
-    // Re-load stored scanner folder handle and verify permission state for the new session.
-    scannerDirectoryHandle = null;
-    const scanBtn = document.getElementById("scanLocalFolderBtn");
-    if (scanBtn) scanBtn.disabled = true;
-    setScannerStatus("Lokale map wordt opnieuw gecontroleerd...", false);
-    await loadPersistedLocalFolder();
-  }
-
-  /* ---------- Preferences (localStorage) ---------- */
-  function loadPrefs() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-    } catch {
-      return {};
     }
   }
   function savePrefs(prefs) {
@@ -1012,28 +1184,22 @@
   }
 
   function setAnalysisTab(tab) {
-    const nextTab = tab === "other" ? "other" : "reports";
+    const validTabs = ANALYSIS_TAB_DEFS.map((item) => item.id);
+    const nextTab = validTabs.includes(tab) ? tab : ANALYSIS_DEFAULTS.tab;
     prefs.analysis.tab = nextTab;
     savePrefs(prefs);
   }
 
   function renderAnalysisTab() {
-    const activeTab = prefs.analysis.tab === "other" ? "other" : "reports";
-    const tabReports = document.getElementById("analysisTabReports");
-    const tabOther = document.getElementById("analysisTabOther");
-    const panelReports = document.getElementById("analysisPanelReports");
-    const panelOther = document.getElementById("analysisPanelOther");
-
-    if (tabReports) {
-      tabReports.classList.toggle("is-active", activeTab === "reports");
-      tabReports.setAttribute("aria-selected", activeTab === "reports" ? "true" : "false");
-    }
-    if (tabOther) {
-      tabOther.classList.toggle("is-active", activeTab === "other");
-      tabOther.setAttribute("aria-selected", activeTab === "other" ? "true" : "false");
-    }
-    if (panelReports) panelReports.hidden = activeTab !== "reports";
-    if (panelOther) panelOther.hidden = activeTab !== "other";
+    const activeTab = prefs.analysis.tab || ANALYSIS_DEFAULTS.tab;
+    document.querySelectorAll("[data-analysis-tab]").forEach((tabEl) => {
+      const isActive = tabEl.dataset.analysisTab === activeTab;
+      tabEl.classList.toggle("is-active", isActive);
+      tabEl.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+    document.querySelectorAll("[data-analysis-panel]").forEach((panelEl) => {
+      panelEl.hidden = panelEl.dataset.analysisPanel !== activeTab;
+    });
   }
 
   function updateStep3Visibility() {
@@ -1043,18 +1209,54 @@
   }
 
   function renderAnalysisOptions() {
-    const reportsGrid = document.getElementById("analysisReportsGrid");
-    const otherGrid = document.getElementById("analysisOtherGrid");
-    if (!reportsGrid || !otherGrid) return;
-
-    reportsGrid.innerHTML = "";
-    otherGrid.innerHTML = "";
+    const tabsWrap = document.getElementById("analysisCategoryTabs");
+    const groupsWrap = document.getElementById("analysisGroups");
+    if (!tabsWrap || !groupsWrap) return;
 
     const options = getAnalysisOptions();
     if (!options.some((opt) => opt.id === prefs.analysis.option)) {
       prefs.analysis.option = ANALYSIS_DEFAULTS.option;
       savePrefs(prefs);
     }
+
+    const tabs = getAnalysisTabsForOptions(options);
+    if (!tabs.length) {
+      tabsWrap.innerHTML = "";
+      groupsWrap.innerHTML = "";
+      return;
+    }
+
+    if (!tabs.some((tab) => tab.id === prefs.analysis.tab)) {
+      prefs.analysis.tab = getAnalysisTabForOption(prefs.analysis.option);
+      savePrefs(prefs);
+    }
+
+    tabsWrap.innerHTML = tabs.map((tab) => `
+      <button
+        class="analysis-category-tab"
+        type="button"
+        role="tab"
+        data-analysis-tab="${tab.id}"
+        aria-selected="false"
+      >${t("step2.analysis.tab." + tab.id)}</button>
+    `).join("");
+
+    groupsWrap.innerHTML = tabs.map((tab) => `
+      <section class="analysis-group" data-analysis-panel="${tab.id}" hidden>
+        <div class="analysis-group-head">
+          <h3>${t("step2.analysis.group." + tab.id + ".title")}</h3>
+          <p>${t("step2.analysis.group." + tab.id + ".desc")}</p>
+        </div>
+        <div class="analysis-options-grid" data-analysis-grid="${tab.id}"></div>
+      </section>
+    `).join("");
+
+    tabsWrap.querySelectorAll("[data-analysis-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        setAnalysisTab(btn.dataset.analysisTab);
+        renderAnalysisTab();
+      });
+    });
 
     options.forEach((opt) => {
       const card = document.createElement("label");
@@ -1064,23 +1266,22 @@
         <input type="radio" name="analysisOption" value="${opt.id}" ${selected ? "checked" : ""} hidden />
         <span class="analysis-title">${opt.title}</span>
         <span class="analysis-sub">${opt.desc}</span>
-        <span class="analysis-focus">Promptfocus: ${opt.prompt}</span>`;
+        <span class="analysis-focus">${t("step2.analysis.focus")}: ${opt.prompt}</span>`;
 
       const input = card.querySelector("input[name='analysisOption']");
       input.addEventListener("change", () => {
         prefs.analysis.mode = "analysis";
         prefs.analysis.option = opt.id;
-        prefs.analysis.tab = opt.group === "other" ? "other" : "reports";
+        prefs.analysis.tab = opt.tab;
         savePrefs(prefs);
         renderStep2Mode();
         updateStepStates();
         updateSidebar();
       });
 
-      if (opt.group === "reports") {
-        reportsGrid.appendChild(card);
-      } else {
-        otherGrid.appendChild(card);
+      const targetGrid = groupsWrap.querySelector(`[data-analysis-grid="${opt.tab}"]`);
+      if (targetGrid) {
+        targetGrid.appendChild(card);
       }
     });
 
@@ -1587,59 +1788,6 @@ Belangrijke regels:
     return (await handle.requestPermission({ mode })) === "granted";
   }
 
-  async function selectLocalFolder() {
-    if (!supportsDirectoryPicker()) {
-      setScannerStatus("Deze browser ondersteunt geen lokale mapscanner (showDirectoryPicker).", true);
-      return;
-    }
-    try {
-      const handle = await window.showDirectoryPicker({ mode: "read" });
-      const permitted = await ensureScannerPermission(handle, false);
-      if (!permitted) {
-        setScannerStatus("Toegang tot de map is geweigerd.", true);
-        return;
-      }
-      scannerDirectoryHandle = handle;
-      await saveDirectoryHandleToDb(handle);
-      setScannerStatus(`Geselecteerde map: ${handle.name}`, false);
-      const scanBtn = document.getElementById("scanLocalFolderBtn");
-      if (scanBtn) scanBtn.disabled = false;
-    } catch (err) {
-      if (err && err.name === "AbortError") return;
-      setScannerStatus("Mapselectie mislukt.", true);
-    }
-  }
-
-  async function loadPersistedLocalFolder() {
-    if (!supportsDirectoryPicker()) return;
-    const handle = await loadDirectoryHandleFromDb();
-    if (!handle) {
-      setScannerStatus("Nog geen lokale map geselecteerd.", false);
-      return;
-    }
-    const permitted = await ensureScannerPermission(handle, false);
-    if (!permitted) {
-      setScannerStatus(`Eerder gekozen map gevonden (${handle.name}), maar toestemming moet opnieuw worden gegeven.`, false);
-      return;
-    }
-    scannerDirectoryHandle = handle;
-    setScannerStatus(`Geselecteerde map: ${handle.name}`, false);
-    const scanBtn = document.getElementById("scanLocalFolderBtn");
-    if (scanBtn) scanBtn.disabled = false;
-  }
-
-  function isSupportedScannerFile(name) {
-    return /\.(txt|docx|pdf)$/i.test(name || "");
-  }
-
-  async function collectScannerFiles(directoryHandle, out) {
-    for await (const [, entry] of directoryHandle.entries()) {
-      if (entry.kind === "file" && isSupportedScannerFile(entry.name)) {
-        out.push(entry);
-      }
-      if (entry.kind === "directory") {
-        await collectScannerFiles(entry, out);
-      }
     }
   }
 
@@ -2163,13 +2311,6 @@ Belangrijke regels:
     promptOutput.textContent = prompt;
     promptResult.hidden = false;
 
-    // Show AI button if we have a transcript
-    if (transcriptEl.value.trim()) {
-      $("#generateWithAI").hidden = false;
-    } else {
-      $("#generateWithAI").hidden = true;
-    }
-
     promptResult.scrollIntoView({ behavior: "smooth", block: "nearest" });
     updateHeroStartButtonLabel();
   }
@@ -2298,60 +2439,6 @@ Belangrijke regels:
       setBodyFrozen(true);
       confirmBtn.focus();
     });
-  }
-
-  async function callGeminiAPI(prompt) {
-    const btn = $("#generateWithAI");
-    const originalText = btn.textContent;
-
-    // If a PIN is required and we don't have a verified one yet, ask for it first.
-    if (pinRequired && !sessionPin) {
-      const ok = await requestPin();
-      if (!ok) return; // user cancelled
-    }
-
-    btn.disabled = true;
-    btn.textContent = t("btn.generating");
-    showLoader();
-
-    try {
-      const response = await fetch("/api/summarize", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, pin: sessionPin || undefined })
-      });
-
-      const data = await response.json();
-
-      if (response.status === 401) {
-        // PIN became invalid – clear and re-prompt
-        sessionPin = null;
-        try { sessionStorage.removeItem("meetsum.pin"); } catch { /* noop */ }
-        throw new Error(data.error || "Onjuiste PIN");
-      }
-
-      if (!response.ok) {
-        throw new Error(data.error || "API Error");
-      }
-
-      if (data.success && data.text) {
-        completeLoader();
-        setResult(data.text);
-
-        // Scroll to result
-        document.getElementById("step-5").scrollIntoView({ behavior: "smooth", block: "start" });
-        toast("✅ Resultaat ververst!");
-      } else {
-        throw new Error(data.error || "Onbekende fout");
-      }
-    } catch (err) {
-      toast("❌ Fout: " + err.message);
-      console.error(err);
-    } finally {
-      hideLoader();
-      btn.disabled = false;
-      btn.textContent = originalText;
-    }
   }
 
   /* ---------- PIN handling ---------- */
@@ -3119,20 +3206,6 @@ Belangrijke regels:
         updateSidebar();
       });
     }
-    const analysisTabReports = document.getElementById("analysisTabReports");
-    const analysisTabOther = document.getElementById("analysisTabOther");
-    if (analysisTabReports) {
-      analysisTabReports.addEventListener("click", () => {
-        setAnalysisTab("reports");
-        renderAnalysisTab();
-      });
-    }
-    if (analysisTabOther) {
-      analysisTabOther.addEventListener("click", () => {
-        setAnalysisTab("other");
-        renderAnalysisTab();
-      });
-    }
     renderStep2Mode();
 
     // section toolbar
@@ -3144,14 +3217,6 @@ Belangrijke regels:
     // generate + copy
     $("#generateBtn").addEventListener("click", generatePrompt);
     $("#copyPrompt").addEventListener("click", copyPrompt);
-    
-    const generateWithAIBtn = $("#generateWithAI");
-    if (generateWithAIBtn) {
-      generateWithAIBtn.addEventListener("click", () => {
-        const prompt = promptOutput.textContent;
-        callGeminiAPI(prompt);
-      });
-    }
 
     // result handling
     aiResultEl.addEventListener("input", () => {

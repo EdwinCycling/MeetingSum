@@ -1,4 +1,4 @@
-# MeetSum – Setup & Integratie Google Gemini API
+# MeetSum – Setup & AI-workflow
 
 ## ✅ Wat is voorbereid
 
@@ -6,17 +6,17 @@ Je hebt nu:
 - ✨ **Frontend**: Volledige UI met AI-knop
 - 🔌 **Backend**: PowerShell server met `/api/summarize` endpoint
 - 🔐 **Veiligheid**: API key in `.env` bestand (NOOIT in code of browser)
-- 🧠 **LLM**: Google Gemini 1.5 Flash (gratis tier)
+- 🧠 **LLM**: je eigen AI-model of provider
 
 ---
 
 ## 🚀 Setup in 3 stappen
 
-### **Stap 1: Google Gemini API Key ophalen**
+### **Stap 1: AI sleutel ophalen**
 
-1. Ga naar: https://aistudio.google.com/apikey
-2. Klik **"Create API Key"** → **"Create API key in new project"**
-3. Kopieeer je key (ziet eruit als: `AIzaSyD...`)
+1. Gebruik je eigen AI-omgeving of API-provider
+2. Maak een sleutel aan volgens de documentatie van die provider
+3. Bewaar je sleutel veilig buiten de browser
 
 ### **Stap 2: `.env` bestand maken**
 
@@ -25,13 +25,13 @@ Maak in de map `c:\Users\ding375970\Documents\Apps\Summarizer` een nieuw bestand
 **Bestandsnaam:** `.env`  
 **Inhoud:**
 ```
-GOOGLE_API_KEY=jouw_google_api_key_hier
-GEMINI_MODEL=jouw_gemini_model_hier
+GOOGLE_API_KEY=jouw_ai_api_key_hier
+GEMINI_MODEL=jouw_ai_model_hier
 ```
 
-Vervang `jouw_google_api_key_hier` met je echte key.
+Vervang `jouw_ai_api_key_hier` met je echte sleutel.
 
-Wil je een ander Gemini-model gebruiken, pas dan alleen `GEMINI_MODEL` aan.
+Wil je een ander model gebruiken, pas dan alleen `GEMINI_MODEL` aan.
 
 ⚠️ **LET OP**: 
 - Dit bestand is in `.gitignore` (niet committen naar Git!)
@@ -54,14 +54,14 @@ Open dan: **http://localhost:3000**
 1. **Je plakt je Teams transcript** in stap 1
 2. **Je selecteert secties** in stap 2
 3. **Je klik "Genereer AI-Prompt"** — de prompt verschijnt
-4. **Je klik "Genereer met AI"** — het gaat naar je backend ✉️
-5. **Backend roept Gemini API aan** met jouw API key (veilig! 🔐)
-6. **Samenvatting verschijnt** direct in stap 4
+4. **Je kopieert de prompt** en voert die uit in je eigen AI-omgeving ✉️
+5. **Jouw omgeving verwerkt de prompt** met jouw sleutel of model (veilig! 🔐)
+6. **Resultaat verschijnt** direct in stap 4
 7. **Je downloadt als `.md` of `.txt`**
 
 ---
 
-## 📊 Google Gemini Free Tier Limieten
+## 📊 AI-provider limieten
 
 - ✅ 15 requests/minuut
 - ✅ 500.000 tokens/maand
@@ -77,7 +77,7 @@ Perfect voor testing en personal use!
 → Controleer dat `.env` bestand correct in de map staat (niet als `.env.txt`)
 
 ### ❌ "API Error: 401 Unauthenticated"
-→ Je key is ongeldig. Haal een nieuwe op op https://aistudio.google.com/apikey
+→ Je sleutel is ongeldig. Maak een nieuwe sleutel aan in je provider-omgeving
 
 ### ❌ "HTTP 429 Too Many Requests"
 → Je hebt te veel requests in korte tijd. Wacht even.

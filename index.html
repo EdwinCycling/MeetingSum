@@ -211,27 +211,8 @@
 
       <div id="analysisBlock" class="analysis-block" hidden>
         <p id="analysisIntro" class="analysis-intro">Kies 1 analysetype. MeetingSum bouwt dan een specifieke analyseprompt op basis van je transcript.</p>
-        <div class="analysis-category-tabs" role="tablist" aria-label="Analyse categorieen">
-          <button id="analysisTabReports" class="analysis-category-tab is-active" type="button" role="tab" aria-selected="true">Rapporten</button>
-          <button id="analysisTabOther" class="analysis-category-tab" type="button" role="tab" aria-selected="false">Overige</button>
-        </div>
-        <div class="analysis-groups">
-          <section id="analysisPanelReports" class="analysis-group">
-            <div class="analysis-group-head">
-              <h3 id="analysisReportsTitle">Rapporten</h3>
-              <p id="analysisReportsDesc">Strategische en methodische rapportformats voor diepgaande analyse.</p>
-            </div>
-            <div id="analysisReportsGrid" class="analysis-options-grid"></div>
-          </section>
-
-          <section id="analysisPanelOther" class="analysis-group" hidden>
-            <div class="analysis-group-head">
-              <h3 id="analysisOtherTitle">Overige</h3>
-              <p id="analysisOtherDesc">Snelle aanvullende analyses, checks en verdiepende invalshoeken.</p>
-            </div>
-            <div id="analysisOtherGrid" class="analysis-options-grid"></div>
-          </section>
-        </div>
+        <div id="analysisCategoryTabs" class="analysis-category-tabs" role="tablist" aria-label="Analyse categorieen"></div>
+        <div id="analysisGroups" class="analysis-groups"></div>
       </div>
 
       <div id="sectionsToolbar" class="sections-toolbar">
@@ -389,7 +370,6 @@
               <h3 id="step4-promptTitle">Je AI-prompt</h3>
               <div class="prompt-result-actions">
                 <button id="copyPrompt" class="btn btn-soft" type="button">📋 Kopieer prompt</button>
-                <button id="generateWithAI" class="btn btn-primary" type="button" hidden>🔒 Genereer via Google Gemini</button>
               </div>
             </div>
             <pre id="promptOutput" class="prompt-box"></pre>
@@ -447,8 +427,7 @@
       <div class="footer-brand-block">
         <span class="footer-brand-mark">=</span>
         <div>
-          <p class="footer-copy" id="footerVersion">Versie 1.260704.6</p>
-          <p class="footer-tagline" id="footerTagline">Ondernemend, professioneel en menselijk ontworpen voor slimmere samenvattingen.</p>
+          <p class="footer-copy" id="footerVersion">Versie 1.260705.2</p>
         </div>
       </div>
       <nav class="footer-links" aria-label="Footer links">
