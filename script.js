@@ -81,7 +81,8 @@
   const ANALYSIS_DEFAULTS = {
     mode: "sections",
     option: "open-questions",
-    tab: "insights"
+    tab: "insights",
+    customOptions: []
   };
 
   const ANALYSIS_TAB_DEFS = [
@@ -92,7 +93,8 @@
     { id: "insights" },
     { id: "content" },
     { id: "education" },
-    { id: "tools" }
+    { id: "tools" },
+    { id: "custom" }
   ];
 
   const ANALYSIS_TAB_BY_OPTION_ID = {
@@ -163,7 +165,7 @@
 
   function getAnalysisTabsForOptions(options) {
     const tabSet = new Set(options.map((opt) => opt.tab));
-    return ANALYSIS_TAB_DEFS.filter((tab) => tabSet.has(tab.id));
+    return ANALYSIS_TAB_DEFS.filter((tab) => tab.id === "custom" || tabSet.has(tab.id));
   }
 
   const ANALYSIS_OPTION_DEFS = [
@@ -723,9 +725,73 @@
     return Object.fromEntries(getSections().map((s) => [s.id, s]));
   }
 
+  function normaliseAnalysisText(value) {
+    return String(value || "").replace(/\s+/g, " ").trim();
+  }
+
+  function truncateAnalysisText(value, maxLength = 100) {
+    const text = normaliseAnalysisText(value);
+    if (text.length <= maxLength) return text;
+    return `${text.slice(0, maxLength).trimEnd()}...`;
+  }
+
+  function getCustomAnalysisOptions() {
+    const customOptions = (prefs.analysis && Array.isArray(prefs.analysis.customOptions)) ? prefs.analysis.customOptions : [];
+    return customOptions
+      .map((item) => ({
+        ...item,
+        id: String(item.id || "").trim(),
+        title: normaliseAnalysisText(item.title),
+        desc: normaliseAnalysisText(item.desc)
+      }))
+      .filter((item) => item.id && item.title && item.desc);
+  }
+
+  function createCustomAnalysisId(title) {
+    const slug = normaliseAnalysisText(title)
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 24) || "custom";
+    return `custom-${slug}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
+  }
+
+  function addCustomAnalysisOption(title, desc) {
+    const cleanTitle = normaliseAnalysisText(title);
+    const cleanDesc = normaliseAnalysisText(desc);
+    if (!cleanTitle || !cleanDesc) return null;
+
+    const nextItem = {
+      id: createCustomAnalysisId(cleanTitle),
+      title: cleanTitle,
+      desc: cleanDesc,
+      tab: "custom",
+      group: "custom"
+    };
+
+    const nextCustom = [nextItem, ...getCustomAnalysisOptions()];
+
+    prefs.analysis = {
+      ...ANALYSIS_DEFAULTS,
+      ...prefs.analysis,
+      customOptions: nextCustom
+    };
+    savePrefs(prefs);
+    return nextItem;
+  }
+
+  function removeCustomAnalysisOption(optionId) {
+    const nextCustom = getCustomAnalysisOptions().filter((item) => item.id !== optionId);
+    prefs.analysis.customOptions = nextCustom;
+    if (prefs.analysis.option === optionId) {
+      prefs.analysis.option = ANALYSIS_DEFAULTS.option;
+    }
+    savePrefs(prefs);
+  }
+
   function getAnalysisOptions() {
     const isEn = currentLangCode === "en";
-    return ANALYSIS_OPTION_DEFS.map((opt) => ({
+    const staticOptions = ANALYSIS_OPTION_DEFS.map((opt) => ({
       id: opt.id,
       group: opt.group,
       tab: getAnalysisTabForOption(opt.id),
@@ -733,19 +799,27 @@
       desc: isEn ? opt.descEn : opt.descNl,
       prompt: isEn ? opt.promptEn : opt.promptNl
     }));
+    const customOptions = getCustomAnalysisOptions().map((opt) => ({
+      id: opt.id,
+      group: "custom",
+      tab: "custom",
+      title: opt.title,
+      desc: opt.desc,
+      prompt: opt.desc
+    }));
+    return [...staticOptions, ...customOptions];
   }
 
   function getAnalysisOptionById(id) {
-    return ANALYSIS_OPTION_DEFS.find((opt) => opt.id === id) || null;
+    return getAnalysisOptions().find((opt) => opt.id === id) || null;
   }
 
   function getAnalysisPromptCopy(optionId, targetLangValue) {
     const def = getAnalysisOptionById(optionId) || getAnalysisOptionById(ANALYSIS_DEFAULTS.option);
-    const isDutchTarget = targetLangValue === "Nederlands";
     if (!def) return { title: "Analyse", prompt: "Analyseer het transcript." };
     return {
-      title: isDutchTarget ? def.titleNl : def.titleEn,
-      prompt: isDutchTarget ? def.promptNl : def.promptEn,
+      title: def.title || "Analyse",
+      prompt: def.prompt || def.desc || "Analyseer het transcript.",
       group: def.group
     };
   }
@@ -753,6 +827,11 @@
   function getAnalysisStyleGuide(optionId, targetLangValue) {
     const copy = getAnalysisPromptCopy(optionId, targetLangValue);
     const isDutchTarget = targetLangValue === "Nederlands";
+    if (copy.group === "custom") {
+      return isDutchTarget
+        ? "SCHRIJFSTIJL: Volg de eigen instructie exact. Houd de output overzichtelijk, concreet en direct bruikbaar."
+        : "WRITING STYLE: Follow the custom instruction exactly. Keep the output clear, concrete, and immediately usable.";
+    }
     if (optionId === "dashboard") {
       return isDutchTarget
         ? "OUTPUTFORMAT: Lever uitsluitend 1 geldig HTML-codeblok (zonder extra tekst erboven of eronder) met duidelijke secties, interactieve filters/tabs en zakelijke visualisaties."
@@ -828,6 +907,8 @@
       "confirmModal",
       "pinModal",
       "installExplainModal",
+      "customAnalysisModal",
+      "customAnalysisOverviewModal",
       "scannerLinkModal",
       "scannerDetailsModal",
       "introVideoModal"
@@ -1022,6 +1103,27 @@
     set("#installExplainCancel", "install.modal.cancel");
     set("#installExplainConfirm", "install.modal.confirm");
 
+    // Custom analysis modal
+    set("#customAnalysisTitleLabel", "step2.analysis.custom.modalTitle");
+    set("#customAnalysisModalDesc", "step2.analysis.custom.modalDesc");
+    set("#customAnalysisCancel", "step2.analysis.custom.cancel");
+    set("#customAnalysisSave", "step2.analysis.custom.add");
+    setAttr("#customAnalysisClose", "aria-label", "modal.close");
+
+    // Custom analysis overview modal
+    set("#customAnalysisOverviewTitleLabel", "step2.analysis.custom.overviewTitle");
+    set("#customAnalysisOverviewDesc", "step2.analysis.custom.overviewDesc");
+    setAttr("#customAnalysisOverviewClose", "aria-label", "modal.close");
+    set("#customAnalysisExport", "step2.analysis.custom.export");
+    set("#customAnalysisImport", "step2.analysis.custom.import");
+
+    // Custom analysis detail modal
+    set("#customAnalysisDetailTitleLabel", "step2.analysis.custom.detailTitle");
+    set("#customAnalysisDetailDesc", "step2.analysis.custom.detailDesc");
+    set("#customAnalysisDetailCancel", "step2.analysis.custom.detailCancel");
+    set("#customAnalysisDetailUse", "step2.analysis.custom.detailUse");
+    setAttr("#customAnalysisDetailClose", "aria-label", "modal.close");
+
     if (!document.getElementById("infoModal").hidden) {
       const modalType = document.getElementById("infoModal").dataset.modalType;
       if (modalType) openInfoModal(modalType);
@@ -1081,8 +1183,382 @@
     startBtn.textContent = sessionWasStarted ? t("hero.cta.newSession") : t("hero.cta.start");
   }
 
-    }
+  function loadPrefs() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        return JSON.parse(raw);
+      }
+    } catch { /* storage unavailable or invalid JSON */ }
+
+    return {
+      sections: {},
+      sectionOrder: SECTION_DEFS.map((s) => s.id),
+      language: "Nederlands",
+      outputOptions: { ...OUTPUT_DEFAULTS },
+      contextOptions: Object.fromEntries(CONTEXT_OPTION_DEFS.map((o) => [o.id, false])),
+      tags: [...DEFAULT_TAGS],
+      selectedTags: [],
+      usedTags: [],
+      localScannerHandleSupported: false,
+      analysis: { ...ANALYSIS_DEFAULTS }
+    };
   }
+
+  function getCustomAnalysisModalElements() {
+    return {
+      modal: document.getElementById("customAnalysisModal"),
+      titleInput: document.getElementById("customAnalysisTitle"),
+      descInput: document.getElementById("customAnalysisDesc"),
+      closeBtn: document.getElementById("customAnalysisCancel"),
+      saveBtn: document.getElementById("customAnalysisSave")
+    };
+  }
+
+  function getCustomAnalysisOverviewElements() {
+    return {
+      modal: document.getElementById("customAnalysisOverviewModal"),
+      list: document.getElementById("customAnalysisOverviewList"),
+      closeBtn: document.getElementById("customAnalysisOverviewClose"),
+      exportBtn: document.getElementById("customAnalysisExport"),
+      importBtn: document.getElementById("customAnalysisImport"),
+      importInput: document.getElementById("customAnalysisImportInput")
+    };
+  }
+
+  function getCustomAnalysisDetailModalElements() {
+    return {
+      modal: document.getElementById("customAnalysisDetailModal"),
+      title: document.getElementById("customAnalysisDetailTitleLabel"),
+      desc: document.getElementById("customAnalysisDetailText"),
+      closeBtn: document.getElementById("customAnalysisDetailCancel"),
+      useBtn: document.getElementById("customAnalysisDetailUse")
+    };
+  }
+
+  function parseCustomAnalysisImportItems(rawText) {
+    const text = String(rawText || "").trim();
+    if (!text) return [];
+
+    const toItems = (entries) => entries
+      .map((entry) => ({
+        title: normaliseAnalysisText(entry.title),
+        desc: normaliseAnalysisText(entry.desc || entry.description || entry.prompt)
+      }))
+      .filter((entry) => entry.title && entry.desc);
+
+    try {
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed)) return toItems(parsed);
+      if (parsed && Array.isArray(parsed.items)) return toItems(parsed.items);
+    } catch { /* plain text import */ }
+
+    const lines = text.split(/\r?\n/);
+    const items = [];
+    let current = null;
+
+    const pushCurrent = () => {
+      if (current && current.title && current.desc) {
+        items.push({ ...current });
+      }
+      current = null;
+    };
+
+    lines.forEach((lineRaw) => {
+      const line = lineRaw.trim();
+      if (!line) return;
+      if (/^(export date|datum export|language|taal)\s*:/i.test(line)) return;
+
+      const titleMatch = line.match(/^\d+\.\s*(.+)$/);
+      if (titleMatch) {
+        pushCurrent();
+        current = { title: titleMatch[1].trim(), desc: "" };
+        return;
+      }
+
+      if (!current) return;
+      const colonIndex = line.indexOf(":");
+      if (!current.desc && colonIndex >= 0) {
+        current.desc = line.slice(colonIndex + 1).trim();
+        return;
+      }
+
+      current.desc = current.desc ? `${current.desc} ${line}`.trim() : line;
+    });
+
+    pushCurrent();
+    return toItems(items);
+  }
+
+  async function importCustomAnalysisOptionsFromFile(file) {
+    if (!file) return;
+
+    let rawText = "";
+    try {
+      rawText = await file.text();
+    } catch {
+      toast(t("step2.analysis.custom.importFailed"));
+      return;
+    }
+
+    const importedItems = parseCustomAnalysisImportItems(rawText);
+    if (importedItems.length === 0) {
+      toast(t("step2.analysis.custom.importNoItems"));
+      return;
+    }
+
+    const currentItems = getCustomAnalysisOptions();
+    const seen = new Set(
+      currentItems.map((item) => `${normaliseAnalysisText(item.title).toLowerCase()}||${normaliseAnalysisText(item.desc).toLowerCase()}`)
+    );
+
+    const nextImported = [];
+    importedItems.forEach((item) => {
+      const key = `${item.title.toLowerCase()}||${item.desc.toLowerCase()}`;
+      if (seen.has(key)) return;
+      seen.add(key);
+      nextImported.push({
+        id: createCustomAnalysisId(item.title),
+        title: item.title,
+        desc: item.desc,
+        tab: "custom",
+        group: "custom"
+      });
+    });
+
+    if (nextImported.length === 0) {
+      toast(t("step2.analysis.custom.importDuplicate"));
+      return;
+    }
+
+    prefs.analysis = {
+      ...ANALYSIS_DEFAULTS,
+      ...prefs.analysis,
+      customOptions: [...nextImported, ...currentItems]
+    };
+    savePrefs(prefs);
+    renderAnalysisOptions();
+    renderStep2Mode();
+    updateStepStates();
+    updateSidebar();
+    toast(t("step2.analysis.custom.imported").replace("{count}", String(nextImported.length)));
+  }
+
+  function closeCustomAnalysisModal() {
+    const { modal } = getCustomAnalysisModalElements();
+    if (!modal) return;
+    modal.hidden = true;
+    if (canUnfreezeBody()) setBodyFrozen(false);
+  }
+
+  function submitCustomAnalysisOption() {
+    const { titleInput, descInput } = getCustomAnalysisModalElements();
+    if (!titleInput || !descInput) return;
+
+    const newItem = addCustomAnalysisOption(titleInput.value, descInput.value);
+    if (!newItem) {
+      toast(t("step2.analysis.custom.validation"));
+      return;
+    }
+
+    prefs.analysis.mode = "analysis";
+    prefs.analysis.option = newItem.id;
+    prefs.analysis.tab = "custom";
+    savePrefs(prefs);
+
+    titleInput.value = "";
+    descInput.value = "";
+    closeCustomAnalysisModal();
+    renderAnalysisOptions();
+    renderStep2Mode();
+    updateStepStates();
+    updateSidebar();
+    toast(t("step2.analysis.custom.added"));
+  }
+
+  function openCustomAnalysisModal() {
+    const { modal, titleInput, descInput } = getCustomAnalysisModalElements();
+    if (!modal || !titleInput || !descInput) return;
+    modal.hidden = false;
+    titleInput.value = "";
+    descInput.value = "";
+    setBodyFrozen(true);
+    window.requestAnimationFrame(() => titleInput.focus());
+  }
+
+  function renderCustomAnalysisOverviewList() {
+    const { list } = getCustomAnalysisOverviewElements();
+    if (!list) return;
+
+    const items = getCustomAnalysisOptions();
+    const selectedOptionId = prefs.analysis.option;
+    list.innerHTML = "";
+
+    if (items.length === 0) {
+      const empty = document.createElement("p");
+      empty.className = "custom-analysis-overview-empty";
+      empty.textContent = t("step2.analysis.custom.overviewEmpty");
+      list.appendChild(empty);
+      return;
+    }
+
+    items.forEach((item, index) => {
+      const card = document.createElement("article");
+      card.className = "custom-analysis-overview-card" + (selectedOptionId === item.id ? " is-selected" : "");
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.title = t("step2.analysis.custom.openDetail");
+      card.addEventListener("click", (e) => {
+        if (e.target.closest(".analysis-card-remove")) return;
+        openCustomAnalysisDetailModal(item);
+      });
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openCustomAnalysisDetailModal(item);
+        }
+      });
+
+      const header = document.createElement("div");
+      header.className = "custom-analysis-overview-card-head";
+      const title = document.createElement("h4");
+      title.textContent = `${index + 1}. ${item.title}`;
+      const badge = document.createElement("span");
+      badge.className = "analysis-local-badge";
+      badge.textContent = t("step2.analysis.custom.localBadge");
+      header.appendChild(title);
+      header.appendChild(badge);
+      if (selectedOptionId === item.id) {
+        const selectedBadge = document.createElement("span");
+        selectedBadge.className = "analysis-selected-badge";
+        selectedBadge.textContent = t("step2.analysis.custom.selectedBadge");
+        header.appendChild(selectedBadge);
+      }
+
+      const desc = document.createElement("p");
+      desc.className = "custom-analysis-overview-desc";
+      desc.textContent = truncateAnalysisText(item.desc, 100);
+
+      const hint = document.createElement("p");
+      hint.className = "custom-analysis-overview-hint";
+      hint.textContent = t("step2.analysis.custom.openDetail");
+
+      const actions = document.createElement("div");
+      actions.className = "custom-analysis-overview-actions";
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "analysis-card-remove";
+      removeBtn.textContent = t("step2.analysis.custom.remove");
+      removeBtn.addEventListener("click", () => {
+        removeCustomAnalysisOption(item.id);
+        renderAnalysisOptions();
+        renderStep2Mode();
+        updateStepStates();
+        updateSidebar();
+        renderCustomAnalysisOverviewList();
+        toast(t("step2.analysis.custom.removed"));
+      });
+      actions.appendChild(removeBtn);
+
+      card.appendChild(header);
+      card.appendChild(desc);
+      card.appendChild(hint);
+      card.appendChild(actions);
+      list.appendChild(card);
+    });
+  }
+
+  function closeCustomAnalysisOverviewModal() {
+    const { modal } = getCustomAnalysisOverviewElements();
+    if (!modal) return;
+    modal.hidden = true;
+    if (canUnfreezeBody()) setBodyFrozen(false);
+  }
+
+  function openCustomAnalysisOverviewModal() {
+    const { modal } = getCustomAnalysisOverviewElements();
+    if (!modal) return;
+    renderCustomAnalysisOverviewList();
+    modal.hidden = false;
+    setBodyFrozen(true);
+  }
+
+  function closeCustomAnalysisDetailModal() {
+    const { modal } = getCustomAnalysisDetailModalElements();
+    const { modal: overviewModal } = getCustomAnalysisOverviewElements();
+    if (!modal) return;
+    activeCustomAnalysisDetail = null;
+    modal.hidden = true;
+    if (overviewModal && !overviewModal.hidden) return;
+    if (canUnfreezeBody()) setBodyFrozen(false);
+  }
+
+  function applyCustomAnalysisOption(option) {
+    if (!option) return;
+    prefs.analysis.mode = "analysis";
+    prefs.analysis.option = option.id;
+    prefs.analysis.tab = "custom";
+    savePrefs(prefs);
+    renderAnalysisOptions();
+    renderStep2Mode();
+    updateStepStates();
+    updateSidebar();
+  }
+
+  function openCustomAnalysisDetailModal(option) {
+    const { modal, title, desc, useBtn } = getCustomAnalysisDetailModalElements();
+    if (!modal || !title || !desc || !useBtn) return;
+
+    activeCustomAnalysisDetail = option;
+    title.textContent = option.title;
+    desc.textContent = option.desc;
+    modal.hidden = false;
+    setBodyFrozen(true);
+    window.requestAnimationFrame(() => useBtn.focus());
+  }
+
+  function useCustomAnalysisDetail() {
+    if (!activeCustomAnalysisDetail) return;
+    const option = activeCustomAnalysisDetail;
+    activeCustomAnalysisDetail = null;
+    applyCustomAnalysisOption(option);
+    closeCustomAnalysisDetailModal();
+    closeCustomAnalysisOverviewModal();
+    toast(t("step2.analysis.custom.selected"));
+  }
+
+  function exportCustomAnalysisOptions() {
+    const items = getCustomAnalysisOptions();
+    if (items.length === 0) {
+      toast(t("step2.analysis.custom.overviewEmpty"));
+      return;
+    }
+
+    const exportedAt = new Date();
+    const lines = [
+      `${t("step2.analysis.custom.exportHeader")}: ${exportedAt.toLocaleString()}`,
+      `${t("step2.analysis.custom.exportLanguage")}: ${currentLangCode}`,
+      ""
+    ];
+
+    items.forEach((item, index) => {
+      lines.push(`${index + 1}. ${item.title}`);
+      lines.push(`${t("step2.analysis.custom.exportInstruction")}: ${item.desc}`);
+      lines.push("");
+    });
+
+    const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `meetsum-custom-instructions-${exportedAt.toISOString().slice(0, 10)}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast(t("step2.analysis.custom.exporting"));
+  }
+
   function savePrefs(prefs) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
@@ -1092,6 +1568,7 @@
   const SECTION_MAP = Object.fromEntries(SECTION_DEFS.map((s) => [s.id, s])); // id→def only; use getSectionMap() for translated data
 
   let prefs = loadPrefs();
+  let activeCustomAnalysisDetail = null;
   // Initialise defaults on first visit.
   if (!prefs.sections) {
     prefs.sections = {};
@@ -1134,6 +1611,17 @@
     prefs.analysis = { ...ANALYSIS_DEFAULTS };
   } else {
     prefs.analysis = { ...ANALYSIS_DEFAULTS, ...prefs.analysis };
+  }
+  if (!Array.isArray(prefs.analysis.customOptions)) {
+    prefs.analysis.customOptions = [];
+  } else {
+    prefs.analysis.customOptions = prefs.analysis.customOptions
+      .map((item) => ({
+        id: String(item.id || "").trim(),
+        title: normaliseAnalysisText(item.title),
+        desc: normaliseAnalysisText(item.desc)
+      }))
+      .filter((item) => item.id && item.title && item.desc);
   }
 
   savePrefs(prefs);
@@ -1192,10 +1680,15 @@
 
   function renderAnalysisTab() {
     const activeTab = prefs.analysis.tab || ANALYSIS_DEFAULTS.tab;
+    const selectedOption = getAnalysisOptionById(prefs.analysis.option);
     document.querySelectorAll("[data-analysis-tab]").forEach((tabEl) => {
-      const isActive = tabEl.dataset.analysisTab === activeTab;
+      const tabId = tabEl.dataset.analysisTab;
+      const isActive = tabId === activeTab;
+      const hasSelectedOption = !!(selectedOption && selectedOption.tab === tabId);
       tabEl.classList.toggle("is-active", isActive);
+      tabEl.classList.toggle("has-selected-option", hasSelectedOption);
       tabEl.setAttribute("aria-selected", isActive ? "true" : "false");
+      tabEl.title = hasSelectedOption ? `${t("step2.analysis.selectedInTab")}: ${selectedOption.title}` : "";
     });
     document.querySelectorAll("[data-analysis-panel]").forEach((panelEl) => {
       panelEl.hidden = panelEl.dataset.analysisPanel !== activeTab;
@@ -1231,25 +1724,89 @@
       savePrefs(prefs);
     }
 
-    tabsWrap.innerHTML = tabs.map((tab) => `
-      <button
-        class="analysis-category-tab"
-        type="button"
-        role="tab"
-        data-analysis-tab="${tab.id}"
-        aria-selected="false"
-      >${t("step2.analysis.tab." + tab.id)}</button>
-    `).join("");
+    tabsWrap.innerHTML = "";
+    groupsWrap.innerHTML = "";
 
-    groupsWrap.innerHTML = tabs.map((tab) => `
-      <section class="analysis-group" data-analysis-panel="${tab.id}" hidden>
-        <div class="analysis-group-head">
-          <h3>${t("step2.analysis.group." + tab.id + ".title")}</h3>
-          <p>${t("step2.analysis.group." + tab.id + ".desc")}</p>
-        </div>
-        <div class="analysis-options-grid" data-analysis-grid="${tab.id}"></div>
-      </section>
-    `).join("");
+    tabs.forEach((tab) => {
+      const button = document.createElement("button");
+      button.className = "analysis-category-tab";
+      button.type = "button";
+      button.setAttribute("role", "tab");
+      button.dataset.analysisTab = tab.id;
+      button.setAttribute("aria-selected", "false");
+      button.textContent = t("step2.analysis.tab." + tab.id);
+      tabsWrap.appendChild(button);
+    });
+
+    tabs.forEach((tab) => {
+      const section = document.createElement("section");
+      section.className = "analysis-group" + (tab.id === "custom" ? " analysis-group-custom" : "");
+      section.dataset.analysisPanel = tab.id;
+      section.hidden = true;
+
+      const head = document.createElement("div");
+      head.className = "analysis-group-head";
+      const title = document.createElement("h3");
+      title.textContent = t("step2.analysis.group." + tab.id + ".title");
+      const desc = document.createElement("p");
+      desc.textContent = t("step2.analysis.group." + tab.id + ".desc");
+      head.appendChild(title);
+      head.appendChild(desc);
+      section.appendChild(head);
+
+      if (tab.id === "custom") {
+        const note = document.createElement("div");
+        note.className = "analysis-custom-note";
+        note.textContent = t("step2.analysis.custom.note");
+        section.appendChild(note);
+
+        const actionRow = document.createElement("div");
+        actionRow.className = "analysis-custom-actions";
+        const addBtn = document.createElement("button");
+        addBtn.id = "customAnalysisOpenBtn";
+        addBtn.className = "btn btn-primary";
+        addBtn.type = "button";
+        addBtn.textContent = t("step2.analysis.custom.open");
+        actionRow.appendChild(addBtn);
+
+        const overviewBtn = document.createElement("button");
+        overviewBtn.id = "customAnalysisOverviewOpenBtn";
+        overviewBtn.className = "btn btn-soft";
+        overviewBtn.type = "button";
+        overviewBtn.textContent = t("step2.analysis.custom.overview");
+        actionRow.appendChild(overviewBtn);
+        section.appendChild(actionRow);
+
+        const listHead = document.createElement("div");
+        listHead.className = "analysis-custom-list-head";
+        const listTitle = document.createElement("h4");
+        listTitle.textContent = t("step2.analysis.custom.listTitle");
+        const listDesc = document.createElement("p");
+        listDesc.textContent = t("step2.analysis.custom.listDesc");
+        listHead.appendChild(listTitle);
+        listHead.appendChild(listDesc);
+        section.appendChild(listHead);
+
+        const grid = document.createElement("div");
+        grid.className = "analysis-options-grid";
+        grid.dataset.analysisGrid = "custom";
+        section.appendChild(grid);
+
+        const empty = document.createElement("p");
+        empty.className = "analysis-custom-empty";
+        empty.dataset.analysisEmpty = "custom";
+        empty.hidden = true;
+        empty.textContent = t("step2.analysis.custom.empty");
+        section.appendChild(empty);
+      } else {
+        const grid = document.createElement("div");
+        grid.className = "analysis-options-grid";
+        grid.dataset.analysisGrid = tab.id;
+        section.appendChild(grid);
+      }
+
+      groupsWrap.appendChild(section);
+    });
 
     tabsWrap.querySelectorAll("[data-analysis-tab]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -1258,17 +1815,147 @@
       });
     });
 
+    const customOpenBtn = document.getElementById("customAnalysisOpenBtn");
+    if (customOpenBtn) customOpenBtn.addEventListener("click", openCustomAnalysisModal);
+
+    const customOverviewOpenBtn = document.getElementById("customAnalysisOverviewOpenBtn");
+    if (customOverviewOpenBtn) customOverviewOpenBtn.addEventListener("click", openCustomAnalysisOverviewModal);
+
+    const customModalCancel = document.getElementById("customAnalysisCancel");
+    const customModalSave = document.getElementById("customAnalysisSave");
+    const customModal = document.getElementById("customAnalysisModal");
+    if (customModal && !customModal.dataset.listenersBound) {
+      customModal.dataset.listenersBound = "true";
+      if (customModalCancel) customModalCancel.addEventListener("click", closeCustomAnalysisModal);
+      if (customModalSave) customModalSave.addEventListener("click", submitCustomAnalysisOption);
+      customModal.addEventListener("click", (e) => {
+        if (e.target === customModal) closeCustomAnalysisModal();
+      });
+
+      const customModalTitle = document.getElementById("customAnalysisTitle");
+      const customModalDesc = document.getElementById("customAnalysisDesc");
+      if (customModalTitle) {
+        customModalTitle.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            submitCustomAnalysisOption();
+          }
+        });
+      }
+      if (customModalDesc) {
+        customModalDesc.addEventListener("keydown", (e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+            e.preventDefault();
+            submitCustomAnalysisOption();
+          }
+        });
+      }
+    }
+
+    const customOverviewClose = document.getElementById("customAnalysisOverviewClose");
+    const customOverviewExport = document.getElementById("customAnalysisExport");
+    const customOverviewImport = document.getElementById("customAnalysisImport");
+    const customOverviewImportInput = document.getElementById("customAnalysisImportInput");
+    const customOverviewModal = document.getElementById("customAnalysisOverviewModal");
+    if (customOverviewModal && !customOverviewModal.dataset.listenersBound) {
+      customOverviewModal.dataset.listenersBound = "true";
+      if (customOverviewClose) customOverviewClose.addEventListener("click", closeCustomAnalysisOverviewModal);
+      if (customOverviewExport) customOverviewExport.addEventListener("click", exportCustomAnalysisOptions);
+      if (customOverviewImport) {
+        customOverviewImport.addEventListener("click", () => {
+          if (customOverviewImportInput) customOverviewImportInput.click();
+        });
+      }
+      if (customOverviewImportInput) {
+        customOverviewImportInput.addEventListener("change", async () => {
+          const file = customOverviewImportInput.files && customOverviewImportInput.files[0];
+          customOverviewImportInput.value = "";
+          if (!file) return;
+          await importCustomAnalysisOptionsFromFile(file);
+        });
+      }
+      customOverviewModal.addEventListener("click", (e) => {
+        if (e.target === customOverviewModal) closeCustomAnalysisOverviewModal();
+      });
+    }
+
+    const customDetailCancel = document.getElementById("customAnalysisDetailCancel");
+    const customDetailUse = document.getElementById("customAnalysisDetailUse");
+    const customDetailClose = document.getElementById("customAnalysisDetailClose");
+    const customDetailModal = document.getElementById("customAnalysisDetailModal");
+    if (customDetailModal && !customDetailModal.dataset.listenersBound) {
+      customDetailModal.dataset.listenersBound = "true";
+      if (customDetailClose) customDetailClose.addEventListener("click", closeCustomAnalysisDetailModal);
+      if (customDetailCancel) customDetailCancel.addEventListener("click", closeCustomAnalysisDetailModal);
+      if (customDetailUse) customDetailUse.addEventListener("click", useCustomAnalysisDetail);
+      customDetailModal.addEventListener("click", (e) => {
+        if (e.target === customDetailModal) closeCustomAnalysisDetailModal();
+      });
+    }
+
     options.forEach((opt) => {
       const card = document.createElement("label");
       const selected = prefs.analysis.option === opt.id;
       card.className = "analysis-card" + (selected ? " is-selected" : "");
-      card.innerHTML = `
-        <input type="radio" name="analysisOption" value="${opt.id}" ${selected ? "checked" : ""} hidden />
-        <span class="analysis-title">${opt.title}</span>
-        <span class="analysis-sub">${opt.desc}</span>
-        <span class="analysis-focus">${t("step2.analysis.focus")}: ${opt.prompt}</span>`;
+      const isCustom = opt.group === "custom";
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "analysisOption";
+      input.value = opt.id;
+      input.hidden = true;
+      input.checked = selected;
+      card.appendChild(input);
 
-      const input = card.querySelector("input[name='analysisOption']");
+      const top = document.createElement("span");
+      top.className = "analysis-card-top";
+      const titleEl = document.createElement("span");
+      titleEl.className = "analysis-title";
+      titleEl.textContent = opt.title;
+      top.appendChild(titleEl);
+      if (isCustom) {
+        const badge = document.createElement("span");
+        badge.className = "analysis-local-badge";
+        badge.textContent = t("step2.analysis.custom.localBadge");
+        top.appendChild(badge);
+      }
+      card.appendChild(top);
+
+      const sub = document.createElement("span");
+      sub.className = "analysis-sub";
+      sub.textContent = opt.desc;
+      card.appendChild(sub);
+
+      const focus = document.createElement("span");
+      focus.className = "analysis-focus";
+      focus.textContent = `${t("step2.analysis.focus")}: ${opt.prompt}`;
+      card.appendChild(focus);
+
+      if (isCustom) {
+        const actions = document.createElement("span");
+        actions.className = "analysis-card-actions";
+        const note = document.createElement("span");
+        note.className = "analysis-card-note";
+        note.textContent = t("step2.analysis.custom.cardNote");
+        actions.appendChild(note);
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "analysis-card-remove";
+        removeBtn.textContent = t("step2.analysis.custom.remove");
+        removeBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          removeCustomAnalysisOption(opt.id);
+          renderAnalysisOptions();
+          renderStep2Mode();
+          updateStepStates();
+          updateSidebar();
+          toast(t("step2.analysis.custom.removed"));
+        });
+        actions.appendChild(removeBtn);
+        card.appendChild(actions);
+      }
+
       input.addEventListener("change", () => {
         prefs.analysis.mode = "analysis";
         prefs.analysis.option = opt.id;
@@ -1284,6 +1971,11 @@
         targetGrid.appendChild(card);
       }
     });
+
+    const customEmpty = groupsWrap.querySelector("[data-analysis-empty='custom']");
+    if (customEmpty) {
+      customEmpty.hidden = getCustomAnalysisOptions().length > 0;
+    }
 
     renderAnalysisTab();
   }
@@ -1774,6 +2466,40 @@ Belangrijke regels:
     }
   }
 
+  async function selectLocalFolder() {
+    if (!supportsDirectoryPicker()) {
+      setScannerStatus("Je browser ondersteunt geen lokale mapselectie.", true);
+      return;
+    }
+
+    try {
+      const handle = await window.showDirectoryPicker({ mode: "read" });
+      scannerDirectoryHandle = handle;
+      await saveDirectoryHandleToDb(handle);
+      setScannerStatus("Lokale map geselecteerd.", false);
+    } catch {
+      setScannerStatus("Mapselectie geannuleerd.", false);
+    }
+  }
+
+  async function loadPersistedLocalFolder() {
+    if (!supportsDirectoryPicker()) {
+      setScannerStatus("Lokale mapselectie wordt niet ondersteund in deze browser.", false);
+      return;
+    }
+
+    const handle = await loadDirectoryHandleFromDb();
+    if (!handle) {
+      setScannerStatus("Nog geen lokale map geselecteerd.", false);
+      return;
+    }
+
+    scannerDirectoryHandle = handle;
+    prefs.localScannerHandleSupported = true;
+    savePrefs(prefs);
+    setScannerStatus("Vorige lokale map hersteld.", false);
+  }
+
   function setScannerStatus(text, isError) {
     const status = document.getElementById("scannerFolderStatus");
     if (!status) return;
@@ -1786,9 +2512,6 @@ Belangrijke regels:
     const mode = write ? "readwrite" : "read";
     if ((await handle.queryPermission({ mode })) === "granted") return true;
     return (await handle.requestPermission({ mode })) === "granted";
-  }
-
-    }
   }
 
   function parseMetadataFromText(text) {

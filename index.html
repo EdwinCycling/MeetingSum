@@ -573,6 +573,58 @@
     </div>
   </div>
 
+  <!-- ===================== CUSTOM ANALYSIS MODAL ===================== -->
+  <div id="customAnalysisModal" class="modal-overlay" hidden>
+    <div class="modal modal-wide custom-analysis-modal" role="dialog" aria-modal="true" aria-labelledby="customAnalysisTitleLabel">
+      <button class="modal-close" id="customAnalysisClose" type="button" aria-label="Sluiten">✕</button>
+      <h3 id="customAnalysisTitleLabel">Eigen instructie toevoegen</h3>
+      <p id="customAnalysisModalDesc" class="modal-desc">Deze instructies blijven lokaal in deze browser en worden direct aan je analyseprompt toegevoegd.</p>
+      <div class="analysis-custom-modal-form">
+        <div class="option-group option-group--full">
+          <label for="customAnalysisTitle">Naam (titel)</label>
+          <input id="customAnalysisTitle" type="text" maxlength="80" autocomplete="off" placeholder="Bijv. Team samenvatting op maat" />
+        </div>
+        <div class="option-group option-group--full">
+          <label for="customAnalysisDesc">Instructie omschrijving</label>
+          <textarea id="customAnalysisDesc" rows="8" maxlength="5000" placeholder="Beschrijf in duidelijke zinnen welke promptregel of analyse-instructie je wilt toevoegen."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="customAnalysisCancel" class="btn btn-ghost" type="button">Annuleren</button>
+        <button id="customAnalysisSave" class="btn btn-primary" type="button">Toevoegen aan lijst</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== CUSTOM ANALYSIS OVERVIEW MODAL ===================== -->
+  <div id="customAnalysisOverviewModal" class="modal-overlay" hidden>
+    <div class="modal modal-wide custom-analysis-overview-modal" role="dialog" aria-modal="true" aria-labelledby="customAnalysisOverviewTitleLabel">
+      <button class="modal-close" id="customAnalysisOverviewClose" type="button" aria-label="Sluiten">✕</button>
+      <h3 id="customAnalysisOverviewTitleLabel">Overzicht eigen instructies</h3>
+      <p id="customAnalysisOverviewDesc" class="modal-desc">Bekijk hier al je lokaal opgeslagen eigen instructies en importeer of exporteer ze als bestand.</p>
+      <div class="custom-analysis-overview-toolbar">
+        <input id="customAnalysisImportInput" type="file" accept=".txt,.json,text/plain,application/json" hidden />
+        <button id="customAnalysisImport" class="btn btn-soft" type="button">Importeer bestand</button>
+        <button id="customAnalysisExport" class="btn btn-primary" type="button">Download als tekst</button>
+      </div>
+      <div id="customAnalysisOverviewList" class="custom-analysis-overview-list"></div>
+    </div>
+  </div>
+
+  <!-- ===================== CUSTOM ANALYSIS DETAIL MODAL ===================== -->
+  <div id="customAnalysisDetailModal" class="modal-overlay" hidden>
+    <div class="modal modal-wide custom-analysis-detail-modal" role="dialog" aria-modal="true" aria-labelledby="customAnalysisDetailTitleLabel">
+      <button class="modal-close" id="customAnalysisDetailClose" type="button" aria-label="Sluiten">✕</button>
+      <h3 id="customAnalysisDetailTitleLabel">Eigen instructie bekijken</h3>
+      <p id="customAnalysisDetailDesc" class="modal-desc">Bekijk de volledige instructie en kies daarna of je deze wilt gebruiken.</p>
+      <p id="customAnalysisDetailText" class="custom-analysis-detail-text"></p>
+      <div class="modal-actions">
+        <button id="customAnalysisDetailCancel" class="btn btn-ghost" type="button">Annuleren</button>
+        <button id="customAnalysisDetailUse" class="btn btn-primary" type="button">Gebruiken</button>
+      </div>
+    </div>
+  </div>
+
   <script src="lang/nl.js"></script>
   <script src="lang/en.js"></script>
   <script src="script.js"></script>
