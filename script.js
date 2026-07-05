@@ -780,6 +780,34 @@
     return nextItem;
   }
 
+  function updateCustomAnalysisOption(optionId, title, desc) {
+    const cleanTitle = normaliseAnalysisText(title);
+    const cleanDesc = normaliseAnalysisText(desc);
+    if (!optionId || !cleanTitle || !cleanDesc) return null;
+
+    const nextCustom = getCustomAnalysisOptions().map((item) => (
+      item.id === optionId
+        ? {
+            ...item,
+            title: cleanTitle,
+            desc: cleanDesc,
+            tab: "custom",
+            group: "custom"
+          }
+        : item
+    ));
+
+    if (!nextCustom.some((item) => item.id === optionId)) return null;
+
+    prefs.analysis = {
+      ...ANALYSIS_DEFAULTS,
+      ...prefs.analysis,
+      customOptions: nextCustom
+    };
+    savePrefs(prefs);
+    return nextCustom.find((item) => item.id === optionId) || null;
+  }
+
   function removeCustomAnalysisOption(optionId) {
     const nextCustom = getCustomAnalysisOptions().filter((item) => item.id !== optionId);
     prefs.analysis.customOptions = nextCustom;
@@ -1121,6 +1149,7 @@
     set("#customAnalysisDetailTitleLabel", "step2.analysis.custom.detailTitle");
     set("#customAnalysisDetailDesc", "step2.analysis.custom.detailDesc");
     set("#customAnalysisDetailCancel", "step2.analysis.custom.detailCancel");
+    set("#customAnalysisDetailEdit", "step2.analysis.custom.detailEdit");
     set("#customAnalysisDetailUse", "step2.analysis.custom.detailUse");
     setAttr("#customAnalysisDetailClose", "aria-label", "modal.close");
 
@@ -1232,6 +1261,8 @@
   function getCustomAnalysisModalElements() {
     return {
       modal: document.getElementById("customAnalysisModal"),
+      titleLabel: document.getElementById("customAnalysisTitleLabel"),
+      modalDesc: document.getElementById("customAnalysisModalDesc"),
       titleInput: document.getElementById("customAnalysisTitle"),
       descInput: document.getElementById("customAnalysisDesc"),
       closeBtn: document.getElementById("customAnalysisCancel"),
@@ -1255,6 +1286,7 @@
       modal: document.getElementById("customAnalysisDetailModal"),
       title: document.getElementById("customAnalysisDetailTitleLabel"),
       desc: document.getElementById("customAnalysisDetailText"),
+      editBtn: document.getElementById("customAnalysisDetailEdit"),
       closeBtn: document.getElementById("customAnalysisDetailCancel"),
       useBtn: document.getElementById("customAnalysisDetailUse")
     };
@@ -1371,41 +1403,68 @@
   function closeCustomAnalysisModal() {
     const { modal } = getCustomAnalysisModalElements();
     if (!modal) return;
+    activeCustomAnalysisEditId = null;
     modal.hidden = true;
     if (canUnfreezeBody()) setBodyFrozen(false);
+  }
+
+  function setCustomAnalysisModalMode(isEditing) {
+    const { titleLabel, modalDesc, saveBtn } = getCustomAnalysisModalElements();
+    if (!titleLabel || !modalDesc || !saveBtn) return;
+
+    titleLabel.textContent = isEditing
+      ? t("step2.analysis.custom.editModalTitle")
+      : t("step2.analysis.custom.modalTitle");
+    modalDesc.textContent = isEditing
+      ? t("step2.analysis.custom.editModalDesc")
+      : t("step2.analysis.custom.modalDesc");
+    saveBtn.textContent = isEditing
+      ? t("step2.analysis.custom.saveEdit")
+      : t("step2.analysis.custom.add");
   }
 
   function submitCustomAnalysisOption() {
     const { titleInput, descInput } = getCustomAnalysisModalElements();
     if (!titleInput || !descInput) return;
 
-    const newItem = addCustomAnalysisOption(titleInput.value, descInput.value);
-    if (!newItem) {
+    const isEditing = !!activeCustomAnalysisEditId;
+    const savedItem = isEditing
+      ? updateCustomAnalysisOption(activeCustomAnalysisEditId, titleInput.value, descInput.value)
+      : addCustomAnalysisOption(titleInput.value, descInput.value);
+    if (!savedItem) {
       toast(t("step2.analysis.custom.validation"));
       return;
     }
 
-    prefs.analysis.mode = "analysis";
-    prefs.analysis.option = newItem.id;
-    prefs.analysis.tab = "custom";
-    savePrefs(prefs);
+    if (!isEditing) {
+      prefs.analysis.mode = "analysis";
+      prefs.analysis.option = savedItem.id;
+      prefs.analysis.tab = "custom";
+      savePrefs(prefs);
+    }
 
     titleInput.value = "";
     descInput.value = "";
+    activeCustomAnalysisEditId = null;
     closeCustomAnalysisModal();
     renderAnalysisOptions();
     renderStep2Mode();
     updateStepStates();
     updateSidebar();
-    toast(t("step2.analysis.custom.added"));
+    toast(isEditing ? t("step2.analysis.custom.updated") : t("step2.analysis.custom.added"));
   }
 
-  function openCustomAnalysisModal() {
+  function openCustomAnalysisModal(option = null) {
     const { modal, titleInput, descInput } = getCustomAnalysisModalElements();
     if (!modal || !titleInput || !descInput) return;
+
+    const isEditing = !!option;
+    activeCustomAnalysisEditId = isEditing ? option.id : null;
+    setCustomAnalysisModalMode(isEditing);
+
     modal.hidden = false;
-    titleInput.value = "";
-    descInput.value = "";
+    titleInput.value = isEditing ? option.title : "";
+    descInput.value = isEditing ? option.desc : "";
     setBodyFrozen(true);
     window.requestAnimationFrame(() => titleInput.focus());
   }
@@ -1510,12 +1569,14 @@
   }
 
   function openCustomAnalysisDetailModal(option) {
-    const { modal, title, desc, useBtn } = getCustomAnalysisDetailModalElements();
-    if (!modal || !title || !desc || !useBtn) return;
+    const { modal, title, desc, editBtn, useBtn } = getCustomAnalysisDetailModalElements();
+    if (!modal || !title || !desc || !useBtn || !editBtn) return;
 
     activeAnalysisDetail = option;
     title.textContent = option.title;
     desc.textContent = option.prompt;
+    editBtn.hidden = option.group !== "custom";
+    editBtn.textContent = t("step2.analysis.custom.detailEdit");
     useBtn.textContent = t("step2.analysis.custom.detailUse");
     modal.hidden = false;
     setBodyFrozen(true);
@@ -1529,6 +1590,13 @@
     applyAnalysisOption(option);
     closeCustomAnalysisDetailModal();
     toast(t("step2.analysis.custom.selected"));
+  }
+
+  function editCustomAnalysisDetail() {
+    if (!activeAnalysisDetail) return;
+    const option = activeAnalysisDetail;
+    closeCustomAnalysisDetailModal();
+    openCustomAnalysisModal(option);
   }
 
   function exportCustomAnalysisOptions() {
@@ -1573,6 +1641,7 @@
 
   let prefs = loadPrefs();
   let activeAnalysisDetail = null;
+  let activeCustomAnalysisEditId = null;
   // Initialise defaults on first visit.
   if (!prefs.sections) {
     prefs.sections = {};
@@ -1884,6 +1953,7 @@
     }
 
     const customDetailCancel = document.getElementById("customAnalysisDetailCancel");
+    const customDetailEdit = document.getElementById("customAnalysisDetailEdit");
     const customDetailUse = document.getElementById("customAnalysisDetailUse");
     const customDetailClose = document.getElementById("customAnalysisDetailClose");
     const customDetailModal = document.getElementById("customAnalysisDetailModal");
@@ -1891,6 +1961,7 @@
       customDetailModal.dataset.listenersBound = "true";
       if (customDetailClose) customDetailClose.addEventListener("click", closeCustomAnalysisDetailModal);
       if (customDetailCancel) customDetailCancel.addEventListener("click", closeCustomAnalysisDetailModal);
+      if (customDetailEdit) customDetailEdit.addEventListener("click", editCustomAnalysisDetail);
       if (customDetailUse) customDetailUse.addEventListener("click", useCustomAnalysisDetail);
       customDetailModal.addEventListener("click", (e) => {
         if (e.target === customDetailModal) closeCustomAnalysisDetailModal();

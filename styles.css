@@ -1136,6 +1136,10 @@ html[data-theme="dark"] .analysis-group {
 }
 .custom-analysis-detail-modal .modal-actions {
   justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.custom-analysis-detail-modal .modal-actions .btn {
+  flex: 1 1 150px;
 }
 .intro-video-actions .btn {
   flex: 0 0 auto;
