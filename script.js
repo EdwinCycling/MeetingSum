@@ -1451,7 +1451,7 @@
     renderStep2Mode();
     updateStepStates();
     updateSidebar();
-    toast(isEditing ? t("step2.analysis.custom.updated") : t("step2.analysis.custom.added"));
+    toast(t("step2.analysis.custom.savedLocal"));
   }
 
   function openCustomAnalysisModal(option = null) {
@@ -1561,6 +1561,16 @@
     prefs.analysis.mode = "analysis";
     prefs.analysis.option = option.id;
     prefs.analysis.tab = option.tab || "custom";
+    savePrefs(prefs);
+    renderAnalysisOptions();
+    renderStep2Mode();
+    updateStepStates();
+    updateSidebar();
+  }
+
+  function clearAnalysisOption() {
+    prefs.analysis.mode = "analysis";
+    prefs.analysis.option = "";
     savePrefs(prefs);
     renderAnalysisOptions();
     renderStep2Mode();
@@ -1780,7 +1790,7 @@
     if (!tabsWrap || !groupsWrap) return;
 
     const options = getAnalysisOptions();
-    if (!options.some((opt) => opt.id === prefs.analysis.option)) {
+    if (prefs.analysis.option && !options.some((opt) => opt.id === prefs.analysis.option)) {
       prefs.analysis.option = ANALYSIS_DEFAULTS.option;
       savePrefs(prefs);
     }
@@ -1978,6 +1988,10 @@
       card.setAttribute("aria-selected", selected ? "true" : "false");
 
       const selectOption = () => {
+        if (selected) {
+          clearAnalysisOption();
+          return;
+        }
         applyAnalysisOption(opt);
       };
 
@@ -3015,8 +3029,8 @@ Belangrijke regels:
     if (!list || !outputList) return;
     if (isAnalysisMode()) {
       const optionMap = getAnalysisOptionMap();
-      const selected = optionMap[prefs.analysis.option] || optionMap[ANALYSIS_DEFAULTS.option];
-      list.innerHTML = `<li class="sidebar-item"><strong>Analyse modus</strong><span>${selected ? selected.title : "Analyse"}</span></li>`;
+      const selected = optionMap[prefs.analysis.option] || null;
+      list.innerHTML = `<li class="sidebar-item"><strong>Analyse modus</strong><span>${selected ? selected.title : t("step2.analysis.noneSelected")}</span></li>`;
       if (outputTitle) outputTitle.hidden = true;
       outputList.hidden = true;
       outputList.innerHTML = "";
