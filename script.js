@@ -1183,6 +1183,30 @@
     startBtn.textContent = sessionWasStarted ? t("hero.cta.newSession") : t("hero.cta.start");
   }
 
+  async function resetSessionWorkflow() {
+    transcriptEl.value = "";
+    extraDocs = [];
+    scannerItems = [];
+    promptOutput.textContent = "";
+    promptResult.hidden = true;
+    aiResultEl.value = "";
+    aiResultEl.disabled = true;
+    const fileStatus = document.getElementById("fileStatus");
+    if (fileStatus) {
+      fileStatus.hidden = true;
+      fileStatus.textContent = "";
+    }
+    renderExtraDocsList();
+    renderScannerTable();
+    updatePreview();
+    updateCharCount();
+    updateStepStates();
+    updateSidebar();
+    updateHeroStartButtonLabel();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    transcriptEl.focus();
+  }
+
   function loadPrefs() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -1405,19 +1429,6 @@
     items.forEach((item, index) => {
       const card = document.createElement("article");
       card.className = "custom-analysis-overview-card" + (selectedOptionId === item.id ? " is-selected" : "");
-      card.tabIndex = 0;
-      card.setAttribute("role", "button");
-      card.title = t("step2.analysis.custom.openDetail");
-      card.addEventListener("click", (e) => {
-        if (e.target.closest(".analysis-card-remove")) return;
-        openCustomAnalysisDetailModal(item);
-      });
-      card.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          openCustomAnalysisDetailModal(item);
-        }
-      });
 
       const header = document.createElement("div");
       header.className = "custom-analysis-overview-card-head";
@@ -1435,13 +1446,9 @@
         header.appendChild(selectedBadge);
       }
 
-      const desc = document.createElement("p");
-      desc.className = "custom-analysis-overview-desc";
-      desc.textContent = truncateAnalysisText(item.desc, 100);
-
-      const hint = document.createElement("p");
-      hint.className = "custom-analysis-overview-hint";
-      hint.textContent = t("step2.analysis.custom.openDetail");
+      const note = document.createElement("p");
+      note.className = "custom-analysis-overview-hint";
+      note.textContent = t("step2.analysis.custom.cardNote");
 
       const actions = document.createElement("div");
       actions.className = "custom-analysis-overview-actions";
@@ -1461,8 +1468,7 @@
       actions.appendChild(removeBtn);
 
       card.appendChild(header);
-      card.appendChild(desc);
-      card.appendChild(hint);
+      card.appendChild(note);
       card.appendChild(actions);
       list.appendChild(card);
     });
@@ -1485,19 +1491,17 @@
 
   function closeCustomAnalysisDetailModal() {
     const { modal } = getCustomAnalysisDetailModalElements();
-    const { modal: overviewModal } = getCustomAnalysisOverviewElements();
     if (!modal) return;
-    activeCustomAnalysisDetail = null;
+    activeAnalysisDetail = null;
     modal.hidden = true;
-    if (overviewModal && !overviewModal.hidden) return;
     if (canUnfreezeBody()) setBodyFrozen(false);
   }
 
-  function applyCustomAnalysisOption(option) {
+  function applyAnalysisOption(option) {
     if (!option) return;
     prefs.analysis.mode = "analysis";
     prefs.analysis.option = option.id;
-    prefs.analysis.tab = "custom";
+    prefs.analysis.tab = option.tab || "custom";
     savePrefs(prefs);
     renderAnalysisOptions();
     renderStep2Mode();
@@ -1509,21 +1513,21 @@
     const { modal, title, desc, useBtn } = getCustomAnalysisDetailModalElements();
     if (!modal || !title || !desc || !useBtn) return;
 
-    activeCustomAnalysisDetail = option;
+    activeAnalysisDetail = option;
     title.textContent = option.title;
-    desc.textContent = option.desc;
+    desc.textContent = option.prompt;
+    useBtn.textContent = t("step2.analysis.custom.detailUse");
     modal.hidden = false;
     setBodyFrozen(true);
     window.requestAnimationFrame(() => useBtn.focus());
   }
 
   function useCustomAnalysisDetail() {
-    if (!activeCustomAnalysisDetail) return;
-    const option = activeCustomAnalysisDetail;
-    activeCustomAnalysisDetail = null;
-    applyCustomAnalysisOption(option);
+    if (!activeAnalysisDetail) return;
+    const option = activeAnalysisDetail;
+    activeAnalysisDetail = null;
+    applyAnalysisOption(option);
     closeCustomAnalysisDetailModal();
-    closeCustomAnalysisOverviewModal();
     toast(t("step2.analysis.custom.selected"));
   }
 
@@ -1568,7 +1572,7 @@
   const SECTION_MAP = Object.fromEntries(SECTION_DEFS.map((s) => [s.id, s])); // id→def only; use getSectionMap() for translated data
 
   let prefs = loadPrefs();
-  let activeCustomAnalysisDetail = null;
+  let activeAnalysisDetail = null;
   // Initialise defaults on first visit.
   if (!prefs.sections) {
     prefs.sections = {};
@@ -1894,40 +1898,70 @@
     }
 
     options.forEach((opt) => {
-      const card = document.createElement("label");
+      const card = document.createElement("article");
       const selected = prefs.analysis.option === opt.id;
       card.className = "analysis-card" + (selected ? " is-selected" : "");
       const isCustom = opt.group === "custom";
-      const input = document.createElement("input");
-      input.type = "radio";
-      input.name = "analysisOption";
-      input.value = opt.id;
-      input.hidden = true;
-      input.checked = selected;
-      card.appendChild(input);
+      card.tabIndex = 0;
+      card.setAttribute("role", "button");
+      card.setAttribute("aria-selected", selected ? "true" : "false");
+
+      const selectOption = () => {
+        applyAnalysisOption(opt);
+      };
+
+      card.addEventListener("click", (e) => {
+        if (e.target.closest(".analysis-card-detail")) return;
+        if (e.target.closest(".analysis-card-remove")) return;
+        selectOption();
+      });
+      card.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          selectOption();
+        }
+      });
 
       const top = document.createElement("span");
       top.className = "analysis-card-top";
+      const topLeft = document.createElement("span");
+      topLeft.className = "analysis-card-top-left";
       const titleEl = document.createElement("span");
       titleEl.className = "analysis-title";
       titleEl.textContent = opt.title;
-      top.appendChild(titleEl);
+      topLeft.appendChild(titleEl);
       if (isCustom) {
         const badge = document.createElement("span");
         badge.className = "analysis-local-badge";
         badge.textContent = t("step2.analysis.custom.localBadge");
-        top.appendChild(badge);
+        topLeft.appendChild(badge);
       }
-      card.appendChild(top);
+      if (selected) {
+        const badge = document.createElement("span");
+        badge.className = "analysis-selected-badge";
+        badge.textContent = t("step2.analysis.custom.selectedBadge");
+        topLeft.appendChild(badge);
+      }
+      top.appendChild(topLeft);
 
-      const sub = document.createElement("span");
-      sub.className = "analysis-sub";
-      sub.textContent = opt.desc;
-      card.appendChild(sub);
+      const detailBtn = document.createElement("button");
+      detailBtn.type = "button";
+      detailBtn.className = "btn btn-soft btn-sm analysis-card-detail";
+      detailBtn.textContent = "ⓘ";
+      detailBtn.title = t("step2.analysis.custom.openDetail");
+      detailBtn.setAttribute("aria-label", t("step2.analysis.custom.openDetail"));
+      detailBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        openCustomAnalysisDetailModal(opt);
+      });
+      top.appendChild(detailBtn);
+      card.appendChild(top);
 
       const focus = document.createElement("span");
       focus.className = "analysis-focus";
-      focus.textContent = `${t("step2.analysis.focus")}: ${opt.prompt}`;
+      focus.textContent = truncateAnalysisText(opt.prompt, 110);
+      focus.title = opt.prompt;
       card.appendChild(focus);
 
       if (isCustom) {
@@ -1955,16 +1989,6 @@
         actions.appendChild(removeBtn);
         card.appendChild(actions);
       }
-
-      input.addEventListener("change", () => {
-        prefs.analysis.mode = "analysis";
-        prefs.analysis.option = opt.id;
-        prefs.analysis.tab = opt.tab;
-        savePrefs(prefs);
-        renderStep2Mode();
-        updateStepStates();
-        updateSidebar();
-      });
 
       const targetGrid = groupsWrap.querySelector(`[data-analysis-grid="${opt.tab}"]`);
       if (targetGrid) {
@@ -3763,7 +3787,6 @@ Belangrijke regels:
       heroStartBtn.addEventListener("click", async (e) => {
         e.preventDefault();
         await resetSessionWorkflow();
-        document.getElementById("step-1").scrollIntoView({ behavior: "smooth", block: "start" });
       });
     }
     $("#clearTranscript").addEventListener("click", () => {
