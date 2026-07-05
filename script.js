@@ -1212,7 +1212,7 @@
     startBtn.textContent = sessionWasStarted ? t("hero.cta.newSession") : t("hero.cta.start");
   }
 
-  async function resetSessionWorkflow() {
+  function clearSessionInputs() {
     transcriptEl.value = "";
     extraDocs = [];
     scannerItems = [];
@@ -1231,6 +1231,10 @@
     updateCharCount();
     updateStepStates();
     updateSidebar();
+  }
+
+  async function resetSessionWorkflow() {
+    clearSessionInputs();
     updateHeroStartButtonLabel();
     window.scrollTo({ top: 0, behavior: "smooth" });
     transcriptEl.focus();
@@ -1603,7 +1607,7 @@
   }
 
   function editCustomAnalysisDetail() {
-    if (!activeAnalysisDetail) return;
+    if (!activeAnalysisDetail || activeAnalysisDetail.group !== "custom") return;
     const option = activeAnalysisDetail;
     closeCustomAnalysisDetailModal();
     openCustomAnalysisModal(option);
@@ -3875,12 +3879,8 @@ Belangrijke regels:
       });
     }
     $("#clearTranscript").addEventListener("click", () => {
-      transcriptEl.value = "";
-      updateCharCount();
-      updateStepStates();
+      clearSessionInputs();
       transcriptEl.focus();
-      const status = $("#fileStatus");
-      if (status) { status.hidden = true; status.textContent = ""; }
     });
 
     // file upload
