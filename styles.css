@@ -359,6 +359,40 @@ html[data-theme="dark"] .analysis-group {
   color: var(--text-soft);
   font-size: .82rem;
 }
+.analysis-group-consultants .analysis-subgroups {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+.analysis-subgroup {
+  border: 1px solid color-mix(in srgb, var(--brand-blue) 16%, var(--card-border));
+  border-radius: 14px;
+  padding: 12px;
+  background: color-mix(in srgb, #ffffff 88%, var(--brand-blue) 4%);
+}
+html[data-theme="dark"] .analysis-subgroup {
+  background: color-mix(in srgb, var(--card) 90%, var(--brand-blue) 10%);
+}
+.analysis-subgroup-head {
+  margin-bottom: 10px;
+}
+.analysis-subgroup-head h4 {
+  margin: 0 0 3px;
+  font-size: .9rem;
+  color: var(--brand-blue);
+}
+.analysis-subgroup-head p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: .8rem;
+  line-height: 1.4;
+}
+.analysis-group-consultants .analysis-subgroup .analysis-options-grid {
+  grid-template-columns: 1fr;
+  max-height: none;
+  overflow: visible;
+  padding-right: 0;
+}
 .custom-analysis-overview-hint {
   margin: -6px 0 12px;
   color: var(--text-mute);

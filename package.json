@@ -1,6 +1,6 @@
 {
   "name": "meetsum",
-  "version": "1.0.0",
+  "version": "1.260707.1",
   "description": "MeetSum – Teams Transcript Summarizer Helper",
   "main": "server.js",
   "scripts": {

@@ -64,7 +64,7 @@
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
   const VERSION_FILE = "/version.json";
-  let currentAppVersion = "1.260705.2";
+  let currentAppVersion = "1.260707.1";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -94,7 +94,404 @@
     { id: "content" },
     { id: "education" },
     { id: "tools" },
+    { id: "consultants" },
     { id: "custom" }
+  ];
+
+  const ANALYSIS_CONSULTANT_GROUPS = [
+    {
+      id: "problem-framing",
+      title: "Problem Framing & Diagnosis",
+      desc: "Clarify the real problem, the hypotheses, and the missing information."
+    },
+    {
+      id: "strategic-thinking",
+      title: "Strategic Thinking",
+      desc: "Stress test the decision with hindsight, constraints, and second-order effects."
+    },
+    {
+      id: "analysis-insight",
+      title: "Analysis & Insight Generation",
+      desc: "Build simple models, test assumptions, and separate signal from noise."
+    },
+    {
+      id: "client-communication",
+      title: "Client Communication & Influence",
+      desc: "Turn the analysis into a narrative a CEO or board can absorb fast."
+    },
+    {
+      id: "decision-making",
+      title: "Decision Making",
+      desc: "Choose the option that best balances upside, regret, speed, and incentives."
+    },
+    {
+      id: "execution-impact",
+      title: "Execution & Impact",
+      desc: "Translate strategy into near-term actions and measurable outcomes."
+    }
+  ];
+
+  const ANALYSIS_CONSULTANT_OPTION_DEFS = [
+    {
+      id: "consultant-hidden-problem",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "problem-framing",
+      titleNl: "Hidden Problem",
+      titleEn: "Hidden Problem",
+      descNl: "Surface the real client problem beneath the stated request.",
+      descEn: "Surface the real client problem beneath the stated request.",
+      promptNl: "CONSULTING BRIEF: Act as a senior partner. What problem is the client actually paying to solve beyond what they stated? Use the transcript to surface the hidden commercial need.",
+      promptEn: "CONSULTING BRIEF: Act as a senior partner. What problem is the client actually paying to solve beyond what they stated? Use the transcript to surface the hidden commercial need."
+    },
+    {
+      id: "consultant-top-hypotheses",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "problem-framing",
+      titleNl: "Top Hypotheses",
+      titleEn: "Top Hypotheses",
+      descNl: "Rank the most likely explanations by likelihood and impact.",
+      descEn: "Rank the most likely explanations by likelihood and impact.",
+      promptNl: "CONSULTING BRIEF: List the top five hypotheses explaining this situation. Rank them by likelihood and impact.",
+      promptEn: "CONSULTING BRIEF: List the top five hypotheses explaining this situation. Rank them by likelihood and impact."
+    },
+    {
+      id: "consultant-missing-info",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "problem-framing",
+      titleNl: "Missing Information",
+      titleEn: "Missing Information",
+      descNl: "Find the missing input that would most change the decision.",
+      descEn: "Find the missing input that would most change the decision.",
+      promptNl: "CONSULTING BRIEF: What missing information would most change the recommended decision?",
+      promptEn: "CONSULTING BRIEF: What missing information would most change the recommended decision?"
+    },
+    {
+      id: "consultant-competitor-investor-lens",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "problem-framing",
+      titleNl: "Competitor + Investor Lens",
+      titleEn: "Competitor + Investor Lens",
+      descNl: "Reframe the problem from outside the organization.",
+      descEn: "Reframe the problem from outside the organization.",
+      promptNl: "CONSULTING BRIEF: Reframe this problem from the perspective of a competitor and an investor.",
+      promptEn: "CONSULTING BRIEF: Reframe this problem from the perspective of a competitor and an investor."
+    },
+    {
+      id: "consultant-twelve-months",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "problem-framing",
+      titleNl: "Twelve-Month Irrelevance",
+      titleEn: "Twelve-Month Irrelevance",
+      descNl: "Identify the conditions that make the issue disappear within a year.",
+      descEn: "Identify the conditions that make the issue disappear within a year.",
+      promptNl: "CONSULTING BRIEF: What conditions would make this problem irrelevant within twelve months?",
+      promptEn: "CONSULTING BRIEF: What conditions would make this problem irrelevant within twelve months?"
+    },
+    {
+      id: "consultant-hindsight-failure",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "strategic-thinking",
+      titleNl: "Hindsight Failure",
+      titleEn: "Hindsight Failure",
+      descNl: "Ask what hindsight would say we misunderstood.",
+      descEn: "Ask what hindsight would say we misunderstood.",
+      promptNl: "CONSULTING BRIEF: If this decision fails, what will hindsight show we misunderstood?",
+      promptEn: "CONSULTING BRIEF: If this decision fails, what will hindsight show we misunderstood?"
+    },
+    {
+      id: "consultant-unlimited-resources",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "strategic-thinking",
+      titleNl: "Unlimited Resources",
+      titleEn: "Unlimited Resources",
+      descNl: "Compare the ideal strategy to the realistic version.",
+      descEn: "Compare the ideal strategy to the realistic version.",
+      promptNl: "CONSULTING BRIEF: What strategy would we pursue with unlimited resources? What is the realistic version?",
+      promptEn: "CONSULTING BRIEF: What strategy would we pursue with unlimited resources? What is the realistic version?"
+    },
+    {
+      id: "consultant-single-constraint",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "strategic-thinking",
+      titleNl: "Single Constraint",
+      titleEn: "Single Constraint",
+      descNl: "Find the bottleneck that limits value creation most.",
+      descEn: "Find the bottleneck that limits value creation most.",
+      promptNl: "CONSULTING BRIEF: Identify the single constraint that limits value creation the most.",
+      promptEn: "CONSULTING BRIEF: Identify the single constraint that limits value creation the most."
+    },
+    {
+      id: "consultant-second-third-order",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "strategic-thinking",
+      titleNl: "Second-Order Effects",
+      titleEn: "Second-Order Effects",
+      descNl: "Map the knock-on consequences of the strategy.",
+      descEn: "Map the knock-on consequences of the strategy.",
+      promptNl: "CONSULTING BRIEF: What are the second-order and third-order consequences of this strategy?",
+      promptEn: "CONSULTING BRIEF: What are the second-order and third-order consequences of this strategy?"
+    },
+    {
+      id: "consultant-first-principles-competitor",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "strategic-thinking",
+      titleNl: "First-Principles Competitor",
+      titleEn: "First-Principles Competitor",
+      descNl: "Ask what a ground-up competitor would do here.",
+      descEn: "Ask what a ground-up competitor would do here.",
+      promptNl: "CONSULTING BRIEF: What would a first principles competitor do in this situation?",
+      promptEn: "CONSULTING BRIEF: What would a first principles competitor do in this situation?"
+    },
+    {
+      id: "consultant-value-model",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "analysis-insight",
+      titleNl: "Value Flow Model",
+      titleEn: "Value Flow Model",
+      descNl: "Show where value is created and where it leaks out.",
+      descEn: "Show where value is created and where it leaks out.",
+      promptNl: "CONSULTING BRIEF: Build a simple model showing how value is created and lost in this system.",
+      promptEn: "CONSULTING BRIEF: Build a simple model showing how value is created and lost in this system."
+    },
+    {
+      id: "consultant-outcome-variation",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "analysis-insight",
+      titleNl: "Outcome Drivers",
+      titleEn: "Outcome Drivers",
+      descNl: "Identify the inputs that explain most variance in outcomes.",
+      descEn: "Identify the inputs that explain most variance in outcomes.",
+      promptNl: "CONSULTING BRIEF: Which inputs account for most of the outcome variation?",
+      promptEn: "CONSULTING BRIEF: Which inputs account for most of the outcome variation?"
+    },
+    {
+      id: "consultant-assumption-stress-test",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "analysis-insight",
+      titleNl: "Assumption Stress Test",
+      titleEn: "Assumption Stress Test",
+      descNl: "Test the assumptions that must hold for the plan to work.",
+      descEn: "Test the assumptions that must hold for the plan to work.",
+      promptNl: "CONSULTING BRIEF: What assumptions must hold for this plan to succeed? Test each one.",
+      promptEn: "CONSULTING BRIEF: What assumptions must hold for this plan to succeed? Test each one."
+    },
+    {
+      id: "consultant-false-confidence",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "analysis-insight",
+      titleNl: "False Confidence",
+      titleEn: "False Confidence",
+      descNl: "Separate the data that misleads from the data that reduces uncertainty.",
+      descEn: "Separate the data that misleads from the data that reduces uncertainty.",
+      promptNl: "CONSULTING BRIEF: What data could create false confidence, and what data would reduce uncertainty?",
+      promptEn: "CONSULTING BRIEF: What data could create false confidence, and what data would reduce uncertainty?"
+    },
+    {
+      id: "consultant-correlation-causation",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "analysis-insight",
+      titleNl: "Correlation vs Causation",
+      titleEn: "Correlation vs Causation",
+      descNl: "Spot where a pattern may be mistaken for a cause.",
+      descEn: "Spot where a pattern may be mistaken for a cause.",
+      promptNl: "CONSULTING BRIEF: Where might correlation be mistaken for causation?",
+      promptEn: "CONSULTING BRIEF: Where might correlation be mistaken for causation?"
+    },
+    {
+      id: "consultant-ceo-30-seconds",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "client-communication",
+      titleNl: "CEO 30-Second Version",
+      titleEn: "CEO 30-Second Version",
+      descNl: "Rewrite the recommendation so a CEO gets it instantly.",
+      descEn: "Rewrite the recommendation so a CEO gets it instantly.",
+      promptNl: "CONSULTING BRIEF: Rewrite this recommendation so a CEO can understand it in thirty seconds.",
+      promptEn: "CONSULTING BRIEF: Rewrite this recommendation so a CEO can understand it in thirty seconds."
+    },
+    {
+      id: "consultant-board-objections",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "client-communication",
+      titleNl: "Board Objections",
+      titleEn: "Board Objections",
+      descNl: "Anticipate the skeptical questions the board will raise.",
+      descEn: "Anticipate the skeptical questions the board will raise.",
+      promptNl: "CONSULTING BRIEF: What objections will a skeptical board member raise, and how should we address them?",
+      promptEn: "CONSULTING BRIEF: What objections will a skeptical board member raise, and how should we address them?"
+    },
+    {
+      id: "consultant-clear-narrative",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "client-communication",
+      titleNl: "Clear Narrative",
+      titleEn: "Clear Narrative",
+      descNl: "Turn the analysis into a concrete story and conclusion.",
+      descEn: "Turn the analysis into a concrete story and conclusion.",
+      promptNl: "CONSULTING BRIEF: Convert this analysis into a clear narrative with a concrete conclusion.",
+      promptEn: "CONSULTING BRIEF: Convert this analysis into a clear narrative with a concrete conclusion."
+    },
+    {
+      id: "consultant-obvious-after",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "client-communication",
+      titleNl: "Obvious After Explanation",
+      titleEn: "Obvious After Explanation",
+      descNl: "Identify what would make the insight feel self-evident.",
+      descEn: "Identify what would make the insight feel self-evident.",
+      promptNl: "CONSULTING BRIEF: What would make this insight feel obvious after it is explained?",
+      promptEn: "CONSULTING BRIEF: What would make this insight feel obvious after it is explained?"
+    },
+    {
+      id: "consultant-clear-without-softening",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "client-communication",
+      titleNl: "Clear Without Softening",
+      titleEn: "Clear Without Softening",
+      descNl: "State the message clearly without diluting the edge.",
+      descEn: "State the message clearly without diluting the edge.",
+      promptNl: "CONSULTING BRIEF: How can this be stated clearly without softening the message?",
+      promptEn: "CONSULTING BRIEF: How can this be stated clearly without softening the message?"
+    },
+    {
+      id: "consultant-minimize-regret",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "decision-making",
+      titleNl: "Minimize Regret",
+      titleEn: "Minimize Regret",
+      descNl: "Choose the option that is safest under uncertainty.",
+      descEn: "Choose the option that is safest under uncertainty.",
+      promptNl: "CONSULTING BRIEF: If a decision must be made today with incomplete data, which option minimizes regret?",
+      promptEn: "CONSULTING BRIEF: If a decision must be made today with incomplete data, which option minimizes regret?"
+    },
+    {
+      id: "consultant-upside-downside",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "decision-making",
+      titleNl: "Highest Upside, Limited Downside",
+      titleEn: "Highest Upside, Limited Downside",
+      descNl: "Find the best asymmetric choice.",
+      descEn: "Find the best asymmetric choice.",
+      promptNl: "CONSULTING BRIEF: What decision offers the highest upside with limited downside?",
+      promptEn: "CONSULTING BRIEF: What decision offers the highest upside with limited downside?"
+    },
+    {
+      id: "consultant-compensation-outcome",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "decision-making",
+      titleNl: "Compensation on Outcome",
+      titleEn: "Compensation on Outcome",
+      descNl: "Pressure test what we would recommend if we owned the result.",
+      descEn: "Pressure test what we would recommend if we owned the result.",
+      promptNl: "CONSULTING BRIEF: What would we recommend if compensation depended on the outcome?",
+      promptEn: "CONSULTING BRIEF: What would we recommend if compensation depended on the outcome?"
+    },
+    {
+      id: "consultant-speed-over-precision",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "decision-making",
+      titleNl: "Speed Over Precision",
+      titleEn: "Speed Over Precision",
+      descNl: "Choose the option that fits a faster decision cycle.",
+      descEn: "Choose the option that fits a faster decision cycle.",
+      promptNl: "CONSULTING BRIEF: What decision would we make if speed mattered more than precision?",
+      promptEn: "CONSULTING BRIEF: What decision would we make if speed mattered more than precision?"
+    },
+    {
+      id: "consultant-client-incentives",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "decision-making",
+      titleNl: "Client Incentives",
+      titleEn: "Client Incentives",
+      descNl: "Align the recommendation with what the client truly wants.",
+      descEn: "Align the recommendation with what the client truly wants.",
+      promptNl: "CONSULTING BRIEF: What decision best aligns with the client's incentives rather than their stated preferences?",
+      promptEn: "CONSULTING BRIEF: What decision best aligns with the client's incentives rather than their stated preferences?"
+    },
+    {
+      id: "consultant-next-14-days",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "execution-impact",
+      titleNl: "Next 14 Days",
+      titleEn: "Next 14 Days",
+      descNl: "Turn the strategy into three immediate actions.",
+      descEn: "Turn the strategy into three immediate actions.",
+      promptNl: "CONSULTING BRIEF: What three actions should happen in the next fourteen days?",
+      promptEn: "CONSULTING BRIEF: What three actions should happen in the next fourteen days?"
+    },
+    {
+      id: "consultant-execution-failure",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "execution-impact",
+      titleNl: "Execution Failure Points",
+      titleEn: "Execution Failure Points",
+      descNl: "Identify where delivery is most likely to break down.",
+      descEn: "Identify where delivery is most likely to break down.",
+      promptNl: "CONSULTING BRIEF: Where is execution most likely to fail, and how can that risk be reduced?",
+      promptEn: "CONSULTING BRIEF: Where is execution most likely to fail, and how can that risk be reduced?"
+    },
+    {
+      id: "consultant-30-60-90",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "execution-impact",
+      titleNl: "30-60-90 Day Success",
+      titleEn: "30-60-90 Day Success",
+      descNl: "Define success milestones across the first ninety days.",
+      descEn: "Define success milestones across the first ninety days.",
+      promptNl: "CONSULTING BRIEF: What does success look like after thirty, sixty, and ninety days?",
+      promptEn: "CONSULTING BRIEF: What does success look like after thirty, sixty, and ninety days?"
+    },
+    {
+      id: "consultant-stop-doing",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "execution-impact",
+      titleNl: "Stop Doing",
+      titleEn: "Stop Doing",
+      descNl: "Call out the activities that must stop for the strategy to work.",
+      descEn: "Call out the activities that must stop for the strategy to work.",
+      promptNl: "CONSULTING BRIEF: What activities must stop for this strategy to work?",
+      promptEn: "CONSULTING BRIEF: What activities must stop for this strategy to work?"
+    },
+    {
+      id: "consultant-one-insight",
+      group: "consultants",
+      tab: "consultants",
+      subgroup: "execution-impact",
+      titleNl: "One Insight Only",
+      titleEn: "One Insight Only",
+      descNl: "Choose the single message that matters most.",
+      descEn: "Choose the single message that matters most.",
+      promptNl: "CONSULTING BRIEF: If only one insight can be communicated, which one matters most?",
+      promptEn: "CONSULTING BRIEF: If only one insight can be communicated, which one matters most?"
+    }
   ];
 
   const ANALYSIS_TAB_BY_OPTION_ID = {
@@ -169,6 +566,7 @@
   }
 
   const ANALYSIS_OPTION_DEFS = [
+    ...ANALYSIS_CONSULTANT_OPTION_DEFS,
     {
       id: "bcg-matrix",
       group: "reports",
@@ -735,6 +1133,106 @@
     return `${text.slice(0, maxLength).trimEnd()}...`;
   }
 
+  function createAnalysisCard(opt) {
+    const selected = prefs.analysis.option === opt.id;
+    const card = document.createElement("article");
+    card.className = "analysis-card" + (selected ? " is-selected" : "");
+    const isCustom = opt.group === "custom";
+    card.tabIndex = 0;
+    card.setAttribute("role", "button");
+    card.setAttribute("aria-selected", selected ? "true" : "false");
+
+    const selectOption = () => {
+      if (selected) {
+        clearAnalysisOption();
+        return;
+      }
+      applyAnalysisOption(opt);
+    };
+
+    card.addEventListener("click", (e) => {
+      if (e.target.closest(".analysis-card-detail")) return;
+      if (e.target.closest(".analysis-card-remove")) return;
+      selectOption();
+    });
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        selectOption();
+      }
+    });
+
+    const top = document.createElement("span");
+    top.className = "analysis-card-top";
+    const topLeft = document.createElement("span");
+    topLeft.className = "analysis-card-top-left";
+    const titleEl = document.createElement("span");
+    titleEl.className = "analysis-title";
+    titleEl.textContent = opt.title;
+    topLeft.appendChild(titleEl);
+    if (isCustom) {
+      const badge = document.createElement("span");
+      badge.className = "analysis-local-badge";
+      badge.textContent = t("step2.analysis.custom.localBadge");
+      topLeft.appendChild(badge);
+    }
+    if (selected) {
+      const badge = document.createElement("span");
+      badge.className = "analysis-selected-badge";
+      badge.textContent = t("step2.analysis.custom.selectedBadge");
+      topLeft.appendChild(badge);
+    }
+    top.appendChild(topLeft);
+
+    const detailBtn = document.createElement("button");
+    detailBtn.type = "button";
+    detailBtn.className = "btn btn-soft btn-sm analysis-card-detail";
+    detailBtn.textContent = "ⓘ";
+    detailBtn.title = t("step2.analysis.custom.openDetail");
+    detailBtn.setAttribute("aria-label", t("step2.analysis.custom.openDetail"));
+    detailBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openCustomAnalysisDetailModal(opt);
+    });
+    top.appendChild(detailBtn);
+    card.appendChild(top);
+
+    const focus = document.createElement("span");
+    focus.className = "analysis-focus";
+    focus.textContent = truncateAnalysisText(opt.prompt, 110);
+    focus.title = opt.prompt;
+    card.appendChild(focus);
+
+    if (isCustom) {
+      const actions = document.createElement("span");
+      actions.className = "analysis-card-actions";
+      const note = document.createElement("span");
+      note.className = "analysis-card-note";
+      note.textContent = t("step2.analysis.custom.cardNote");
+      actions.appendChild(note);
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "analysis-card-remove";
+      removeBtn.textContent = t("step2.analysis.custom.remove");
+      removeBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        removeCustomAnalysisOption(opt.id);
+        renderAnalysisOptions();
+        renderAnalysisTab();
+        updateStepStates();
+        updateSidebar();
+        toast(t("step2.analysis.custom.removed"));
+      });
+      actions.appendChild(removeBtn);
+      card.appendChild(actions);
+    }
+
+    return card;
+  }
+
   function getCustomAnalysisOptions() {
     const customOptions = (prefs.analysis && Array.isArray(prefs.analysis.customOptions)) ? prefs.analysis.customOptions : [];
     return customOptions
@@ -822,7 +1320,8 @@
     const staticOptions = ANALYSIS_OPTION_DEFS.map((opt) => ({
       id: opt.id,
       group: opt.group,
-      tab: getAnalysisTabForOption(opt.id),
+      tab: opt.tab || getAnalysisTabForOption(opt.id),
+      subgroup: opt.subgroup,
       title: isEn ? opt.titleEn : opt.titleNl,
       desc: isEn ? opt.descEn : opt.descNl,
       prompt: isEn ? opt.promptEn : opt.promptNl
@@ -1827,7 +2326,7 @@
 
     tabs.forEach((tab) => {
       const section = document.createElement("section");
-      section.className = "analysis-group" + (tab.id === "custom" ? " analysis-group-custom" : "");
+      section.className = "analysis-group" + (tab.id === "custom" ? " analysis-group-custom" : "") + (tab.id === "consultants" ? " analysis-group-consultants" : "");
       section.dataset.analysisPanel = tab.id;
       section.hidden = true;
 
@@ -1885,6 +2384,34 @@
         empty.hidden = true;
         empty.textContent = t("step2.analysis.custom.empty");
         section.appendChild(empty);
+      } else if (tab.id === "consultants") {
+        const subgroupsWrap = document.createElement("div");
+        subgroupsWrap.className = "analysis-subgroups";
+
+        ANALYSIS_CONSULTANT_GROUPS.forEach((group) => {
+          const subgroup = document.createElement("section");
+          subgroup.className = "analysis-subgroup";
+          subgroup.dataset.analysisSubgroup = group.id;
+
+          const subgroupHead = document.createElement("div");
+          subgroupHead.className = "analysis-subgroup-head";
+          const subgroupTitle = document.createElement("h4");
+          subgroupTitle.textContent = group.title;
+          const subgroupDesc = document.createElement("p");
+          subgroupDesc.textContent = group.desc;
+          subgroupHead.appendChild(subgroupTitle);
+          subgroupHead.appendChild(subgroupDesc);
+          subgroup.appendChild(subgroupHead);
+
+          const grid = document.createElement("div");
+          grid.className = "analysis-options-grid";
+          grid.dataset.analysisGrid = `${tab.id}-${group.id}`;
+          subgroup.appendChild(grid);
+
+          subgroupsWrap.appendChild(subgroup);
+        });
+
+        section.appendChild(subgroupsWrap);
       } else {
         const grid = document.createElement("div");
         grid.className = "analysis-options-grid";
@@ -1894,6 +2421,20 @@
 
       groupsWrap.appendChild(section);
     });
+
+    options.forEach((opt) => {
+      const gridKey = opt.tab === "consultants" ? `${opt.tab}-${opt.subgroup || "general"}` : opt.tab;
+      const grid = groupsWrap.querySelector(`[data-analysis-grid="${gridKey}"]`);
+      if (!grid) return;
+      grid.appendChild(createAnalysisCard(opt));
+    });
+
+    const customEmpty = groupsWrap.querySelector("[data-analysis-empty='custom']");
+    if (customEmpty) {
+      customEmpty.hidden = getCustomAnalysisOptions().length > 0;
+    }
+
+    renderAnalysisTab();
 
     tabsWrap.querySelectorAll("[data-analysis-tab]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -1915,182 +2456,7 @@
       customModal.dataset.listenersBound = "true";
       if (customModalCancel) customModalCancel.addEventListener("click", closeCustomAnalysisModal);
       if (customModalSave) customModalSave.addEventListener("click", submitCustomAnalysisOption);
-      customModal.addEventListener("click", (e) => {
-        if (e.target === customModal) closeCustomAnalysisModal();
-      });
-
-      const customModalTitle = document.getElementById("customAnalysisTitle");
-      const customModalDesc = document.getElementById("customAnalysisDesc");
-      if (customModalTitle) {
-        customModalTitle.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            submitCustomAnalysisOption();
-          }
-        });
-      }
-      if (customModalDesc) {
-        customModalDesc.addEventListener("keydown", (e) => {
-          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-            e.preventDefault();
-            submitCustomAnalysisOption();
-          }
-        });
-      }
     }
-
-    const customOverviewClose = document.getElementById("customAnalysisOverviewClose");
-    const customOverviewExport = document.getElementById("customAnalysisExport");
-    const customOverviewImport = document.getElementById("customAnalysisImport");
-    const customOverviewImportInput = document.getElementById("customAnalysisImportInput");
-    const customOverviewModal = document.getElementById("customAnalysisOverviewModal");
-    if (customOverviewModal && !customOverviewModal.dataset.listenersBound) {
-      customOverviewModal.dataset.listenersBound = "true";
-      if (customOverviewClose) customOverviewClose.addEventListener("click", closeCustomAnalysisOverviewModal);
-      if (customOverviewExport) customOverviewExport.addEventListener("click", exportCustomAnalysisOptions);
-      if (customOverviewImport) {
-        customOverviewImport.addEventListener("click", () => {
-          if (customOverviewImportInput) customOverviewImportInput.click();
-        });
-      }
-      if (customOverviewImportInput) {
-        customOverviewImportInput.addEventListener("change", async () => {
-          const file = customOverviewImportInput.files && customOverviewImportInput.files[0];
-          customOverviewImportInput.value = "";
-          if (!file) return;
-          await importCustomAnalysisOptionsFromFile(file);
-        });
-      }
-      customOverviewModal.addEventListener("click", (e) => {
-        if (e.target === customOverviewModal) closeCustomAnalysisOverviewModal();
-      });
-    }
-
-    const customDetailCancel = document.getElementById("customAnalysisDetailCancel");
-    const customDetailEdit = document.getElementById("customAnalysisDetailEdit");
-    const customDetailUse = document.getElementById("customAnalysisDetailUse");
-    const customDetailClose = document.getElementById("customAnalysisDetailClose");
-    const customDetailModal = document.getElementById("customAnalysisDetailModal");
-    if (customDetailModal && !customDetailModal.dataset.listenersBound) {
-      customDetailModal.dataset.listenersBound = "true";
-      if (customDetailClose) customDetailClose.addEventListener("click", closeCustomAnalysisDetailModal);
-      if (customDetailCancel) customDetailCancel.addEventListener("click", closeCustomAnalysisDetailModal);
-      if (customDetailEdit) customDetailEdit.addEventListener("click", editCustomAnalysisDetail);
-      if (customDetailUse) customDetailUse.addEventListener("click", useCustomAnalysisDetail);
-      customDetailModal.addEventListener("click", (e) => {
-        if (e.target === customDetailModal) closeCustomAnalysisDetailModal();
-      });
-    }
-
-    options.forEach((opt) => {
-      const card = document.createElement("article");
-      const selected = prefs.analysis.option === opt.id;
-      card.className = "analysis-card" + (selected ? " is-selected" : "");
-      const isCustom = opt.group === "custom";
-      card.tabIndex = 0;
-      card.setAttribute("role", "button");
-      card.setAttribute("aria-selected", selected ? "true" : "false");
-
-      const selectOption = () => {
-        if (selected) {
-          clearAnalysisOption();
-          return;
-        }
-        applyAnalysisOption(opt);
-      };
-
-      card.addEventListener("click", (e) => {
-        if (e.target.closest(".analysis-card-detail")) return;
-        if (e.target.closest(".analysis-card-remove")) return;
-        selectOption();
-      });
-      card.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          selectOption();
-        }
-      });
-
-      const top = document.createElement("span");
-      top.className = "analysis-card-top";
-      const topLeft = document.createElement("span");
-      topLeft.className = "analysis-card-top-left";
-      const titleEl = document.createElement("span");
-      titleEl.className = "analysis-title";
-      titleEl.textContent = opt.title;
-      topLeft.appendChild(titleEl);
-      if (isCustom) {
-        const badge = document.createElement("span");
-        badge.className = "analysis-local-badge";
-        badge.textContent = t("step2.analysis.custom.localBadge");
-        topLeft.appendChild(badge);
-      }
-      if (selected) {
-        const badge = document.createElement("span");
-        badge.className = "analysis-selected-badge";
-        badge.textContent = t("step2.analysis.custom.selectedBadge");
-        topLeft.appendChild(badge);
-      }
-      top.appendChild(topLeft);
-
-      const detailBtn = document.createElement("button");
-      detailBtn.type = "button";
-      detailBtn.className = "btn btn-soft btn-sm analysis-card-detail";
-      detailBtn.textContent = "ⓘ";
-      detailBtn.title = t("step2.analysis.custom.openDetail");
-      detailBtn.setAttribute("aria-label", t("step2.analysis.custom.openDetail"));
-      detailBtn.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        openCustomAnalysisDetailModal(opt);
-      });
-      top.appendChild(detailBtn);
-      card.appendChild(top);
-
-      const focus = document.createElement("span");
-      focus.className = "analysis-focus";
-      focus.textContent = truncateAnalysisText(opt.prompt, 110);
-      focus.title = opt.prompt;
-      card.appendChild(focus);
-
-      if (isCustom) {
-        const actions = document.createElement("span");
-        actions.className = "analysis-card-actions";
-        const note = document.createElement("span");
-        note.className = "analysis-card-note";
-        note.textContent = t("step2.analysis.custom.cardNote");
-        actions.appendChild(note);
-
-        const removeBtn = document.createElement("button");
-        removeBtn.type = "button";
-        removeBtn.className = "analysis-card-remove";
-        removeBtn.textContent = t("step2.analysis.custom.remove");
-        removeBtn.addEventListener("click", (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          removeCustomAnalysisOption(opt.id);
-          renderAnalysisOptions();
-          renderStep2Mode();
-          updateStepStates();
-          updateSidebar();
-          toast(t("step2.analysis.custom.removed"));
-        });
-        actions.appendChild(removeBtn);
-        card.appendChild(actions);
-      }
-
-      const targetGrid = groupsWrap.querySelector(`[data-analysis-grid="${opt.tab}"]`);
-      if (targetGrid) {
-        targetGrid.appendChild(card);
-      }
-    });
-
-    const customEmpty = groupsWrap.querySelector("[data-analysis-empty='custom']");
-    if (customEmpty) {
-      customEmpty.hidden = getCustomAnalysisOptions().length > 0;
-    }
-
-    renderAnalysisTab();
   }
 
   function renderStep2Mode() {
