@@ -64,7 +64,7 @@
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
   const VERSION_FILE = "/version.json";
-  let currentAppVersion = "1.260707.7";
+  let currentAppVersion = "1.260707.9";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -3785,42 +3785,47 @@ Belangrijke regels:
   const INTRO_VIDEO = {
     title: "MeetingSum Intro",
     youtubeUrl: "https://www.youtube.com/watch?v=VeUfYSFkBms",
-    embedUrl: "https://www.youtube.com/embed/VeUfYSFkBms?rel=0&modestbranding=1&playsinline=1&autoplay=1"
+    thumbnailUrl: "https://img.youtube.com/vi/VeUfYSFkBms/hqdefault.jpg"
   };
 
   const BASIS_VIDEO = {
     title: "Basis uitleg",
     youtubeUrl: "https://www.youtube.com/watch?v=keaa3zKkJwc",
-    embedUrl: "https://www.youtube.com/embed/keaa3zKkJwc?rel=0&modestbranding=1&playsinline=1&autoplay=1"
+    thumbnailUrl: "https://img.youtube.com/vi/keaa3zKkJwc/hqdefault.jpg"
   };
 
-  function buildYouTubeEmbedUrl(video) {
-    const videoId = video?.youtubeUrl?.match(/[?&]v=([^&]+)/)?.[1] || "";
-    if (!videoId) return "";
-    const params = new URLSearchParams({
-      rel: "0",
-      modestbranding: "1",
-      playsinline: "1",
-      autoplay: "1"
-    });
-    if (location.origin && location.origin !== "null") {
-      params.set("origin", location.origin);
-    }
-    return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+  let currentVideo = null;
+
+  function openYouTubePopup(video, fullscreen = false) {
+    if (!video?.youtubeUrl) return;
+    const width = fullscreen ? screen.availWidth : 1280;
+    const height = fullscreen ? screen.availHeight : 720;
+    const left = Math.max(0, Math.round((screen.availWidth - width) / 2));
+    const top = Math.max(0, Math.round((screen.availHeight - height) / 2));
+    const features = [
+      "popup=yes",
+      `width=${width}`,
+      `height=${height}`,
+      `left=${left}`,
+      `top=${top}`,
+      "noopener=yes"
+    ].join(",");
+    const popup = window.open(video.youtubeUrl, "_blank", features);
+    if (popup) popup.focus();
   }
 
   function openVideoModal(video) {
     const modal = document.getElementById("introVideoModal");
-    const dialog = modal?.querySelector(".intro-video-modal");
-    const frame = document.getElementById("introVideoFrame");
     const title = document.getElementById("introVideoTitle");
     const link = document.getElementById("introVideoYoutubeLink");
-    if (!modal || !frame) return;
+    const poster = document.getElementById("introVideoPoster");
+    const playBtn = document.getElementById("introVideoPlay");
+    if (!modal) return;
+    currentVideo = video || null;
     if (title && video?.title) title.textContent = video.title;
     if (link && video?.youtubeUrl) link.href = video.youtubeUrl;
-    if (dialog) dialog.classList.remove("is-fallback");
-    frame.title = video?.title ? `${video.title} video` : "MeetingSum video";
-    frame.src = buildYouTubeEmbedUrl(video) || video?.embedUrl || "";
+    if (poster && video?.thumbnailUrl) poster.src = video.thumbnailUrl;
+    if (playBtn && video?.title) playBtn.textContent = `Afspelen: ${video.title}`;
     modal.hidden = false;
     setBodyFrozen(true);
   }
@@ -3834,29 +3839,15 @@ Belangrijke regels:
   }
 
   async function toggleIntroVideoFullscreen() {
-    const modal = document.querySelector("#introVideoModal .intro-video-modal");
-    if (!modal) return;
-    if (document.fullscreenElement === modal) {
-      await document.exitFullscreen().catch(() => {});
-      return;
-    }
-    if (!modal.requestFullscreen) return;
-    await modal.requestFullscreen().catch(() => {});
+    openYouTubePopup(currentVideo, true);
   }
 
   function closeIntroVideoModal() {
     const modal = document.getElementById("introVideoModal");
-    const dialog = modal?.querySelector(".intro-video-modal");
-    const frame = document.getElementById("introVideoFrame");
     const link = document.getElementById("introVideoYoutubeLink");
     if (!modal) return;
-    if (document.fullscreenElement) {
-      document.exitFullscreen().catch(() => {});
-    }
     modal.hidden = true;
-    if (frame) frame.src = "";
     if (link) link.blur();
-    if (dialog) dialog.classList.remove("is-fallback");
     if (canUnfreezeBody()) setBodyFrozen(false);
   }
 
@@ -5134,11 +5125,13 @@ Belangrijke regels:
     const introVideoClose = document.getElementById("introVideoClose");
     const introVideoCloseBottom = document.getElementById("introVideoCloseBottom");
     const introVideoFullscreen = document.getElementById("introVideoFullscreen");
+    const introVideoPlay = document.getElementById("introVideoPlay");
     if (introVideoTag) introVideoTag.addEventListener("click", openIntroVideoModal);
     if (basisVideoTag) basisVideoTag.addEventListener("click", openBasisVideoModal);
     if (introVideoClose) introVideoClose.addEventListener("click", closeIntroVideoModal);
     if (introVideoCloseBottom) introVideoCloseBottom.addEventListener("click", closeIntroVideoModal);
     if (introVideoFullscreen) introVideoFullscreen.addEventListener("click", toggleIntroVideoFullscreen);
+    if (introVideoPlay) introVideoPlay.addEventListener("click", () => openYouTubePopup(currentVideo, false));
     if (introVideoModal) {
       introVideoModal.addEventListener("click", (e) => {
         if (e.target === introVideoModal) closeIntroVideoModal();
