@@ -1,8 +1,9 @@
 {
   "name": "meetsum",
-  "version": "1.260707.6",
+  "version": "1.260707.8",
   "description": "MeetSum – Teams Transcript Summarizer Helper",
   "scripts": {
+    "lint": "node --check script.js && node --check netlify/functions/pin-status.js && node --check netlify/functions/summarize.js && node --check netlify/functions/verify-pin.js",
     "start": "powershell -ExecutionPolicy Bypass -File server.ps1",
     "start:api": "powershell -ExecutionPolicy Bypass -File server-with-api.ps1"
   },

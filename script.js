@@ -64,8 +64,7 @@
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
   const VERSION_FILE = "/version.json";
-  let currentAppVersion = "1.260707.6";
-  const canEmbedYouTube = location.protocol !== "file:";
+  let currentAppVersion = "1.260707.7";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -3804,10 +3803,10 @@ Belangrijke regels:
       playsinline: "1",
       autoplay: "1"
     });
-    if (canEmbedYouTube && location.origin && location.origin !== "null") {
+    if (location.origin && location.origin !== "null") {
       params.set("origin", location.origin);
     }
-    return `https://www.youtube-nocookie.com/embed/${videoId}?${params.toString()}`;
+    return `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
   }
 
   function openVideoModal(video) {
@@ -3816,14 +3815,12 @@ Belangrijke regels:
     const frame = document.getElementById("introVideoFrame");
     const title = document.getElementById("introVideoTitle");
     const link = document.getElementById("introVideoYoutubeLink");
-    const fallback = document.getElementById("introVideoFallback");
     if (!modal || !frame) return;
     if (title && video?.title) title.textContent = video.title;
     if (link && video?.youtubeUrl) link.href = video.youtubeUrl;
-    if (fallback) fallback.hidden = canEmbedYouTube;
-    if (dialog) dialog.classList.toggle("is-fallback", !canEmbedYouTube);
+    if (dialog) dialog.classList.remove("is-fallback");
     frame.title = video?.title ? `${video.title} video` : "MeetingSum video";
-    frame.src = canEmbedYouTube ? (buildYouTubeEmbedUrl(video) || video?.embedUrl || "") : "";
+    frame.src = buildYouTubeEmbedUrl(video) || video?.embedUrl || "";
     modal.hidden = false;
     setBodyFrozen(true);
   }
@@ -3852,7 +3849,6 @@ Belangrijke regels:
     const dialog = modal?.querySelector(".intro-video-modal");
     const frame = document.getElementById("introVideoFrame");
     const link = document.getElementById("introVideoYoutubeLink");
-    const fallback = document.getElementById("introVideoFallback");
     if (!modal) return;
     if (document.fullscreenElement) {
       document.exitFullscreen().catch(() => {});
@@ -3860,7 +3856,6 @@ Belangrijke regels:
     modal.hidden = true;
     if (frame) frame.src = "";
     if (link) link.blur();
-    if (fallback) fallback.hidden = true;
     if (dialog) dialog.classList.remove("is-fallback");
     if (canUnfreezeBody()) setBodyFrozen(false);
   }
@@ -4415,6 +4410,10 @@ Belangrijke regels:
   let sessionPin = null;
 
   async function checkPinStatus() {
+    if (location.hostname === "localhost" || location.hostname === "127.0.0.1" || location.protocol === "file:") {
+      pinRequired = false;
+      return;
+    }
     try {
       const res = await fetch("/api/pin-status");
       const data = await res.json();
