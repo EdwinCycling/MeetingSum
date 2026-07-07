@@ -326,6 +326,28 @@ select {
   background: linear-gradient(135deg, color-mix(in srgb, var(--brand-green) 12%, var(--card)) 0%, color-mix(in srgb, var(--brand-blue) 8%, var(--card)) 100%);
   color: var(--brand-green);
 }
+@media (max-width: 860px) {
+  .analysis-category-tabs {
+    display: grid;
+    width: 100%;
+    max-width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 6px;
+    overflow: visible;
+  }
+
+  .analysis-category-tab {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+@media (max-width: 640px) {
+  .analysis-category-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
 .analysis-group {
   border: 1px solid color-mix(in srgb, var(--brand-blue) 18%, var(--card-border));
   border-radius: 12px;
