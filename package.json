@@ -2,9 +2,9 @@
   "name": "meetsum",
   "version": "1.260707.1",
   "description": "MeetSum – Teams Transcript Summarizer Helper",
-  "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "powershell -ExecutionPolicy Bypass -File server.ps1",
+    "start:api": "powershell -ExecutionPolicy Bypass -File server-with-api.ps1"
   },
   "keywords": ["teams", "transcript", "summarizer", "ai", "prompt"],
   "author": "",
