@@ -1195,25 +1195,6 @@ html[data-theme="dark"] .analysis-subgroup {
   height: 100%;
   object-fit: cover;
 }
-.video-preview-play {
-  position: absolute;
-  inset: auto auto 18px 18px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 11px 16px;
-  border: 0;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.82);
-  color: #fff;
-  font: inherit;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 14px 30px -18px rgba(0, 0, 0, 0.55);
-}
-.video-preview-play:hover {
-  background: rgba(0, 0, 0, 0.92);
-}
 .intro-video-actions {
   margin-top: 14px;
   justify-content: flex-end;

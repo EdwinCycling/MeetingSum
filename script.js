@@ -64,7 +64,7 @@
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
   const VERSION_FILE = "/version.json";
-  let currentAppVersion = "1.260707.10";
+  let currentAppVersion = "1.260707.11";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -3794,38 +3794,15 @@ Belangrijke regels:
     thumbnailUrl: "https://img.youtube.com/vi/keaa3zKkJwc/hqdefault.jpg"
   };
 
-  let currentVideo = null;
-
-  function openYouTubePopup(video, fullscreen = false) {
-    if (!video?.youtubeUrl) return;
-    const width = fullscreen ? screen.availWidth : 1280;
-    const height = fullscreen ? screen.availHeight : 720;
-    const left = Math.max(0, Math.round((screen.availWidth - width) / 2));
-    const top = Math.max(0, Math.round((screen.availHeight - height) / 2));
-    const features = [
-      "popup=yes",
-      `width=${width}`,
-      `height=${height}`,
-      `left=${left}`,
-      `top=${top}`,
-      "noopener=yes"
-    ].join(",");
-    const popup = window.open(video.youtubeUrl, "_blank", features);
-    if (popup) popup.focus();
-  }
-
   function openVideoModal(video) {
     const modal = document.getElementById("introVideoModal");
     const title = document.getElementById("introVideoTitle");
     const link = document.getElementById("introVideoYoutubeLink");
     const poster = document.getElementById("introVideoPoster");
-    const playBtn = document.getElementById("introVideoPlay");
     if (!modal) return;
-    currentVideo = video || null;
     if (title && video?.title) title.textContent = video.title;
     if (link && video?.youtubeUrl) link.href = video.youtubeUrl;
     if (poster && video?.thumbnailUrl) poster.src = video.thumbnailUrl;
-    if (playBtn && video?.title) playBtn.textContent = `Afspelen: ${video.title}`;
     modal.hidden = false;
     setBodyFrozen(true);
   }
@@ -3836,10 +3813,6 @@ Belangrijke regels:
 
   function openBasisVideoModal() {
     openVideoModal(BASIS_VIDEO);
-  }
-
-  async function toggleIntroVideoFullscreen() {
-    openYouTubePopup(currentVideo, true);
   }
 
   function closeIntroVideoModal() {
@@ -5124,14 +5097,10 @@ Belangrijke regels:
     const introVideoModal = document.getElementById("introVideoModal");
     const introVideoClose = document.getElementById("introVideoClose");
     const introVideoCloseBottom = document.getElementById("introVideoCloseBottom");
-    const introVideoFullscreen = document.getElementById("introVideoFullscreen");
-    const introVideoPlay = document.getElementById("introVideoPlay");
     if (introVideoTag) introVideoTag.addEventListener("click", openIntroVideoModal);
     if (basisVideoTag) basisVideoTag.addEventListener("click", openBasisVideoModal);
     if (introVideoClose) introVideoClose.addEventListener("click", closeIntroVideoModal);
     if (introVideoCloseBottom) introVideoCloseBottom.addEventListener("click", closeIntroVideoModal);
-    if (introVideoFullscreen) introVideoFullscreen.addEventListener("click", toggleIntroVideoFullscreen);
-    if (introVideoPlay) introVideoPlay.addEventListener("click", () => openYouTubePopup(currentVideo, false));
     if (introVideoModal) {
       introVideoModal.addEventListener("click", (e) => {
         if (e.target === introVideoModal) closeIntroVideoModal();
