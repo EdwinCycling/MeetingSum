@@ -294,13 +294,16 @@ select {
   gap: 14px;
 }
 .analysis-category-tabs {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   padding: 4px;
   border: 1px solid var(--card-border);
   border-radius: 10px;
   background: var(--card);
   margin-bottom: 12px;
+  width: 100%;
+  max-width: 100%;
 }
 .analysis-category-tab {
   border: none;
@@ -312,6 +315,7 @@ select {
   font-weight: 700;
   padding: 7px 12px;
   cursor: pointer;
+  min-width: 0;
 }
 .analysis-category-tab.is-active {
   background: color-mix(in srgb, var(--brand-blue) 12%, var(--card));
