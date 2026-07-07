@@ -64,7 +64,7 @@
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
   const VERSION_FILE = "/version.json";
-  let currentAppVersion = "1.260707.2";
+  let currentAppVersion = "1.260707.3";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
@@ -95,6 +95,7 @@
     { id: "education" },
     { id: "tools" },
     { id: "consultants" },
+    { id: "product-management" },
     { id: "custom" }
   ];
 
@@ -494,6 +495,685 @@
     }
   ];
 
+      const ANALYSIS_PRODUCT_MANAGEMENT_OPTION_DEFS = [
+        {
+      id: "acceptance-criteria-generator",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "Acceptance Criteria Generator",
+      titleEn: "Acceptance Criteria Generator",
+      descNl: "Maak ondubbelzinnige acceptance criteria voor een feature of story.",
+      descEn: "Create unambiguous acceptance criteria for a feature or story.",
+      promptNl: `ACCEPTANCE CRITERIA GENERATOR
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - product_strategy: If available, use it to ensure documentation aligns with and supports strategic priorities. If not: "What strategic goal does this work serve?"
+    - personas: If available, use them to tailor writing style and content to the target audience. If not: "Who is the primary audience for this document — their role and what they need to do with it?"
+    - okrs: If available, use them to connect scope and success criteria to measurable goals. If not: "What does success look like for this work in measurable terms?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What is the feature or user story you need criteria for?
+    2. What's the happy path?
+    3. Who are the user types involved?
+    4. What are the known edge cases?
+    5. What are the error states that need handling?
+    6. Any performance, security, or accessibility requirements?
+    7. What must NOT happen?
+    </inputs>
+    <criteria_framework>
+    Write impossible-to-argue acceptance criteria in GIVEN / WHEN / THEN format. Cover happy path, variations, validation, edge cases, empty states, error states, permissions, performance, and negative criteria.
+    Return a numbered AC list plus a short definition of done.
+    </criteria_framework>`,
+      promptEn: `ACCEPTANCE CRITERIA GENERATOR
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - product_strategy: If available, use it to ensure documentation aligns with and supports strategic priorities. If not: "What strategic goal does this work serve?"
+    - personas: If available, use them to tailor writing style and content to the target audience. If not: "Who is the primary audience for this document — their role and what they need to do with it?"
+    - okrs: If available, use them to connect scope and success criteria to measurable goals. If not: "What does success look like for this work in measurable terms?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What is the feature or user story you need criteria for?
+    2. What's the happy path?
+    3. Who are the user types involved?
+    4. What are the known edge cases?
+    5. What are the error states that need handling?
+    6. Any performance, security, or accessibility requirements?
+    7. What must NOT happen?
+    </inputs>
+    <criteria_framework>
+    Write impossible-to-argue acceptance criteria in GIVEN / WHEN / THEN format. Cover happy path, variations, validation, edge cases, empty states, error states, permissions, performance, and negative criteria.
+    Return a numbered AC list plus a short definition of done.
+    </criteria_framework>`
+        },
+        {
+      id: "competitive-landscape-mapper",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "Competitive Landscape Mapper",
+      titleEn: "Competitive Landscape Mapper",
+      descNl: "Breng positionering, concurrentiedreiging en differentiatie in kaart.",
+      descEn: "Map positioning, competitive threats, and differentiation opportunities.",
+      promptNl: `COMPETITIVE LANDSCAPE MAPPER
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - competitive_intel: If available, use current competitive data to ground all assessments in real-world positioning. If not: "Who are your top 3 competitors and what is each one's primary differentiator?"
+    - product_strategy: If available, use it to evaluate competitive positions through the lens of your strategic priorities. If not: "What capability or market position are you most trying to protect or win?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What product or product category are you mapping?
+    2. List the 4–6 most relevant competitors.
+    3. What are the top 5 dimensions customers use to evaluate products in this space?
+    4. Who is your primary buyer/user, and what do they value most?
+    5. What is your current positioning claim?
+    </inputs>
+    <framework>
+    Step 1: Profile each competitor.
+    Step 2: Score the market on the 5 evaluation dimensions.
+    Step 3: Describe a positioning map and white space.
+    Step 4: Identify threats and vulnerabilities.
+    Step 5: Identify differentiation opportunities.
+    </framework>
+    <output_format>
+    Deliver a competitor profile table, competitive grid, positioning map description, top 3 threats, and three differentiation opportunities ranked by impact and feasibility.
+    </output_format>`,
+      promptEn: `COMPETITIVE LANDSCAPE MAPPER
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - competitive_intel: If available, use current competitive data to ground all assessments in real-world positioning. If not: "Who are your top 3 competitors and what is each one's primary differentiator?"
+    - product_strategy: If available, use it to evaluate competitive positions through the lens of your strategic priorities. If not: "What capability or market position are you most trying to protect or win?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What product or product category are you mapping?
+    2. List the 4–6 most relevant competitors.
+    3. What are the top 5 dimensions customers use to evaluate products in this space?
+    4. Who is your primary buyer/user, and what do they value most?
+    5. What is your current positioning claim?
+    </inputs>
+    <framework>
+    Step 1: Profile each competitor.
+    Step 2: Score the market on the 5 evaluation dimensions.
+    Step 3: Describe a positioning map and white space.
+    Step 4: Identify threats and vulnerabilities.
+    Step 5: Identify differentiation opportunities.
+    </framework>
+    <output_format>
+    Deliver a competitor profile table, competitive grid, positioning map description, top 3 threats, and three differentiation opportunities ranked by impact and feasibility.
+    </output_format>`
+        },
+        {
+      id: "technical-feasibility-questionnaire",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "Technical Feasibility Questionnaire",
+      titleEn: "Technical Feasibility Questionnaire",
+      descNl: "Stel gerichte technische haalbaarheidsvragen voor.",
+      descEn: "Ask focused technical feasibility questions.",
+      promptNl: `TECHNICAL FEASIBILITY QUESTIONNAIRE
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - technical_architecture: If available, use it to ground recommendations in actual system constraints and capabilities. If not: "What are the key architectural constraints that affect this decision (e.g., tech stack, service boundaries, data model)?"
+    - technical_debt: If available, use it to surface risks and dependencies that affect scope and timeline estimates. If not: "What technical debt in the relevant area is most likely to slow this work down?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What are you proposing to build?
+    2. What systems or data does this touch?
+    3. What's your concern about feasibility?
+    4. What decision will the feasibility assessment inform?
+    5. Who is the engineer or tech lead you'll be asking?
+    6. What's your engineering background?
+    </inputs>
+    <feasibility_framework>
+    Ask capability, effort, dependency, risk, and architecture questions that help a PM get a decision-relevant answer, then summarize: can we build it, complexity, biggest risks, open questions, and recommended next step.
+    </feasibility_framework>`,
+      promptEn: `TECHNICAL FEASIBILITY QUESTIONNAIRE
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - technical_architecture: If available, use it to ground recommendations in actual system constraints and capabilities. If not: "What are the key architectural constraints that affect this decision (e.g., tech stack, service boundaries, data model)?"
+    - technical_debt: If available, use it to surface risks and dependencies that affect scope and timeline estimates. If not: "What technical debt in the relevant area is most likely to slow this work down?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What are you proposing to build?
+    2. What systems or data does this touch?
+    3. What's your concern about feasibility?
+    4. What decision will the feasibility assessment inform?
+    5. Who is the engineer or tech lead you'll be asking?
+    6. What's your engineering background?
+    </inputs>
+    <feasibility_framework>
+    Ask capability, effort, dependency, risk, and architecture questions that help a PM get a decision-relevant answer, then summarize: can we build it, complexity, biggest risks, open questions, and recommended next step.
+    </feasibility_framework>`
+        },
+        {
+      id: "tech-debt-negotiation",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "Tech Debt Negotiation",
+      titleEn: "Tech Debt Negotiation",
+      descNl: "Maak van tech debt een business case voor investering.",
+      descEn: "Turn technical debt into an investment business case.",
+      promptNl: `TECH DEBT NEGOTIATION
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - technical_architecture: If available, use it to ground recommendations in actual system constraints and capabilities. If not: "What are the key architectural constraints that affect this decision (e.g., tech stack, service boundaries, data model)?"
+    - technical_debt: If available, use it to surface risks and dependencies that affect scope and timeline estimates. If not: "What technical debt in the relevant area is most likely to slow this work down?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What tech debt is the team most concerned about?
+    2. What's the business impact of this debt today?
+    3. What will happen if it's not addressed in the next 6 months?
+    4. What's the estimated effort to address?
+    5. What would be the product impact of addressing it?
+    6. What's the competing pressure?
+    7. Who needs to agree to this investment?
+    </inputs>
+    <tech_debt_framework>
+    Translate debt into velocity, reliability, feature delivery, cost to fix, and a business case. Recommend a negotiation framing and one of the investment models.
+    </tech_debt_framework>`,
+      promptEn: `TECH DEBT NEGOTIATION
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - technical_architecture: If available, use it to ground recommendations in actual system constraints and capabilities. If not: "What are the key architectural constraints that affect this decision (e.g., tech stack, service boundaries, data model)?"
+    - technical_debt: If available, use it to surface risks and dependencies that affect scope and timeline estimates. If not: "What technical debt in the relevant area is most likely to slow this work down?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What tech debt is the team most concerned about?
+    2. What's the business impact of this debt today?
+    3. What will happen if it's not addressed in the next 6 months?
+    4. What's the estimated effort to address?
+    5. What would be the product impact of addressing it?
+    6. What's the competing pressure?
+    7. Who needs to agree to this investment?
+    </inputs>
+    <tech_debt_framework>
+    Translate debt into velocity, reliability, feature delivery, cost to fix, and a business case. Recommend a negotiation framing and one of the investment models.
+    </tech_debt_framework>`
+        },
+        {
+      id: "town-hall-narrative",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "Town Hall Narrative",
+      titleEn: "Town Hall Narrative",
+      descNl: "Schrijf een town hall-verhaal met context, eerlijkheid en call to action.",
+      descEn: "Write a town hall narrative with context, honesty, and a call to action.",
+      promptNl: `TOWN HALL NARRATIVE
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - okrs: If available, use them to frame communications in terms of team goals and progress. If not: "What is the primary goal your team is working toward this quarter?"
+    - product_strategy: If available, use it to ensure messaging reflects and reinforces strategic direction. If not: "What is the core strategic message you want stakeholders to understand?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What's the primary purpose?
+    2. Who is the audience?
+    3. How much time do you have?
+    4. What's the main message you want people to leave with?
+    5. What are people most anxious or uncertain about right now?
+    6. What's the good news? What's the hard truth?
+    7. What's the call to action?
+    </inputs>
+    <town_hall_framework>
+    Open with a real context setter, then cover reality, strategy, team story, call to action, Q&A guidance, and a strong closing. Make it honest, specific, and useful.
+    </town_hall_framework>`,
+      promptEn: `TOWN HALL NARRATIVE
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - okrs: If available, use them to frame communications in terms of team goals and progress. If not: "What is the primary goal your team is working toward this quarter?"
+    - product_strategy: If available, use it to ensure messaging reflects and reinforces strategic direction. If not: "What is the core strategic message you want stakeholders to understand?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What's the primary purpose?
+    2. Who is the audience?
+    3. How much time do you have?
+    4. What's the main message you want people to leave with?
+    5. What are people most anxious or uncertain about right now?
+    6. What's the good news? What's the hard truth?
+    7. What's the call to action?
+    </inputs>
+    <town_hall_framework>
+    Open with a real context setter, then cover reality, strategy, team story, call to action, Q&A guidance, and a strong closing. Make it honest, specific, and useful.
+    </town_hall_framework>`
+        },
+        {
+      id: "prd-generator",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "PRD Generator",
+      titleEn: "PRD Generator",
+      descNl: "Schrijf een complete PRD die engineering echt kan gebruiken.",
+      descEn: "Write a complete PRD engineering can actually use.",
+      promptNl: `PRD GENERATOR
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - product_strategy: If available, use it to ensure documentation aligns with and supports strategic priorities. If not: "What strategic goal does this work serve?"
+    - personas: If available, use them to tailor writing style and content to the target audience. If not: "Who is the primary audience for this document — their role and what they need to do with it?"
+    - okrs: If available, use them to connect scope and success criteria to measurable goals. If not: "What does success look like for this work in measurable terms?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <pm_inputs>
+    Answer the core context, research, constraints, and scope questions before generating the PRD.
+    </pm_inputs>
+    <prd_framework>
+    Write a complete PRD with TL;DR, problem statement, goals and success metrics, user stories, solution overview, functional requirements, non-functional requirements, edge cases, open questions, out of scope, dependencies, and launch plan.
+    </prd_framework>`,
+      promptEn: `PRD GENERATOR
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - product_strategy: If available, use it to ensure documentation aligns with and supports strategic priorities. If not: "What strategic goal does this work serve?"
+    - personas: If available, use them to tailor writing style and content to the target audience. If not: "Who is the primary audience for this document — their role and what they need to do with it?"
+    - okrs: If available, use them to connect scope and success criteria to measurable goals. If not: "What does success look like for this work in measurable terms?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <pm_inputs>
+    Answer the core context, research, constraints, and scope questions before generating the PRD.
+    </pm_inputs>
+    <prd_framework>
+    Write a complete PRD with TL;DR, problem statement, goals and success metrics, user stories, solution overview, functional requirements, non-functional requirements, edge cases, open questions, out of scope, dependencies, and launch plan.
+    </prd_framework>`
+        },
+        {
+      id: "icp-builder",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "ICP Builder",
+      titleEn: "ICP Builder",
+      descNl: "Bouw een evidence-based Ideal Customer Profile.",
+      descEn: "Build an evidence-based Ideal Customer Profile.",
+      promptNl: `ICP BUILDER
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - competitive_intel: If available, use it to anchor market analysis in real competitor data and positioning. If not: "Who are the top 3 players in the market you're analyzing and what share do they hold?"
+    - market_research: If available, use existing research to validate sizing assumptions and trend assessments. If not: "What is the most important market trend you're already aware of in this space?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. Who are your 5 best customers right now, and what do they have in common?
+    2. Who are your worst-fit customers, and what do they have in common?
+    3. What is the primary job your product does for customers?
+    4. What does the buying journey look like?
+    5. What early signals predict long-term customer success?
+    </inputs>
+    <framework>
+    Build a complete ICP profile across firmographics, situational triggers, buyer psychology, success predictors, and anti-ICP signals.
+    </framework>
+    <output_format>
+    Deliver a profile card, one-sentence ICP summary, ICP scoring checklist, anti-ICP summary, and one product implication.
+    </output_format>`,
+      promptEn: `ICP BUILDER
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - competitive_intel: If available, use it to anchor market analysis in real competitor data and positioning. If not: "Who are the top 3 players in the market you're analyzing and what share do they hold?"
+    - market_research: If available, use existing research to validate sizing assumptions and trend assessments. If not: "What is the most important market trend you're already aware of in this space?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. Who are your 5 best customers right now, and what do they have in common?
+    2. Who are your worst-fit customers, and what do they have in common?
+    3. What is the primary job your product does for customers?
+    4. What does the buying journey look like?
+    5. What early signals predict long-term customer success?
+    </inputs>
+    <framework>
+    Build a complete ICP profile across firmographics, situational triggers, buyer psychology, success predictors, and anti-ICP signals.
+    </framework>
+    <output_format>
+    Deliver a profile card, one-sentence ICP summary, ICP scoring checklist, anti-ICP summary, and one product implication.
+    </output_format>`
+        },
+        {
+      id: "platform-vs-product-decision",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "Platform vs Product Decision",
+      titleEn: "Platform vs Product Decision",
+      descNl: "Beoordeel of en wanneer een platformstrategie logisch is.",
+      descEn: "Assess whether a platform strategy makes sense and when.",
+      promptNl: `PLATFORM VS PRODUCT DECISION
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - product_strategy: If available, use it to align all analysis and recommendations with your stated strategic direction. If not: "What is your product's core strategic priority right now?"
+    - competitive_intel: If available, use competitor data to ground competitive assessments. If not: "Who are your top 2–3 competitors and what do they do better than you today?"
+    - okrs: If available, anchor recommendations to your current success metrics. If not: "What is your primary success metric this quarter?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What does your product do today?
+    2. What's your current revenue and customer count?
+    3. What third-party integrations do customers already use alongside you?
+    4. What do customers build on top of or alongside your product?
+    5. What platform opportunity are you considering?
+    6. Who are the potential third-party developers or partners?
+    7. What would they build?
+    8. Why would end users benefit?
+    9. Do you have direct competitors considering platform moves?
+    10. What's your current engineering team size and platform-building capacity?
+    11. What's your 3-year revenue goal?
+    </inputs>
+    <decision_framework>
+    Assess platform readiness, likely platform archetype, sequencing, risks, and a recommendation on whether to stay a product, begin Stage 1, or accelerate platform investment.
+    </decision_framework>`,
+      promptEn: `PLATFORM VS PRODUCT DECISION
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - product_strategy: If available, use it to align all analysis and recommendations with your stated strategic direction. If not: "What is your product's core strategic priority right now?"
+    - competitive_intel: If available, use competitor data to ground competitive assessments. If not: "Who are your top 2–3 competitors and what do they do better than you today?"
+    - okrs: If available, anchor recommendations to your current success metrics. If not: "What is your primary success metric this quarter?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What does your product do today?
+    2. What's your current revenue and customer count?
+    3. What third-party integrations do customers already use alongside you?
+    4. What do customers build on top of or alongside your product?
+    5. What platform opportunity are you considering?
+    6. Who are the potential third-party developers or partners?
+    7. What would they build?
+    8. Why would end users benefit?
+    9. Do you have direct competitors considering platform moves?
+    10. What's your current engineering team size and platform-building capacity?
+    11. What's your 3-year revenue goal?
+    </inputs>
+    <decision_framework>
+    Assess platform readiness, likely platform archetype, sequencing, risks, and a recommendation on whether to stay a product, begin Stage 1, or accelerate platform investment.
+    </decision_framework>`
+        },
+        {
+      id: "build-effort-estimator",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "Build Effort Estimator",
+      titleEn: "Build Effort Estimator",
+      descNl: "Schat de bouwinspanning met risicobuffers en onzekerheid.",
+      descEn: "Estimate build effort with risk buffers and uncertainty.",
+      promptNl: `BUILD EFFORT ESTIMATOR
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - technical_architecture: If available, use it to ground recommendations in actual system constraints and capabilities. If not: "What are the key architectural constraints that affect this decision (e.g., tech stack, service boundaries, data model)?"
+    - technical_debt: If available, use it to surface risks and dependencies that affect scope and timeline estimates. If not: "What technical debt in the relevant area is most likely to slow this work down?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What is the feature or capability you want built?
+    2. What does the user experience look like?
+    3. What do you know about the technical complexity?
+    4. What similar features has the team built before?
+    5. How accurate does the estimate need to be?
+    6. What's the deadline pressure?
+    7. Who will do the estimation?
+    </inputs>
+    <estimation_framework>
+    Break the work down first, surface unknowns, apply a cone of uncertainty, and present best / likely / worst case with risks and mitigation.
+    </estimation_framework>`,
+      promptEn: `BUILD EFFORT ESTIMATOR
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - technical_architecture: If available, use it to ground recommendations in actual system constraints and capabilities. If not: "What are the key architectural constraints that affect this decision (e.g., tech stack, service boundaries, data model)?"
+    - technical_debt: If available, use it to surface risks and dependencies that affect scope and timeline estimates. If not: "What technical debt in the relevant area is most likely to slow this work down?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What is the feature or capability you want built?
+    2. What does the user experience look like?
+    3. What do you know about the technical complexity?
+    4. What similar features has the team built before?
+    5. How accurate does the estimate need to be?
+    6. What's the deadline pressure?
+    7. Who will do the estimation?
+    </inputs>
+    <estimation_framework>
+    Break the work down first, surface unknowns, apply a cone of uncertainty, and present best / likely / worst case with risks and mitigation.
+    </estimation_framework>`
+        },
+        {
+      id: "product-principles-document",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "Product Principles Document",
+      titleEn: "Product Principles Document",
+      descNl: "Formuleer productprincipes die echte trade-offs sturen.",
+      descEn: "Define product principles that guide real trade-offs.",
+      promptNl: `PRODUCT PRINCIPLES DOCUMENT
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - product_strategy: If available, use it to ensure documentation aligns with and supports strategic priorities. If not: "What strategic goal does this work serve?"
+    - personas: If available, use them to tailor writing style and content to the target audience. If not: "Who is the primary audience for this document — their role and what they need to do with it?"
+    - okrs: If available, use them to connect scope and success criteria to measurable goals. If not: "What does success look like for this work in measurable terms?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What does your product do and for whom?
+    2. What's your product vision?
+    3. What hard decisions has your team made recently?
+    4. What decisions come up repeatedly where the team has disagreement?
+    5. What do you believe about your users that others in your industry don't?
+    6. What trade-offs are you willing to make that others aren't?
+    7. How big is your team and how often do new members join?
+    </inputs>
+    <principles_framework>
+    Write 5 product principles that capture real tensions, help the team say no, and can be used to resolve disagreement. Include what each principle means in practice and what it rules out.
+    </principles_framework>`,
+      promptEn: `PRODUCT PRINCIPLES DOCUMENT
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - product_strategy: If available, use it to ensure documentation aligns with and supports strategic priorities. If not: "What strategic goal does this work serve?"
+    - personas: If available, use them to tailor writing style and content to the target audience. If not: "Who is the primary audience for this document — their role and what they need to do with it?"
+    - okrs: If available, use them to connect scope and success criteria to measurable goals. If not: "What does success look like for this work in measurable terms?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What does your product do and for whom?
+    2. What's your product vision?
+    3. What hard decisions has your team made recently?
+    4. What decisions come up repeatedly where the team has disagreement?
+    5. What do you believe about your users that others in your industry don't?
+    6. What trade-offs are you willing to make that others aren't?
+    7. How big is your team and how often do new members join?
+    </inputs>
+    <principles_framework>
+    Write 5 product principles that capture real tensions, help the team say no, and can be used to resolve disagreement. Include what each principle means in practice and what it rules out.
+    </principles_framework>`
+        },
+        {
+      id: "epic-breakdown-workshop",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "Epic Breakdown Workshop",
+      titleEn: "Epic Breakdown Workshop",
+      descNl: "Breek een epic op in sprintklare, verticale slices.",
+      descEn: "Break an epic into sprint-ready vertical slices.",
+      promptNl: `EPIC BREAKDOWN WORKSHOP
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - okrs: If available, use it to validate that prioritization decisions align with current goals. If not: "What is your team's top priority metric or outcome this quarter?"
+    - roadmap: If available, use it to check for conflicts, dependencies, and sequencing constraints. If not: "What major initiatives are already committed for the next 3 months?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. Epic name and description
+    2. Epic goal
+    3. Target timeline
+    4. Team capacity available
+    5. What research or design exists?
+    6. Any known technical complexity?
+    7. What's the minimum version that delivers user value?
+    </inputs>
+    <epic_breakdown_framework>
+    Break the epic into user activities, extract sprint-sized stories, sequence them, define the MVP slice, and estimate the timeline.
+    </epic_breakdown_framework>`,
+      promptEn: `EPIC BREAKDOWN WORKSHOP
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - okrs: If available, use it to validate that prioritization decisions align with current goals. If not: "What is your team's top priority metric or outcome this quarter?"
+    - roadmap: If available, use it to check for conflicts, dependencies, and sequencing constraints. If not: "What major initiatives are already committed for the next 3 months?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. Epic name and description
+    2. Epic goal
+    3. Target timeline
+    4. Team capacity available
+    5. What research or design exists?
+    6. Any known technical complexity?
+    7. What's the minimum version that delivers user value?
+    </inputs>
+    <epic_breakdown_framework>
+    Break the epic into user activities, extract sprint-sized stories, sequence them, define the MVP slice, and estimate the timeline.
+    </epic_breakdown_framework>`
+        },
+        {
+      id: "raci-builder",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "RACI Builder",
+      titleEn: "RACI Builder",
+      descNl: "Maak een RACI-matrix die ownership-conflict oplost.",
+      descEn: "Create a RACI matrix that resolves ownership confusion.",
+      promptNl: `RACI BUILDER
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - okrs: If available, use it to connect operational improvements to measurable business goals. If not: "What is the primary business outcome this operational change needs to support?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What project, process, or decision area are you creating a RACI for?
+    2. What are the major activities or decision types in this area?
+    3. Who are the stakeholders involved?
+    4. Where are the current confusion points?
+    5. Any known tensions about ownership?
+    </inputs>
+    <raci_framework>
+    Build a RACI matrix with exactly one Accountable person per activity and keep Consulted and Informed lean.
+    </raci_framework>`,
+      promptEn: `RACI BUILDER
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - okrs: If available, use it to connect operational improvements to measurable business goals. If not: "What is the primary business outcome this operational change needs to support?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What project, process, or decision area are you creating a RACI for?
+    2. What are the major activities or decision types in this area?
+    3. Who are the stakeholders involved?
+    4. Where are the current confusion points?
+    5. Any known tensions about ownership?
+    </inputs>
+    <raci_framework>
+    Build a RACI matrix with exactly one Accountable person per activity and keep Consulted and Informed lean.
+    </raci_framework>`
+        },
+        {
+      id: "risk-register-builder",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "Risk Register Builder",
+      titleEn: "Risk Register Builder",
+      descNl: "Breng projectrisico's, impact en mitigatie systematisch in kaart.",
+      descEn: "Systematically map project risks, impact, and mitigation.",
+      promptNl: `RISK REGISTER BUILDER
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - okrs: If available, use it to validate that prioritization decisions align with current goals. If not: "What is your team's top priority metric or outcome this quarter?"
+    - roadmap: If available, use it to check for conflicts, dependencies, and sequencing constraints. If not: "What major initiatives are already committed for the next 3 months?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What are you building or launching?
+    2. What's the timeline and key milestones?
+    3. Who's on the team and what's the team's experience with this type of work?
+    4. What's your biggest worry about this project?
+    5. Has anything similar failed before?
+    6. What external factors could affect delivery?
+    7. What would a bad outcome look like?
+    </inputs>
+    <risk_framework>
+    Generate execution, product, external, organizational, and launch risks, score them, and attach prevention and contingency plans to the critical ones.
+    </risk_framework>`,
+      promptEn: `RISK REGISTER BUILDER
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - okrs: If available, use it to validate that prioritization decisions align with current goals. If not: "What is your team's top priority metric or outcome this quarter?"
+    - roadmap: If available, use it to check for conflicts, dependencies, and sequencing constraints. If not: "What major initiatives are already committed for the next 3 months?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What are you building or launching?
+    2. What's the timeline and key milestones?
+    3. Who's on the team and what's the team's experience with this type of work?
+    4. What's your biggest worry about this project?
+    5. Has anything similar failed before?
+    6. What external factors could affect delivery?
+    7. What would a bad outcome look like?
+    </inputs>
+    <risk_framework>
+    Generate execution, product, external, organizational, and launch risks, score them, and attach prevention and contingency plans to the critical ones.
+    </risk_framework>`
+        },
+        {
+      id: "one-pager-generator",
+      group: "product-management",
+      tab: "product-management",
+      titleNl: "One Pager Generator",
+      titleEn: "One Pager Generator",
+      descNl: "Schrijf een beslissingswaardige one-pager voor stakeholders.",
+      descEn: "Write a decision-ready one-pager for stakeholders.",
+      promptNl: `ONE PAGER GENERATOR
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - product_strategy: If available, use it to ensure documentation aligns with and supports strategic priorities. If not: "What strategic goal does this work serve?"
+    - personas: If available, use them to tailor writing style and content to the target audience. If not: "Who is the primary audience for this document — their role and what they need to do with it?"
+    - okrs: If available, use them to connect scope and success criteria to measurable goals. If not: "What does success look like for this work in measurable terms?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What is the initiative, feature, or proposal?
+    2. What problem does it solve and for whom?
+    3. Why now?
+    4. What's the proposed approach?
+    5. What's the expected outcome?
+    6. What resources does it require?
+    7. What's the biggest risk or trade-off?
+    8. Who will read this?
+    9. What's their primary concern?
+    10. What decision do you need from them?
+    </inputs>
+    <one_pager_framework>
+    Write a crisp one-pager with the opportunity/problem, proposal, outcomes, what it takes, risks/open questions, and the ask.
+    </one_pager_framework>`,
+      promptEn: `ONE PAGER GENERATOR
+    <context_integration>
+    CONTEXT CHECK: Before proceeding to the <inputs> section, check the existing workspace for each of the following. For each item, check if the workspace has these items, or ask the user the fallback question if not:
+    - product_strategy: If available, use it to ensure documentation aligns with and supports strategic priorities. If not: "What strategic goal does this work serve?"
+    - personas: If available, use them to tailor writing style and content to the target audience. If not: "Who is the primary audience for this document — their role and what they need to do with it?"
+    - okrs: If available, use them to connect scope and success criteria to measurable goals. If not: "What does success look like for this work in measurable terms?"
+    Collect any missing answers before proceeding to the main framework.
+    </context_integration>
+    <inputs>
+    1. What is the initiative, feature, or proposal?
+    2. What problem does it solve and for whom?
+    3. Why now?
+    4. What's the proposed approach?
+    5. What's the expected outcome?
+    6. What resources does it require?
+    7. What's the biggest risk or trade-off?
+    8. Who will read this?
+    9. What's their primary concern?
+    10. What decision do you need from them?
+    </inputs>
+    <one_pager_framework>
+    Write a crisp one-pager with the opportunity/problem, proposal, outcomes, what it takes, risks/open questions, and the ask.
+    </one_pager_framework>`
+        }
+      ];
+
   const ANALYSIS_TAB_BY_OPTION_ID = {
     "bcg-matrix": "strategy",
     "swot": "strategy",
@@ -567,6 +1247,7 @@
 
   const ANALYSIS_OPTION_DEFS = [
     ...ANALYSIS_CONSULTANT_OPTION_DEFS,
+    ...ANALYSIS_PRODUCT_MANAGEMENT_OPTION_DEFS,
     {
       id: "bcg-matrix",
       group: "reports",
@@ -1379,6 +2060,11 @@
         ? "OUTPUTFORMAT: Lever een chronologische lijst of tabel met datum, gebeurtenis, eigenaar en afhankelijkheden waar bekend."
         : "OUTPUT FORMAT: Return a chronological list or table with date, event, owner, and dependencies where known.";
     }
+    if (copy.group === "product-management") {
+      return isDutchTarget
+        ? "SCHRIJFSTIJL: Denk als een senior productmanager. Wees concreet, besluitgericht en scherp op trade-offs, risico's en next steps. Gebruik heldere koppen, bullets en waar passend tabellen of frameworks."
+        : "WRITING STYLE: Think like a senior product manager. Be concrete, decision-oriented, and sharp on trade-offs, risks, and next steps. Use clear headings, bullets, and tables or frameworks where useful.";
+    }
     if (copy.group === "reports") {
       return isDutchTarget
         ? "SCHRIJFSTIJL: Formeel rapportniveau. Gebruik heldere koppen, een executive samenvatting, kernanalyse, aanbevelingen en vervolgstappen."
@@ -1789,6 +2475,7 @@
       modal: document.getElementById("customAnalysisDetailModal"),
       title: document.getElementById("customAnalysisDetailTitleLabel"),
       desc: document.getElementById("customAnalysisDetailText"),
+      overlayCloseBtn: document.getElementById("customAnalysisDetailClose"),
       editBtn: document.getElementById("customAnalysisDetailEdit"),
       closeBtn: document.getElementById("customAnalysisDetailCancel"),
       useBtn: document.getElementById("customAnalysisDetailUse")
@@ -2110,6 +2797,21 @@
     const option = activeAnalysisDetail;
     closeCustomAnalysisDetailModal();
     openCustomAnalysisModal(option);
+  }
+
+  function initCustomAnalysisDetailModal() {
+    const { modal, overlayCloseBtn, closeBtn, editBtn, useBtn } = getCustomAnalysisDetailModalElements();
+    if (!modal || modal.dataset.listenersBound) return;
+
+    modal.dataset.listenersBound = "true";
+    if (overlayCloseBtn) overlayCloseBtn.addEventListener("click", closeCustomAnalysisDetailModal);
+    if (closeBtn) closeBtn.addEventListener("click", closeCustomAnalysisDetailModal);
+    if (useBtn) useBtn.addEventListener("click", useCustomAnalysisDetail);
+    if (editBtn) editBtn.addEventListener("click", editCustomAnalysisDetail);
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeCustomAnalysisDetailModal();
+    });
   }
 
   function exportCustomAnalysisOptions() {
@@ -2448,6 +3150,8 @@
 
     const customOverviewOpenBtn = document.getElementById("customAnalysisOverviewOpenBtn");
     if (customOverviewOpenBtn) customOverviewOpenBtn.addEventListener("click", openCustomAnalysisOverviewModal);
+
+    initCustomAnalysisDetailModal();
 
     const customModalCancel = document.getElementById("customAnalysisCancel");
     const customModalSave = document.getElementById("customAnalysisSave");

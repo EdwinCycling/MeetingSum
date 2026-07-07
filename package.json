@@ -1,6 +1,6 @@
 {
   "name": "meetsum",
-  "version": "1.260707.2",
+  "version": "1.260707.3",
   "description": "MeetSum – Teams Transcript Summarizer Helper",
   "scripts": {
     "start": "powershell -ExecutionPolicy Bypass -File server.ps1",
