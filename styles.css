@@ -159,23 +159,44 @@ main { max-width: 980px; margin: 0 auto; padding: 0 clamp(18px, 5vw, 32px) 80px;
 .hero-sub { max-width: 720px; margin: 0 auto; color: var(--text-soft); font-size: clamp(1rem, 2.4vw, 1.12rem); }
 .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin: 30px 0 26px; }
 .hero-badges { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; color: var(--text-mute); font-size: .9rem; font-weight: 500; }
-.hero-video-tag {
+.hero-video-links {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-top: 16px;
-  border: 1px solid color-mix(in srgb, var(--brand-blue) 30%, transparent);
-  background: color-mix(in srgb, var(--brand-blue) 10%, var(--card));
-  color: var(--brand-blue);
+}
+.hero-video-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid color-mix(in srgb, var(--brand-red) 26%, transparent);
+  background: color-mix(in srgb, var(--brand-red) 8%, var(--card));
+  color: var(--brand-red);
   border-radius: 999px;
-  padding: 7px 14px;
-  font-size: .82rem;
+  padding: 9px 16px;
+  font-size: .9rem;
   font-weight: 700;
   font-family: inherit;
   cursor: pointer;
-  transition: transform .15s ease, box-shadow .2s ease, background .2s ease;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease, border-color .2s ease;
 }
-.hero-video-tag:hover {
+.hero-video-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px -14px rgba(0, 70, 173, .35);
-  background: color-mix(in srgb, var(--brand-blue) 15%, var(--card));
+  box-shadow: 0 12px 26px -16px rgba(227, 6, 19, .35);
+  background: color-mix(in srgb, var(--brand-red) 12%, var(--card));
+  border-color: color-mix(in srgb, var(--brand-red) 34%, transparent);
+}
+.hero-video-btn .youtube-icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}
+.hero-video-btn .youtube-icon path {
+  fill: currentColor;
+}
+.hero-video-btn span {
+  white-space: nowrap;
 }
 
 .btn {
@@ -1175,9 +1196,36 @@ html[data-theme="dark"] .analysis-subgroup {
   height: 100%;
   border: 0;
 }
+.video-fallback-message {
+  color: var(--text-soft);
+  margin-bottom: 16px;
+}
+.intro-video-modal.is-fallback .video-frame-wrap {
+  display: none;
+}
 .intro-video-actions {
   margin-top: 14px;
   justify-content: flex-end;
+}
+.intro-video-modal:fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border-radius: 0;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: none;
+}
+.intro-video-modal:fullscreen .video-frame-wrap {
+  flex: 1;
+  min-height: 0;
+  padding-top: 0;
+}
+.intro-video-modal:fullscreen .video-frame-wrap iframe {
+  position: absolute;
 }
 .custom-analysis-detail-modal .modal-desc {
   margin-bottom: 18px;

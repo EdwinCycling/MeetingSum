@@ -67,7 +67,22 @@
         <span>🌍 5 talen</span>
         <span>💾 Onthoudt je voorkeuren</span>
       </div>
-      <button id="introVideoTag" class="hero-video-tag" type="button">▶ Bekijk introvideo</button>
+      <div class="hero-video-links" aria-label="Video's">
+        <button id="introVideoTag" class="hero-video-btn" type="button">
+          <svg class="youtube-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21.6 7.2c-.2-.8-.8-1.4-1.6-1.6C18.6 5.2 12 5.2 12 5.2s-6.6 0-8 .4c-.8.2-1.4.8-1.6 1.6C2 8.6 2 12 2 12s0 3.4.4 4.8c.2.8.8 1.4 1.6 1.6 1.4.4 8 .4 8 .4s6.6 0 8-.4c.8-.2 1.4-.8 1.6-1.6.4-1.4.4-4.8.4-4.8s0-3.4-.4-4.8Z"/>
+            <path d="M10 15V9l5 3-5 3Z"/>
+          </svg>
+          <span>Bekijk introvideo</span>
+        </button>
+        <button id="basisVideoTag" class="hero-video-btn" type="button">
+          <svg class="youtube-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M21.6 7.2c-.2-.8-.8-1.4-1.6-1.6C18.6 5.2 12 5.2 12 5.2s-6.6 0-8 .4c-.8.2-1.4.8-1.6 1.6C2 8.6 2 12 2 12s0 3.4.4 4.8c.2.8.8 1.4 1.6 1.6 1.4.4 8 .4 8 .4s6.6 0 8-.4c.8-.2 1.4-.8 1.6-1.6.4-1.4.4-4.8.4-4.8s0-3.4-.4-4.8Z"/>
+            <path d="M10 15V9l5 3-5 3Z"/>
+          </svg>
+          <span>Basis uitleg</span>
+        </button>
+      </div>
     </section>
 
     <!-- ===================== STEP PROGRESS ===================== -->
@@ -427,7 +442,7 @@
       <div class="footer-brand-block">
         <span class="footer-brand-mark">=</span>
         <div>
-          <p class="footer-copy" id="footerVersion">Versie 1.260707.5</p>
+          <p class="footer-copy" id="footerVersion">Versie 1.260707.6</p>
         </div>
       </div>
       <nav class="footer-links" aria-label="Footer links">
@@ -554,20 +569,25 @@
   <div id="introVideoModal" class="modal-overlay" hidden>
     <div class="modal modal-wide intro-video-modal" role="dialog" aria-modal="true" aria-labelledby="introVideoTitle">
       <button class="modal-close" id="introVideoClose" type="button" aria-label="Sluiten">✕</button>
-      <h3 id="introVideoTitle">MeetingSum Intro</h3>
+      <h3 id="introVideoTitle">Video</h3>
       <p class="modal-desc">Korte introductie van MeetingSum op YouTube.</p>
+      <p id="introVideoFallback" class="modal-desc video-fallback-message" hidden>
+        Deze preview werkt niet direct vanuit een lokaal bestand. Open de pagina via de lokale server of klik op YouTube.
+      </p>
       <div class="video-frame-wrap">
         <iframe
           id="introVideoFrame"
           src=""
           title="MeetingSum Intro Video"
           loading="eager"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowfullscreen>
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+          allowfullscreen
+          >
         </iframe>
       </div>
       <div class="modal-actions intro-video-actions">
-        <a id="introVideoYoutubeLink" class="btn btn-soft" href="https://youtu.be/4FZTvlB0qx0?si=u4wZUqd89F7bVb_U" target="_blank" rel="noopener noreferrer">Open op YouTube</a>
+        <a id="introVideoYoutubeLink" class="btn btn-soft" href="https://www.youtube.com/watch?v=VeUfYSFkBms" target="_blank" rel="noopener noreferrer">Open op YouTube</a>
+        <button id="introVideoFullscreen" class="btn btn-ghost" type="button">Volledig scherm</button>
         <button id="introVideoCloseBottom" class="btn btn-ghost" type="button">Sluiten</button>
       </div>
     </div>
