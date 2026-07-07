@@ -1,6 +1,6 @@
 {
   "name": "meetsum",
-  "version": "1.260707.9",
+  "version": "1.260707.10",
   "description": "MeetSum – Teams Transcript Summarizer Helper",
   "scripts": {
     "lint": "node --check script.js && node --check netlify/functions/pin-status.js && node --check netlify/functions/summarize.js && node --check netlify/functions/verify-pin.js",

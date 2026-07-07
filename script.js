@@ -64,7 +64,7 @@
   const UI_LANG_KEY = "meetsum.uilang";
   const COOKIE_NOTICE_KEY = "meetsum.cookieNotice.v1";
   const VERSION_FILE = "/version.json";
-  let currentAppVersion = "1.260707.9";
+  let currentAppVersion = "1.260707.10";
 
   /* ---------- Output option defaults ---------- */
   const OUTPUT_DEFAULTS = {
